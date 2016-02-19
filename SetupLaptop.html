@@ -7,7 +7,8 @@
 	<META NAME="AUTHOR" CONTENT="Warren Hennemuth">
 	<META NAME="CREATED" CONTENT="20160219;10555273">
 	<META NAME="CHANGEDBY" CONTENT="Warren Hennemuth">
-	<META NAME="CHANGED" CONTENT="20160219;11520979">
+	<META NAME="CHANGED" CONTENT="20160219;15383524">
+	<META NAME="CHANGEDBY" CONTENT="Warren Hennemuth">
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
 <P STYLE="margin-bottom: 0in"><BR>
@@ -25,8 +26,7 @@
 			<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Go
 			to: Start --&gt; programs --&gt; Mcafee --&gt; VirusScan Console</FONT></FONT></P>
 			<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Disable
-			&quot;Access Protection&quot; and &quot;On-Access Scanner&quot;<BR></FONT></FONT><BR>
-			</P>
+			&quot;Access Protection&quot; and &quot;On-Access Scanner&quot;</FONT></FONT></P>
 		</UL>
 	</UL>
 </UL>
@@ -131,12 +131,9 @@
 </UL>
 <OL>
 	<OL>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Change<BR>
-		 
-		<FONT FACE="Courier New, monospace">&lt;frontend-maven-plugin.npm.version&gt;2.7.6&lt;/frontend-maven-plugin.npm.version&gt;</FONT></FONT></FONT></P>
+		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Change<BR><FONT FACE="Courier New, monospace">&lt;frontend-maven-plugin.npm.version&gt;2.7.6&lt;/frontend-maven-plugin.npm.version&gt;</FONT></FONT></FONT></P>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>to
-		be...<BR>  
-		<FONT FACE="Courier New, monospace">&lt;frontend-maven-plugin.npm.version&gt;3.7.3&lt;/frontend-maven-plugin.npm.version&gt;</FONT></FONT></FONT></P>
+		be...<BR><FONT FACE="Courier New, monospace">&lt;frontend-maven-plugin.npm.version&gt;3.7.3&lt;/frontend-maven-plugin.npm.version&gt;</FONT></FONT></FONT></P>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>If
 		you still get errors involving node-gyp during the maven build of
 		coeus-webapp project, then install visual studio .NET 2015 and
@@ -185,7 +182,7 @@
 <UL>
 	<UL>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Download
-		Windows (x86, 64-bit), ZIP Archive  5.7.11  336.7M</FONT></FONT></P>
+		Windows (x86, 64-bit), ZIP Archive 5.7.11 336.7M</FONT></FONT></P>
 	</UL>
 </UL>
 <OL>
@@ -196,56 +193,44 @@
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Run
 		the following: bin/mysqld &ndash;initialize-insecure<BR>This
 		command will create the data directory and create a root user
-		WITHOUT a password (use --initialize for password requirement).<BR>
-		   <I>(See mysql system variables at:
+		WITHOUT a password (use --initialize for password
+		requirement).<BR><I>(See mysql system variables at:
 		https://dev.mysql.com/doc/refman/5.6/en/server-system-variables.html)</I></FONT></FONT></P>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Create
-		a bat file to start mysql. Contents as follows:<BR></FONT></FONT><BR>
-		</P>
+		a bat file to start mysql. Contents as follows:</FONT></FONT></P>
 	</OL>
 </OL>
 <P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>C:\whennemuth\downloads\mysql-5.7.11-winx64\bin\mysqld
 -u root ^</FONT></FONT></P>
 <P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>-console
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--join_buffer_size=524288
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--join_buffer_size=524288
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--key_buffer_size=16777216
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--key_buffer_size=16777216
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--read_buffer_size=262144
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--read_buffer_size=262144
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--read_rnd_buffer_size=524288
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--read_rnd_buffer_size=524288
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--sort_buffer_size=524288
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--sort_buffer_size=524288
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--table_definition_cache=2800
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--table_definition_cache=2800
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--table_open_cache=4000
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--table_open_cache=4000
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in">
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--innodb_buffer_pool_size=268435456
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--innodb_buffer_pool_size=268435456
 ^</FONT></FONT></P>
-<P STYLE="margin-left: 1.58in; margin-bottom: 0in"> 
-<FONT FACE="Courier New, monospace"><FONT SIZE=2>--query_cache_size=2097152</FONT></FONT></P>
+<P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>--query_cache_size=2097152</FONT></FONT></P>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <OL>
 	<OL START=5>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Create
-		a bat file to stop mysql. Contents as follows:<BR></FONT></FONT><BR>
-		</P>
+		a bat file to stop mysql. Contents as follows:</FONT></FONT></P>
 	</OL>
 </OL>
 <P STYLE="margin-left: 1.58in; margin-bottom: 0in"><FONT FACE="Courier New, monospace"><FONT SIZE=2>C:\whennemuth\downloads\mysql-5.7.11-winx64\bin\mysqladmin
--u root shutdown<BR></FONT></FONT><BR>
-</P>
+-u root shutdown</FONT></FONT></P>
 <OL>
 	<OL START=6>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Add
@@ -260,7 +245,7 @@
 </OL>
 <UL>
 	<UL>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><A HREF="https://dev.mysql.com/downloads/connector/j/">https://dev.mysql.com/downloads/connector/j/</A><BR>(<I>This
+		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2><A HREF="https://dev.mysql.com/downloads/connector/j/">https://dev.mysql.com/downloads/connector/j/</A><BR>(</FONT></FONT><FONT FACE="Arial, sans-serif"><FONT SIZE=2><I>This
 		jar will be included on the classpath for run/debug
 		configurations.)</I></FONT></FONT></P>
 	</UL>
@@ -299,14 +284,28 @@
 	<UL>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>https://maven.apache.org/download.cgi</FONT></FONT></P>
 		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Put
-		the maven bin directory in the system path environment variable.</FONT></FONT></P>
+		the maven bin directory in the system path environment variable.<BR></FONT></FONT><BR>
+		</P>
 	</UL>
 </UL>
 <OL START=14>
-	<LI><P STYLE="margin-bottom: 0in"></P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>Install
+	Winmerge</FONT></FONT></P>
 </OL>
+<UL>
+	<UL>
+		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>https://sourceforge.net/projects/winmerge/files/latest/download?source=top3_dlp_t5</FONT></FONT></P>
+	</UL>
+</UL>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
+<OL START=14>
+	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>next</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>next</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>next</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>next</FONT></FONT></P>
+	<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Arial, sans-serif"><FONT SIZE=2>next</FONT></FONT></P>
+</OL>
 <P STYLE="margin-bottom: 0in"><BR>
 </P>
 <P STYLE="margin-bottom: 0in"><BR>
