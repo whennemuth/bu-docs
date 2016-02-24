@@ -2,7 +2,7 @@
 ##############################################
 # Merge the new 1510 release from kuali.org/kc 
 ##############################################
-cd c:/kc.local1
+cd "`dirname $0`/kc.local1"
 
 ####### 1) Pull the master branch from upstream (kuali.org/kc).
 git checkout master
@@ -20,7 +20,8 @@ git merge --ff-only develop
 ####### 4) Merge the upstream release with a copy of the bu-master branch (which is now up to date with all customizations).
 git checkout -b bu-master-1510 bu-master
 
-git merge --squash master
+# git merge --squash master
+git merge master
 
 ####### 5) Fix the conflict in file1.txt and commit
 cat file1.txt

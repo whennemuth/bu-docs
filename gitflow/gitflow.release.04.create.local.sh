@@ -2,7 +2,7 @@
 ####################################################################################################
 # User 1: Create the local repositories and put in the missing branches and remote tracking branches
 ####################################################################################################
-cd c:/
+cd "`dirname $0`"
 
 rm -f -r kc.local1
 

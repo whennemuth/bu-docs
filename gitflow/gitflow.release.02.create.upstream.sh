@@ -2,7 +2,7 @@
 ################################################
 # Create the upstream (kualia.org/kc) repository
 ################################################
-cd c:/
+cd "`dirname $0`"
 
 rm -f -r kc.kuali.org
 

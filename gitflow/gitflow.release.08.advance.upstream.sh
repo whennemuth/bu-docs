@@ -2,7 +2,7 @@
 ###################################################################################################
 # Pretend we are the kuali.org team and update the 1509.57 to the new release of 1510.31 and tag it
 ###################################################################################################
-cd c:/kc.kuali.org/
+cd "`dirname $0`/kc.kuali.org/"
 
 cat > file1.txt <<EOF
 line 1

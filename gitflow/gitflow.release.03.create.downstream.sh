@@ -2,7 +2,7 @@
 ###########################################
 # Create the downstream (bu-ist) repository
 ###########################################
-cd c:/
+cd "`dirname $0`"
 
 rm -f -r kc.bu-ist
 

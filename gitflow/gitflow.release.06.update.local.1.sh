@@ -2,7 +2,7 @@
 ################################################################################################################
 # User2: Commit multiple changes to the feature branch and then merge the feature branch into the develop branch
 ################################################################################################################
-cd c:/kc.local2
+cd "`dirname $0`/kc.local2"
 
 git checkout -b daffy.1509.feature2 develop
 

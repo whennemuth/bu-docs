@@ -2,7 +2,7 @@
 ################################################################################################################
 # User1: Commit multiple changes to the feature branch and then merge the feature branch into the develop branch
 ################################################################################################################
-cd c:/kc.local1
+cd "`dirname $0`/kc.local1"
 
 git checkout -b bugs.1509.feature1 develop
 
