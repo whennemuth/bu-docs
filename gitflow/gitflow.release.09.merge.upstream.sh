@@ -18,7 +18,7 @@ git pull bu develop
 ####### 3) Merge the upstream release with a copy of the develop branch (which is now up to date with all customizations).
 git checkout -b develop-1510 develop
 
-git merge master
+git merge --squash master
 
 ####### 4) Fix the conflict in file1.txt and commit
 cat file1.txt
