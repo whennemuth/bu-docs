@@ -1,0 +1,38 @@
+git clone https://github.com/kuali/kc.git
+git branch bu-master coeus-1602.69
+git branch dev bu-master
+git checkout -b hitesh-feature dev
+git fetch https://github.com/bu-ist/kuali-research.git bu-customizations-clean:hitesh
+git merge hitesh
+... fix conflicts
+git checkout dev
+git merge hitesh-feature
+... should be fast-forward merge
+
+
+Auto-merging coeus-webapp/src/main/webapp/WEB-INF/web.xml
+CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/web.xml
+Auto-merging coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
+CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
+Auto-merging coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
+CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
+Auto-merging coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
+CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
+Auto-merging coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+CONFLICT (content): Merge conflict in coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+Auto-merging coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
+CONFLICT (content): Merge conflict in coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
+Automatic merge failed; fix conflicts and then commit the result.
+
+
+C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF\tags\award\awardPaymentAndInvoices.tag
+C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF\tags\award\awardDetailsDates.tag
+C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF\jsp\award\AwardCustomData.jsp
+C:\whennemuth\workspaces\merge_workspace\kc\coeus-impl\src\main\resources\org\kuali\kra\award\repository-award.xml
+C:\whennemuth\workspaces\merge_workspace\kc\coeus-impl\src\main\java\org\kuali\kra\award\AwardForm.java
+
+C:/whennemuth/workspaces/merge_workspace/kc/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
+C:/whennemuth/workspaces/merge_workspace/kc/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
+C:/whennemuth/workspaces/merge_workspace/kc/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
+C:/whennemuth/workspaces/merge_workspace/kc/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+C:/whennemuth/workspaces/merge_workspace/kc/coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java

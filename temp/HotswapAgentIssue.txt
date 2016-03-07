@@ -1,0 +1,308 @@
+HOTSWAP AGENT: 19:16:49.450 INFO (org.hotswap.agent.HotswapAgent) - Loading Hotswap agent {0.3.0-SNAPSHOT} - unlimited runtime class redefinition.
+HOTSWAP AGENT: 19:16:49.836 INFO (org.hotswap.agent.config.PluginRegistry) - Discovered plugins: [Hotswapper, WatchResources, AnonymousClassPatch, Hibernate, Spring, Jersey2, Jetty, Tomcat, ZK, Logback, JSF, Seam, ELResolver, OsgiEquinox, Proxy, WebObjects, Weld]
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Server version:        Apache Tomcat/9.0.0.M3
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Server built:          Feb 1 2016 20:52:49 UTC
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Server number:         9.0.0.0
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: OS Name:               Windows 7
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: OS Version:            6.1
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Architecture:          amd64
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Java Home:             C:\Program Files\Java\jdk1.8.0_73\jre
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: JVM Version:           1.8.0_73-b02
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: JVM Vendor:            Oracle Corporation
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: CATALINA_BASE:         C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: CATALINA_HOME:         C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -agentlib:jdwp=transport=dt_socket,suspend=y,address=localhost:56647
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Xms512m
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Xmx2048m
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -XX:PermSize=128m
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -XX:MaxPermSize=1024m
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -javaagent:C:\whennemuth\downloads\java\hotswap-agent.jar
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Dcatalina.home=C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Djava.endorsed.dirs=C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3\endorsed
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Dcatalina.base=C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Djava.io.tmpdir=C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3\temp
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -DSystemRoot=C:\Windows
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -Dfile.encoding=UTF8
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.VersionLoggerListener log
+INFO: Command line argument: -DPATH=C:\Windows;C:\Windows\system;C:\Windows\system32;
+Mar 02, 2016 7:16:50 PM org.apache.catalina.core.AprLifecycleListener lifecycleEvent
+INFO: The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: C:\Program Files\Java\jdk1.8.0_73\bin;C:\windows\Sun\Java\bin;C:\windows\system32;C:\windows;C:\Program Files\Java\jdk1.8.0_73\jre\bin;C:/Program Files/Java/jdk1.8.0_73/bin/../jre/bin/server;C:/Program Files/Java/jdk1.8.0_73/bin/../jre/bin;C:/Program Files/Java/jdk1.8.0_73/bin/../jre/lib/amd64;C:\Program Files (x86)\Support Tools\;C:\whennemuth\downloads\python\;C:\whennemuth\downloads\python\Scripts;C:\Program Files\Java\jdk1.8.0_73\bin;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Skype\Phone\;C:\Program Files 
+-Xms512m -Xmx2048m -XX:PermSize=128m -XX:MaxPermSize=1024m 
+-XXaltjvm=dcevm -javaagent:C:\whennemuth\downloads\java\hotswap-agent.jar 
+-Dcatalina.home="C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3" 
+-Djava.endorsed.dirs="C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3\endorsed" 
+-Dcatalina.base="C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3" 
+-Djava.io.tmpdir="C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3\temp" 
+-DSystemRoot=C:\Windows 
+
+(x86)\QuickTime\QTSystem\;C:\Program Files\Intel\WiFi\bin\;C:\Program Files\Common Files\Intel\WirelessCommon\;C:\whennemuth\downloads\nodejs\;C:\whennemuth\downloads\nodejs\node_modules\npm\bin;C:\whennemuth\downloads\mysql-5.7.11-winx64\bin;C:\whennemuth\downloads\Git\bin;C:\whennemuth\downloads\maven\apache-maven-3.3.9\bin;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Users\wrh\AppData\Roaming\npm;C:\whennemuth\downloads\eclipse-jee-mars-1-win32-x86_64\eclipse;;.
+Mar 02, 2016 7:16:50 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["http-nio-8080"]
+Mar 02, 2016 7:16:50 PM org.apache.tomcat.util.net.NioSelectorPool getSharedSelector
+INFO: Using a shared selector for servlet write/read
+Mar 02, 2016 7:16:50 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["ajp-nio-8009"]
+Mar 02, 2016 7:16:50 PM org.apache.tomcat.util.net.NioSelectorPool getSharedSelector
+INFO: Using a shared selector for servlet write/read
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.Catalina load
+INFO: Initialization processed in 832 ms
+Mar 02, 2016 7:16:50 PM org.apache.catalina.core.StandardService startInternal
+INFO: Starting service Catalina
+Mar 02, 2016 7:16:50 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet Engine: Apache Tomcat/9.0.0.M3
+Mar 02, 2016 7:16:50 PM org.apache.catalina.startup.HostConfig deployDescriptor
+INFO: Deploying configuration descriptor C:\whennemuth\downloads\tomcat\apache-tomcat-9.0.0.M3\conf\Catalina\localhost\kc.xml
+HOTSWAP AGENT: 19:16:51.029 ERROR (org.hotswap.agent.annotation.handler.OnClassLoadedHandler) - InvocationTargetException in transform method on plugin 'class org.hotswap.agent.plugin.tomcat.TomcatPlugin' class 'org/apache/catalina/loader/WebappClassLoader'.
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.hotswap.agent.annotation.handler.OnClassLoadedHandler.transform(OnClassLoadedHandler.java:157)
+	at org.hotswap.agent.annotation.handler.OnClassLoadedHandler$1.transform(OnClassLoadedHandler.java:76)
+	at org.hotswap.agent.util.HotswapTransformer.transform(HotswapTransformer.java:129)
+	at sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:428)
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	at java.net.URLClassLoader.defineClass(URLClassLoader.java:467)
+	at java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:368)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:362)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:361)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at org.apache.catalina.loader.WebappLoader.<init>(WebappLoader.java:117)
+	at org.apache.catalina.loader.WebappLoader.<init>(WebappLoader.java:75)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:422)
+	at java.lang.Class.newInstance(Class.java:442)
+	at org.apache.tomcat.util.digester.ObjectCreateRule.begin(ObjectCreateRule.java:117)
+	at org.apache.tomcat.util.digester.Digester.startElement(Digester.java:1188)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.startElement(AbstractSAXParser.java:509)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractXMLDocumentParser.emptyElement(AbstractXMLDocumentParser.java:182)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanStartElement(XMLDocumentFragmentScannerImpl.java:1344)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2787)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:606)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:510)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:848)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:777)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at org.apache.tomcat.util.digester.Digester.parse(Digester.java:1461)
+	at org.apache.catalina.startup.ContextConfig.processContextConfig(ContextConfig.java:545)
+	at org.apache.catalina.startup.ContextConfig.contextConfig(ContextConfig.java:502)
+	at org.apache.catalina.startup.ContextConfig.init(ContextConfig.java:743)
+	at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:318)
+	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:94)
+	at org.apache.catalina.util.LifecycleBase.setStateInternal(LifecycleBase.java:401)
+	at org.apache.catalina.util.LifecycleBase.init(LifecycleBase.java:115)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:141)
+	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:726)
+	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:702)
+	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:734)
+	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:594)
+	at org.apache.catalina.startup.HostConfig$DeployDescriptor.run(HostConfig.java:1801)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.hotswap.agent.javassist.NotFoundException: getResource(..) is not found in org.apache.catalina.loader.WebappClassLoader
+	at org.hotswap.agent.javassist.CtClassType.getDeclaredMethod(CtClassType.java:1186)
+	at org.hotswap.agent.plugin.tomcat.WebappLoaderTransformer.patchWebappClassLoader(WebappLoaderTransformer.java:188)
+	... 60 more
+
+Mar 02, 2016 7:16:51 PM org.apache.tomcat.util.digester.SetPropertiesRule begin
+WARNING: [SetPropertiesRule]{Context/Loader} Setting property 'cachingAllowed' to 'false' did not find a matching property.
+HOTSWAP AGENT: 19:16:51.055 ERROR (org.hotswap.agent.annotation.handler.OnClassLoadedHandler) - InvocationTargetException in transform method on plugin 'class org.hotswap.agent.plugin.tomcat.TomcatPlugin' class 'org/apache/catalina/webresources/StandardRoot'.
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:497)
+	at org.hotswap.agent.annotation.handler.OnClassLoadedHandler.transform(OnClassLoadedHandler.java:157)
+	at org.hotswap.agent.annotation.handler.OnClassLoadedHandler$1.transform(OnClassLoadedHandler.java:76)
+	at org.hotswap.agent.util.HotswapTransformer.transform(HotswapTransformer.java:129)
+	at sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+	at sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:428)
+	at java.lang.ClassLoader.defineClass1(Native Method)
+	at java.lang.ClassLoader.defineClass(ClassLoader.java:760)
+	at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	at java.net.URLClassLoader.defineClass(URLClassLoader.java:467)
+	at java.net.URLClassLoader.access$100(URLClassLoader.java:73)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:368)
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:362)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:361)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:331)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+	at org.apache.tomcat.util.digester.ObjectCreateRule.begin(ObjectCreateRule.java:116)
+	at org.apache.tomcat.util.digester.Digester.startElement(Digester.java:1188)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.startElement(AbstractSAXParser.java:509)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanStartElement(XMLDocumentFragmentScannerImpl.java:1364)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2787)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:606)
+	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:510)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:848)
+	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:777)
+	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
+	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
+	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
+	at org.apache.tomcat.util.digester.Digester.parse(Digester.java:1461)
+	at org.apache.catalina.startup.ContextConfig.processContextConfig(ContextConfig.java:545)
+	at org.apache.catalina.startup.ContextConfig.contextConfig(ContextConfig.java:502)
+	at org.apache.catalina.startup.ContextConfig.init(ContextConfig.java:743)
+	at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:318)
+	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:94)
+	at org.apache.catalina.util.LifecycleBase.setStateInternal(LifecycleBase.java:401)
+	at org.apache.catalina.util.LifecycleBase.init(LifecycleBase.java:115)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:141)
+	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:726)
+	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:702)
+	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:734)
+	at org.apache.catalina.startup.HostConfig.deployDescriptor(HostConfig.java:594)
+	at org.apache.catalina.startup.HostConfig$DeployDescriptor.run(HostConfig.java:1801)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.hotswap.agent.javassist.CannotCompileException: [source error] cannot find constructor org.apache.catalina.webresources.FileResource(org.apache.catalina.webresources.StandardRoot,java.lang.String,java.io.File,boolean)
+	at org.hotswap.agent.javassist.CtBehavior.insertBefore(CtBehavior.java:743)
+	at org.hotswap.agent.javassist.CtBehavior.insertBefore(CtBehavior.java:706)
+	at org.hotswap.agent.plugin.tomcat.WebappLoaderTransformer.patchStandardRoot(WebappLoaderTransformer.java:107)
+	... 52 more
+Caused by: compile error: cannot find constructor org.apache.catalina.webresources.FileResource(org.apache.catalina.webresources.StandardRoot,java.lang.String,java.io.File,boolean)
+	at org.hotswap.agent.javassist.compiler.TypeChecker.atMethodCallCore(TypeChecker.java:684)
+	at org.hotswap.agent.javassist.compiler.TypeChecker.atNewExpr(TypeChecker.java:140)
+	at org.hotswap.agent.javassist.compiler.ast.NewExpr.accept(NewExpr.java:83)
+	at org.hotswap.agent.javassist.compiler.CodeGen.doTypeCheck(CodeGen.java:241)
+	at org.hotswap.agent.javassist.compiler.CodeGen.compileExpr(CodeGen.java:229)
+	at org.hotswap.agent.javassist.compiler.CodeGen.atReturnStmnt2(CodeGen.java:597)
+	at org.hotswap.agent.javassist.compiler.JvstCodeGen.atReturnStmnt(JvstCodeGen.java:405)
+	at org.hotswap.agent.javassist.compiler.CodeGen.atStmnt(CodeGen.java:363)
+	at org.hotswap.agent.javassist.compiler.ast.Stmnt.accept(Stmnt.java:51)
+	at org.hotswap.agent.javassist.compiler.CodeGen.atIfStmnt(CodeGen.java:391)
+	at org.hotswap.agent.javassist.compiler.CodeGen.atStmnt(CodeGen.java:355)
+	at org.hotswap.agent.javassist.compiler.ast.Stmnt.accept(Stmnt.java:51)
+	at org.hotswap.agent.javassist.compiler.Javac.compileStmnt(Javac.java:533)
+	at org.hotswap.agent.javassist.CtBehavior.insertBefore(CtBehavior.java:725)
+	... 54 more
+
+HOTSWAP AGENT: 19:17:0.515 INFO (org.hotswap.agent.config.PluginRegistry) - Plugin 'org.hotswap.agent.plugin.tomcat.TomcatPlugin' initialized in ClassLoader 'org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader
+TomcatInstrumentableClassLoader
+  context: kc
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@223f3642
+'.
+HOTSWAP AGENT: 19:17:0.515 INFO (org.hotswap.agent.plugin.tomcat.TomcatPlugin) - Tomcat plugin initialized - Tomcat version '9.0.0.0'
+Mar 02, 2016 7:17:03 PM org.apache.jasper.servlet.TldScanner scanJars
+INFO: At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+2016-03-02 19:17:03,515 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl :: ----------------Loading Rice Configuration----------------
+2016-03-02 19:17:04,564 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl :: + Parsing config: [classpath:META-INF/kc-config.xml]
+2016-03-02 19:17:04,829 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   + Parsing config: [classpath:META-INF/kc-config-build.xml]
+2016-03-02 19:17:04,835 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   - Parsed  config: [classpath:META-INF/kc-config-build.xml]
+2016-03-02 19:17:04,836 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   + Parsing config: [classpath:META-INF/common-config-defaults.xml]
+2016-03-02 19:17:04,865 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     + Parsing config: [classpath:META-INF/framework-config-defaults.xml]
+2016-03-02 19:17:04,878 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     - Parsed  config: [classpath:META-INF/framework-config-defaults.xml]
+2016-03-02 19:17:04,878 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   - Parsed  config: [classpath:META-INF/common-config-defaults.xml]
+2016-03-02 19:17:04,879 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   + Parsing config: [classpath:META-INF/kc-config-defaults.xml]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kim.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kew.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: ken.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: ksb.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: krms.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: coreservice.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: location.mode=[REMOTE]->[LOCAL]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: dev.mode=[false]->[true]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: app.code=[kr]->[${module.name}]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: application.host=[localhost]->[127.0.0.1]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: externalizable.help.url=[${application.url}/kr/static/help/]->[/${app.context.name}/static/help/]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: externalizable.images.url=[${application.url}/kr/static/images/]->[/${app.context.name}/kr/static/images/]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kr.externalizable.images.url=[${application.url}/kr/static/images/]->[/${app.context.name}/kr/static/images/]
+2016-03-02 19:17:04,894 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kns.javascript.files=[plugins/jquery/jquery-1.8.3.js,plugins/cookie/jquery.cookie.js,kr/scripts/core.js,kr/scripts/dhtml.js,kr/scripts/my_common.js,kr/scripts/jscalendar-1.0/calendar.js,kr/scripts/jscalendar-1.0/lang/calendar-en.js,kr/scripts/jscalendar-1.0/calendar-setup.js,dwr/engine.js,dwr/util.js,dwr/interface/PersonService.js,kr/scripts/objectInfo.js]->[plugins/jquery/jquery-1.8.3.js,plugins/cookie/jquery.cookie.js,kr/scripts/core.js,kr/scripts/dhtml.js,kr/scripts/my_common.js,kr/scripts/jscalendar-1.0/calendar.js,kr/scripts/jscalendar-1.0/lang/calendar-en.js,kr/scripts/jscalendar-1.0/calendar-setup.js,dwr/engine.js,dwr/util.js,dwr/interface/PersonService.js,kr/scripts/objectInfo.js,dwr/interface/CustomAttributeService.js,dwr/interface/BudgetService.js,dwr/interface/AwardTemplateReportTermService.js,scripts/fancybox2.1.5/jquery.fancybox.pack.js,plugins/blockUI/jquery.blockUI.js,scripts/kuali_application.js,scripts/bootstrap/bootstrap.js]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kns.css.files=[kr/css/kuali.css,kr/scripts/jscalendar-1.0/calendar-win2k-1.css]->[kr/css/kuali.css,kr/scripts/jscalendar-1.0/calendar-win2k-1.css,scripts/fancybox2.1.5/jquery.fancybox.css,css/kuali_application.css,css/bootstrap/css/bootstrap-skinned.css]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: portal.css.files=[plugins/fancybox/jquery.fancybox.css,plugins/textpopout/popoutTextarea.css,plugins/jgrowl/jquery.jgrowl.css]->[plugins/fancybox/jquery.fancybox.css,plugins/textpopout/popoutTextarea.css,plugins/jgrowl/jquery.jgrowl.css,css/kuali_overrides.css,css/bootstrap/css/bootstrap-skinned.css]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: portal.javascript.files=[plugins/jquery/jquery-1.8.3.js,plugins/cookie/jquery.cookie.js,plugins/scrollto/jquery.scrollTo-1.4.6.js,plugins/blockUI/jquery.blockUI.js,kr/scripts/my_common.js,plugins/fancybox/jquery.fancybox.pack.js,plugins/easing/jquery.easing-1.3.pack.js,plugins/jgrowl/jquery.jgrowl.js,rice-portal/scripts/portal.initialize.js,rice-portal/scripts/easyXDM/easyXDM.js]->[plugins/jquery/jquery-1.8.3.js,plugins/cookie/jquery.cookie.js,plugins/scrollto/jquery.scrollTo-1.4.6.js,plugins/blockUI/jquery.blockUI.js,kr/scripts/my_common.js,plugins/fancybox/jquery.fancybox.pack.js,plugins/easing/jquery.easing-1.3.pack.js,plugins/jgrowl/jquery.jgrowl.js,rice-portal/scripts/portal.initialize.js,rice-portal/scripts/easyXDM/easyXDM.js,scripts/bootstrap/bootstrap.js]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: portal.title=[Kuali Rice]->[Kuali Coeus]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kr.url=[${application.url}/kr]->[${rice.server.url}/kr]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: ken.url=[${application.url}/ken]->[${rice.server.url}/ken]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kew.url=[${application.url}/kew]->[${rice.server.url}/kew]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kim.url=[${application.url}/kim]->[${rice.server.url}/kim]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: ksb.url=[${application.url}/ksb]->[${rice.server.url}/ksb]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: krad.url=[${application.url}/kr-krad]->[${rice.server.url}/kr-krad]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: rice.url=[${application.url}/kr]->[${rice.server.url}/kr]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: workflow.url=[${rice.server.url}/kew]->[${kew.url}]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: rice.krad.bos.ignoreMissingFieldsOnDeserialize=[]->[KcMaintenanceDocument]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: rice.struts.message.resources=[org.kuali.rice.krad.ApplicationResources,org.kuali.rice.krad.KRADApplicationResources,org.kuali.rice.kew.ApplicationResources,org.kuali.rice.ksb.ApplicationResources,org.kuali.rice.kim.ApplicationResources,org.kuali.rice.krms.ApplicationResources,org.kuali.rice.core.web.cache.CacheApplicationResources]->[${core.rice.struts.message.resources}, ${kc.struts.message.resources}]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: resourceBundleNames=[org.kuali.rice.krad.KRADApplicationResources,org.kuali.rice.krad.ApplicationResources,org.kuali.rice.kew.ApplicationResources,org.kuali.rice.krms.ApplicationResources,org.kuali.rice.core.web.cache.CacheApplicationResources]->[org.kuali.rice.krad.ApplicationResources,org.kuali.rice.krad.KRADApplicationResources,org.kuali.rice.kew.ApplicationResources,org.kuali.rice.ksb.ApplicationResources,org.kuali.rice.kim.ApplicationResources,org.kuali.rice.krms.ApplicationResources,org.kuali.rice.core.web.cache.CacheApplicationResources,${kc.resourceBundleNames}]
+2016-03-02 19:17:04,895 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: datasource.pool.maxSize=[50]->[20]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: keystore.alias=[]->[onestartsharedservices-devandtst]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: keystore.file=[]->[kul]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: keystore.password=[Top Secret Password]->[Top Secret Password]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: data.xml.root.location=[C:\\Users\\wrh\\AppData\\Local\\Temp\\/${environment}/kew/xml]->[/opt/ears/${environment}/en/xml]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: attachment.dir.location=[C:\\Users\\wrh\\AppData\\Local\\Temp\\/${environment}/attachments]->[/opt/ears/]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: enable.nonproduction.data.unmasking=[false]->[true]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: useQuartzDatabase=[true]->[false]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: transaction.timeout=[30000]->[3600]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: rice.logging.configure=[false]->[true]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     --- Raw Config Override: kim.show.blank.qualifiers=[true]->[false]
+2016-03-02 19:17:04,896 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   - Parsed  config: [classpath:META-INF/kc-config-defaults.xml]
+2016-03-02 19:17:04,897 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   + Parsing config: [classpath:META-INF/common-config-locations.xml]
+2016-03-02 19:17:04,902 [localhost-startStop-1] D: U: []  WARN  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     + Skipping non-existent location [C:\Users\wrh/kuali/main/dev/common-config.xml]
+2016-03-02 19:17:04,903 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     + Parsing config: [C:\Users\wrh/kuali/main/dev/kc-config.xml]
+2016-03-02 19:17:04,905 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::       --- Raw Config Override: application.host=[127.0.0.1]->[localhost]
+2016-03-02 19:17:04,905 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::       --- Raw Config Override: app.context.name=[${app.code}-${environment}]->[kc]
+2016-03-02 19:17:04,905 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::       --- Raw Config Override: datasource.url=[jdbc:oracle:thin:@127.0.0.1:1521:KUALI]->[jdbc:mysql://localhost:3306/kc?verifyServerCertificate=false&requireSSL=false&useSSL=false]
+2016-03-02 19:17:04,905 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::       --- Raw Config Override: datasource.username=[KRADEV]->[root]
+2016-03-02 19:17:04,905 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::       --- Raw Config Override: datasource.password=[Top Secret Password]->[Top Secret Password]
+2016-03-02 19:17:04,905 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::       --- Raw Config Override: datasource.ojb.platform=[Oracle9i]->[MySQL]
+2016-03-02 19:17:04,906 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     - Parsed  config: [C:\Users\wrh/kuali/main/dev/kc-config.xml]
+2016-03-02 19:17:04,906 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     + Parsing config: [classpath:META-INF/eclipselink-config-defaults.xml]
+2016-03-02 19:17:04,909 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::     - Parsed  config: [classpath:META-INF/eclipselink-config-defaults.xml]
+2016-03-02 19:17:04,909 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   - Parsed  config: [classpath:META-INF/common-config-locations.xml]
+2016-03-02 19:17:04,909 [localhost-startStop-1] D: U: []  WARN  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   + Skipping non-existent location [/opt/sa_forms/java/dev/kra/kc-config.xml]
+2016-03-02 19:17:04,909 [localhost-startStop-1] D: U: []  WARN  org.kuali.rice.core.impl.config.property.JAXBConfigImpl ::   + Skipping non-existent location []
+2016-03-02 19:17:04,909 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl :: - Parsed  config: [classpath:META-INF/kc-config.xml]
+2016-03-02 19:17:04,916 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl :: ----------------Rice Configuration Loaded-----------------
+2016-03-02 19:17:04,916 [localhost-startStop-1] D: U: []  INFO  org.kuali.rice.core.impl.config.property.JAXBConfigImpl :: Loaded 549 properties
+HOTSWAP AGENT: 19:17:5.338 INFO (org.hotswap.agent.config.PluginRegistry) - Plugin 'org.hotswap.agent.plugin.spring.SpringPlugin' initialized in ClassLoader 'org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader
+TomcatInstrumentableClassLoader
+  context: kc
+  delegate: false
+----------> Parent Classloader:
+java.net.URLClassLoader@223f3642
+'.
+HOTSWAP AGENT: 19:17:5.339 INFO (org.hotswap.agent.plugin.spring.SpringPlugin) - Spring plugin initialized - Spring core version '3.2.13.RELEASE'
