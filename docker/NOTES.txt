@@ -1,0 +1,67 @@
+If you plan to run the docker host using docker-machine against the default minimal Linux VM (boot2docker) then:
+1) download docker toolbox. https://docs.docker.com/engine/installation/windows/
+2) use this for extra documentation for below: https://docs.docker.com/machine/get-started/
+2) open bash terminal
+3) docker-machine create -- driver virtualbox mydockervm (ssh will be set up automatically)
+4) docker-machine env mydockervm
+5) to stop vm use: docker-machine stop mydockervm
+   to start vm again use: docker-machine start mydockervm
+6) get the ip of the VM: docker-machine ls
+7) ssh into the VM (the default user is docker):
+   eval `ssh-agent -s`
+   ssh docker@[ip address of VM without the port number]
+   enter the default password: tcuser
+8) docker run -d -u root -p 80:8080 -p 50000:50000 -v /home/docker/jenkins:/var/jenkins_home jenkins
+   (for more detail: https://hub.docker.com/_/jenkins/)
+9) docker ps
+   (will show running docker containers. You should see "jenkins" as one of them)
+10) Type the VM ip address in a browser window url field and you should see the jenkins welcome page.
+
+or...
+
+If you plan to run docker using a host VM that you set up yourself then:
+1) Install the docker.exe using the unofficial Windows package manager Chocolatey.
+2) www.ubuntu.com/desktop --> download Ubuntu --> download 64 bit version of latest release. (this is a .iso file)
+3) If virtualbox is not downloaded, get it from oracle.
+4) Create a new virtual machine for linux 64 bit ubuntu.
+   name = jenkinsvm
+   memory = 1024 MB
+   storage = 15 GB
+5) start the new VM and when prompted for an iso to boot from, specify the iso downloaded from ubuntu.com
+6) you will be prompted to create a super user and assign a password. This user should have root access.
+   user = "warren"
+   password = "password"
+7) Add a host-only network adapter
+   a) Select VM --> settings --> network --> select next empty adapter tab (probably "adapter 2")
+      Attached to: "Host-only Adapter
+      Name: VirtualBox Host-Only Ethernet Adapter
+   b) Save and restart VM.
+7) configure linux to listen on port 22 for ssh connections:
+   sudo apt-get update
+   sudo apt-get install openssh-server
+   sudo ufw allow 22
+8) To share folders outside the VM and to get a better screen resolution, install virtual box linux additions.
+   (details at: https://leemendelowitz.github.io/blog/ubuntu-server-virtualbox.html)
+   a) First the gcc prerequisite:
+      sudo apt-get -y install gcc make linux-headers-$(uname -r)
+   b) From the VirtualBox VM GUI window menu, select "Devices -> Insert Guest Additions CD Image..."
+   c) sudo mount /dev/sr0 /media/warren/VBOXADDITIONS_5.0.16_105871/
+      you make get output saying "mount: /dev/sr0 is already mounted on /media/warren/VBOXADDITIONS_5.0.16_105871"
+      if so, just go on to the next step.
+   d) sudo /media/warren/VBOXADDITIONS_5.0.16_105871/VBoxLinuxAdditions.run
+   c) Finally, add your user to the vboxsf group so you can access shared folders (in the VM):
+      sudo usermod -g vboxsf warren
+9) Modify ssh access so the a private key can be used instead of a password:
+   a) Make sure the VM is running.
+   b) in the VM console, use ifconfig to determine the ip address the VM for the bridge network adapter created earlier.
+   c) Bring up a bash terminal.
+   d) cd ~/.ssh
+   e) ssh-keygen -t rsa -b 2048 -v
+      name the key "jenkins_vm_id_rsa"
+      leave passphrase blank
+   f) ssh-copy-id -i jenkins_vm_id_rsa.pub root@[ip address of VM]
+   g) You should now be able to ssh in using:
+      eval `ssh-agent -s`
+      ssh-add C:/Users/wrh/.ssh/jenkins_vm_id_rsa
+      ssh warren@[ip address of VM]
+   h) More info at http://www.beginninglinux.com/home/server-administration/openssh-keys-certificates-authentication-pem-pub-crt

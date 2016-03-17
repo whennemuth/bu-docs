@@ -1,28 +1,44 @@
 git clone https://github.com/kuali/kc.git
+cd kc
 git branch bu-master coeus-1602.69
-git branch dev bu-master
-git checkout -b hitesh-feature dev
+git branch develop bu-master
+git checkout -b hitesh-feature develop
 git fetch https://github.com/bu-ist/kuali-research.git bu-customizations-clean:hitesh
 git merge hitesh
+git status -s | grep "^UU"
 ... fix conflicts
-git checkout dev
+git add --all
+git commit -m "Conflict resolution for merge of hitesh feature"
+git checkout develop
 git merge hitesh-feature
 ... should be fast-forward merge
 
 
-Auto-merging coeus-webapp/src/main/webapp/WEB-INF/web.xml
-CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/web.xml
-Auto-merging coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
-CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
-Auto-merging coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
-CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
-Auto-merging coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
-CONFLICT (content): Merge conflict in coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
-Auto-merging coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
-CONFLICT (content): Merge conflict in coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
-Auto-merging coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
-CONFLICT (content): Merge conflict in coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
-Automatic merge failed; fix conflicts and then commit the result.
+git clone https://github.com/bu-ist/kuali-research.git
+cd kuali-research
+git branch develop origin/develop
+git branch bu-master origin/bu-master
+git checkout -b hitesh-feature origin/bu-customizations-clean
+git commit -a -m "Committing because index became dirty after checkout due to whitespace alteration. Not sure what causes this, but it might have to do with changes originating on a mac"
+git fetch https://github.com/kuali/kc.git master:kuali.kc 
+git merge coeus-1602.69
+git status -s | grep "^UU"
+... fix conflicts
+git add --all
+git commit -m "Conflict resolution for merge of 1602.69"
+git checkout develop
+git merge hitesh-feature
+... should be fast-forward merge
+git fetch ../kc develop:develop.kc
+git diff -w develop develop.kc
+... Should show no difference
+
+UU coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
+UU coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
+UU coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
+UU coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
+UU coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
+UU coeus-webapp/src/main/webapp/WEB-INF/web.xml
 
 
 C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF\tags\award\awardPaymentAndInvoices.tag
@@ -30,9 +46,11 @@ C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF
 C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF\jsp\award\AwardCustomData.jsp
 C:\whennemuth\workspaces\merge_workspace\kc\coeus-impl\src\main\resources\org\kuali\kra\award\repository-award.xml
 C:\whennemuth\workspaces\merge_workspace\kc\coeus-impl\src\main\java\org\kuali\kra\award\AwardForm.java
+C:\whennemuth\workspaces\merge_workspace\kc\coeus-webapp\src\main\webapp\WEB-INF\web.xml
 
-C:/whennemuth/workspaces/merge_workspace/kc/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardPaymentAndInvoices.tag
-C:/whennemuth/workspaces/merge_workspace/kc/coeus-webapp/src/main/webapp/WEB-INF/tags/award/awardDetailsDates.tag
-C:/whennemuth/workspaces/merge_workspace/kc/coeus-webapp/src/main/webapp/WEB-INF/jsp/award/AwardCustomData.jsp
-C:/whennemuth/workspaces/merge_workspace/kc/coeus-impl/src/main/resources/org/kuali/kra/award/repository-award.xml
-C:/whennemuth/workspaces/merge_workspace/kc/coeus-impl/src/main/java/org/kuali/kra/award/AwardForm.java
+C:\whennemuth\workspaces\merge_workspace\kuali-research\coeus-webapp\src\main\webapp\WEB-INF\tags\award\awardPaymentAndInvoices.tag
+C:\whennemuth\workspaces\merge_workspace\kuali-research\coeus-webapp\src\main\webapp\WEB-INF\tags\award\awardDetailsDates.tag
+C:\whennemuth\workspaces\merge_workspace\kuali-research\coeus-webapp\src\main\webapp\WEB-INF\jsp\award\AwardCustomData.jsp
+C:\whennemuth\workspaces\merge_workspace\kuali-research\coeus-impl\src\main\resources\org\kuali\kra\award\repository-award.xml
+C:\whennemuth\workspaces\merge_workspace\kuali-research\coeus-impl\src\main\java\org\kuali\kra\award\AwardForm.java
+C:\whennemuth\workspaces\merge_workspace\kuali-research\coeus-webapp\src\main\webapp\WEB-INF\web.xml
