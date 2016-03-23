@@ -42,15 +42,22 @@ If you plan to run docker using a host VM that you set up yourself then:
    sudo ufw allow 22
 8) To share folders outside the VM and to get a better screen resolution, install virtual box linux additions.
    (details at: https://leemendelowitz.github.io/blog/ubuntu-server-virtualbox.html)
+   Do the following steps from a terminal in the VM:
    a) First the gcc prerequisite:
       sudo apt-get -y install gcc make linux-headers-$(uname -r)
    b) From the VirtualBox VM GUI window menu, select "Devices -> Insert Guest Additions CD Image..."
+      This will insert the VirtualBox GuestAdditions installation CD into the VM's DVD drive
    c) sudo mount /dev/sr0 /media/warren/VBOXADDITIONS_5.0.16_105871/
-      you make get output saying "mount: /dev/sr0 is already mounted on /media/warren/VBOXADDITIONS_5.0.16_105871"
+      you may get output saying "mount: /dev/sr0 is already mounted on /media/warren/VBOXADDITIONS_5.0.16_105871"
       if so, just go on to the next step.
    d) sudo /media/warren/VBOXADDITIONS_5.0.16_105871/VBoxLinuxAdditions.run
-   c) Finally, add your user to the vboxsf group so you can access shared folders (in the VM):
+   e) Finally, add your user to the vboxsf group so you can access shared folders (in the VM):
       sudo usermod -g vboxsf warren
+   f) In the VM, Devices --> Shared Folders --> Shared Folder Settings... --> Click the Add new share icon:
+      "Folder Path:": Select a directory in you file system to mount to
+      "Folder Name:": The name you type here will appear in the ubuntu file explorer as a shared folder with this name prepended with "sf_"
+      check "Auto-mount"
+      check "Make Permanent" 
 9) Modify ssh access so the a private key can be used instead of a password:
    a) Make sure the VM is running.
    b) in the VM console, use ifconfig to determine the ip address the VM for the bridge network adapter created earlier.
@@ -60,8 +67,56 @@ If you plan to run docker using a host VM that you set up yourself then:
       name the key "jenkins_vm_id_rsa"
       leave passphrase blank
    f) ssh-copy-id -i jenkins_vm_id_rsa.pub root@[ip address of VM]
+   g) cat > /c/windows/system32/drivers/etc/hosts <<EOF
+      [ip address of VM]  jenkinsvm
+      EOF
+      (NOTE: since the VM ip is established with dhcp, it may change later on when restarting the VM, making it necessary to change it again in this hosts file after finding out what the new ip is. Attempts to make the VM ip a static ip failed).
    g) You should now be able to ssh in using:
       eval `ssh-agent -s`
       ssh-add C:/Users/wrh/.ssh/jenkins_vm_id_rsa
-      ssh warren@[ip address of VM]
+      ssh warren@jenkinsvm
    h) More info at http://www.beginninglinux.com/home/server-administration/openssh-keys-certificates-authentication-pem-pub-crt
+10) Install docker on the VM:
+    sudo curl -fsSL https://get.docker.com/ | sh
+    usermod -aG docker warren (adds user warren to the docker group)
+11) Run the docker container for jenkins:
+    docker run -d -u root -p 80:8080 -p 50000:50000 -v /home/docker/jenkins:/var/jenkins_home jenkins
+    By default, without an image name "jenkins" in the local docker repository, docker will search dockerhub for one of that name.
+    It will find the standard docker jenkins image. However, this image is based off a dockerfile configured such that the internal /var/jenkins_home directory is considererd a volume.
+    This will be the case whether or not you specify an external directory in the file system running docker that the volume is to be mounted to using the -v parameter of the docker run command.
+    Notes on this within the jenkins docker file are:
+       # Jenkins home directory is a volume, so configuration and build history 
+       # can be persisted and survive image upgrades
+       VOLUME /var/jenkins_home
+    You should be able to visit the jenkins home page in the browser outside the VM: http://jenkinsvm
+12) If you would prefer not to have to create a directory on the docker host to persist jenkins logs/jobs/plugins, etc through as a mounted volume, you can alternately mount to a docker data volume container.
+    a) Remove dangling images:
+       docker rmi -f $(docker images --filter dangling=true -q)
+    b) Create a data volume as a separate container called "jenkins-dv":
+       docker create -v /var/jenkins_home --name jenkins-dv jenkins
+    c) Run the jenkins docker image using the --volumes-from switch to include the data volume container.
+       docker run -d -u root -p 80:8080 -p 50000:50000 --volumes-from jenkins-dv --name jenkins-app jenkins
+       (see: http://www.catosplace.net/blog/2015/02/11/running-jenkins-in-docker-containers/
+             https://engineering.riotgames.com/news/docker-jenkins-data-persists)
+    d) Goto http://jenkinsvm and add some blank jobs and/or load in a plugin(s).
+    e) Stop the docker jenkins-app container (NOTE: the jenkins-dv is already stopped as it is only a data volume and does not run an app)
+       docker stop jenkins-app
+    f) Goto http://jenkinsvm and confirm that you get a 404
+    g) Restart the jenkins-app container (NOTE: you do not need to include any of the switches and parameters made in the original run command that created the container - these are "stamped" into the container)
+       docker restart jenkins-app
+    h) Goto http://jenkinsvm and confirm you see the default page AND the jobs you created and plugins you loaded are still there.
+13) If using a data volume container (jenkins-dv) as above, you can restart the jenkins-app container from a backup of it.
+    a) sudo mkdir /home/docker/docker-dv-backups
+    b) sudo chmod 777 /home/docker/docker-dv-backups
+    c) sudo docker export jenkins-dv > /home/docker/docker-dv-backups/jenkins-dv.tar
+    d) docker stop jenkins-app
+    e) Remove the original jenkins data volume
+       docker rm jenkins-dv
+    f) import the backup of the data volume :
+       sudo cat /home/docker/docker-dv-backups/jenkins-dv.tar | docker import - jenkins-dv-img:jenkins-dv-backup1
+       (An image will be created called "jenkins-dv-img" and tagged as "jenkins-dv-backup1" from which to base the "jenkins-dv" container)
+    g) Recreate the data volume container (NOTE: make sure you specify the same name "jenkins-dv" that the jenkins-app container expects)
+       docker run -d -u root --name jenkins-dv jenkins
+    g) Restart the jenkins-app container (NOTE: you do not need to include any of the switches and parameters made in the original run command that created the container - these are "stamped" into the container)
+       docker restart jenkins-app
+    h) Goto http://jenkinsvm and confirm you see the default page AND the jobs you created and plugins you loaded are still there.
