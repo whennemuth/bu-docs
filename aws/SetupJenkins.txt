@@ -1,0 +1,30 @@
+After shelling into ec2 instance with private key:
+
+1) Install and configure docker:
+   a) sudo curl -fsSL https://get.docker.com/ | sh
+   b) Add the centos user to the docker group:
+      usermod -aG docker centos
+   c) Configure the docker daemon to come up on boot:
+      sudo systemctl enable docker
+   d) Start the docker daemon:
+      sudo systemctl start docker
+   e) To check the running status of the docker daemon:
+      sudo systemctl status docker
+   For more details see:
+   https://docs.docker.com/engine/admin/configuring/
+2) TODO: By default, the docker daemon will listen to calls made to it locally due to a unix domain socket being set up during installation at:
+   /var/run/docker.sock
+   However, to be able to access the daemon remotely you have to set up a tcp socket.
+   https://docs.docker.com/engine/reference/commandline/daemon/
+   http://blog.trifork.com/2013/12/24/docker-from-a-distance-the-remote-api/
+3) Docker runs initially on localhost. To also have it run as a registry server on another domain for remote access:
+   TODO: https://docs.docker.com/registry/deploying/
+         http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ec2-cli-managing-certs.html
+         or to use localhost indirectly through tunnelling:
+         https://blog.codecentric.de/en/2014/02/docker-registry-run-private-docker-image-repository/
+         ie: ssh -N -L 5000:localhost:5000 centos@ec2-54-187-62-124.us-west-2.compute.amazonaws.com, where all you need is the private key used to ssh in to the instance over port 22
+
+cd /media/sf_share
+docker build -f maven_jenkins_docker_file -t bu-ist/kuali/jenkins:v1.0 --build-arg m2_dir=/root/.m2 https://github.com/whennemuth/hello-world.git#master:docker/build.context/jenkins
+
+docker run -d -u root -p 80:8080 -p 50000:50000 -v /media/sf_share/jenkins_home:/var/jenkins_home bu-ist/kuali/jenkins:v1.0
