@@ -25,6 +25,26 @@ After shelling into ec2 instance with private key:
          ie: ssh -N -L 5000:localhost:5000 centos@ec2-54-187-62-124.us-west-2.compute.amazonaws.com, where all you need is the private key used to ssh in to the instance over port 22
 
 cd /media/sf_share
-docker build -f maven_jenkins_docker_file -t bu-ist/kuali/jenkins:v1.0 --build-arg m2_dir=/root/.m2 https://github.com/whennemuth/hello-world.git#master:docker/build.context/jenkins
 
-docker run -d -u root -p 80:8080 -p 50000:50000 -v /media/sf_share/jenkins_home:/var/jenkins_home bu-ist/kuali/jenkins:v1.0
+docker build \
+   -f maven_jenkins_docker_file \
+   -t bu-ist/kuali/jenkins:v1.0 \
+   https://github.com/whennemuth/hello-world.git#master:docker/build.context/jenkins
+
+docker run \
+   -d \
+   -u root \
+   -p 80:8080 \
+   -p 50000:50000 \
+   --name jenkinscontainer \
+   -v /media/sf_share/jenkins_home:/var/jenkins_home \
+   -v /media/sf_share/jenkins_logs:/var/log/jenkins \
+   -v /media/sf_share/jenkins_m2/root/.m2:/root/.m2 \
+   -v /var/run/docker.sock:/run/docker.sock \
+   -v $(which docker):/bin/docker \
+   -v /lib/x86_64-linux-gnu/libapparmor.so.1:/lib/x86_64-linux-gnu/libapparmor.so.1 \
+   -v /lib/x86_64-linux-gnu/libseccomp.so.2:/lib/x86_64-linux-gnu/libseccomp.so.2 \
+   -v /lib/x86_64-linux-gnu/libdevmapper.so.1.02.1:/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1 \
+   bu-ist/kuali/jenkins:v1.0
+
+docker exec -it jenkinscontainer bash
