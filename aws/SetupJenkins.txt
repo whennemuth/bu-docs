@@ -12,39 +12,30 @@ After shelling into ec2 instance with private key:
       sudo systemctl status docker
    For more details see:
    https://docs.docker.com/engine/admin/configuring/
-2) TODO: By default, the docker daemon will listen to calls made to it locally due to a unix domain socket being set up during installation at:
+
+2) By default, the docker daemon will listen to calls made to it locally due to a unix domain socket being set up during installation at:
    /var/run/docker.sock
-   However, to be able to access the daemon remotely you have to set up a tcp socket.
-   https://docs.docker.com/engine/reference/commandline/daemon/
-   http://blog.trifork.com/2013/12/24/docker-from-a-distance-the-remote-api/
-3) Docker runs initially on localhost. To also have it run as a registry server on another domain for remote access:
-   TODO: https://docs.docker.com/registry/deploying/
-         http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ec2-cli-managing-certs.html
-         or to use localhost indirectly through tunnelling:
-         https://blog.codecentric.de/en/2014/02/docker-registry-run-private-docker-image-repository/
-         ie: ssh -N -L 5000:localhost:5000 centos@ec2-54-187-62-124.us-west-2.compute.amazonaws.com, where all you need is the private key used to ssh in to the instance over port 22
+   To enable the remote API on the docker host allowing access to the daemon remotely you have to set up a tcp socket:
+   In linux distros running systemd, like Ubuntu 15.04, adding -H tcp://0.0.0.0:2375 to /etc/default/docker does not have the effect it used to.
+   Instead, create a file called /etc/systemd/system/docker-tcp.socket to make docker available on a TCP socket on port 2375:
 
-cd /media/sf_share
+      [Unit]
+      Description=Docker Socket for the API  
+      [Socket]
+      ListenStream=2375  
+      BindIPv6Only=both  
+      Service=docker.service  
+      [Install]
+      WantedBy=sockets.target
 
-docker build \
-   -f maven_jenkins_docker_file \
-   -t bu-ist/kuali/jenkins:v1.0 \
-   https://github.com/whennemuth/hello-world.git#master:docker/build.context/jenkins
+   Then enable this new socket:
 
-docker run \
-   -d \
-   -u root \
-   -p 80:8080 \
-   -p 50000:50000 \
-   --name jenkinscontainer \
-   -v /media/sf_share/jenkins_home:/var/jenkins_home \
-   -v /media/sf_share/jenkins_logs:/var/log/jenkins \
-   -v /media/sf_share/jenkins_m2/root/.m2:/root/.m2 \
-   -v /var/run/docker.sock:/run/docker.sock \
-   -v $(which docker):/bin/docker \
-   -v /lib/x86_64-linux-gnu/libapparmor.so.1:/lib/x86_64-linux-gnu/libapparmor.so.1 \
-   -v /lib/x86_64-linux-gnu/libseccomp.so.2:/lib/x86_64-linux-gnu/libseccomp.so.2 \
-   -v /lib/x86_64-linux-gnu/libdevmapper.so.1.02.1:/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1 \
-   bu-ist/kuali/jenkins:v1.0
+      systemctl enable docker-tcp.socket
+      systemctl enable docker.socket
+      systemctl stop docker
+      systemctl start docker-tcp.socket
+      systemctl start docker
 
-docker exec -it jenkinscontainer bash
+   source link: http://www.campalus.com/enable-remote-tcp-connections-to-docker-host-running-ubuntu-15-04/
+   other links: https://docs.docker.com/engine/reference/commandline/daemon/
+                http://blog.trifork.com/2013/12/24/docker-from-a-distance-the-remote-api/

@@ -1,0 +1,47 @@
+************************************************************
+                      JENKINS VM
+************************************************************
+docker rmi -f $(docker images --filter dangling=true -q)
+
+docker build \
+   -f maven_jenkins_docker_file \
+   -t bu-ist/kuali/jenkins:v1.0 \
+   https://github.com/whennemuth/hello-world.git#master:docker/build.context/jenkins
+
+docker run \
+   -d \
+   -u root \
+   -p 80:8080 \
+   -p 50000:50000 \
+   --name jenkinscontainer \
+   -v /var/jenkins/home:/var/jenkins_home \
+   -v /var/jenkins/log:/var/log/jenkins \
+   -v /var/jenkins/.m2:/root/.m2 \
+   -v /var/jenkins/.ssh:/var/jenkins_ssh \
+   -v /var/run/docker.sock:/run/docker.sock \
+   
+   bu-ist/kuali/jenkins:v1.0
+
+docker exec -it jenkinscontainer bash
+
+
+
+
+************************************************************
+                      APPLICATION VM
+************************************************************
+docker build \
+   -f hello_world_docker_file \
+   -t bu-ist/kuali/helloworld:v1.0 \
+   https://github.com/whennemuth/hello-world.git#master:docker/build.context/helloworld
+
+# NOTE: You cannot specify the entire CATALINA_HOME for a mount - the docker run command throws an error: "Container command not found or does not exist.."
+docker run \
+   -d \
+   -u root \
+   -p 8080:8080\
+   --name helloworldcontainer \
+   -v /media/sf_share/helloworld/catalina/webapps:/usr/local/tomcat/webapp_arrivals \
+   bu-ist/kuali/helloworld:v1.0
+
+docker exec -it helloworldcontainer bash

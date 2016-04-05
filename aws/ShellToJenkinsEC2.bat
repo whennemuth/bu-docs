@@ -1,1 +1,1 @@
-cmd /c (start /d "C:/whennemuth/documentation/bu/aws" bash --init-file ssh.sh)
+cmd /c (start /d "C:/whennemuth/documentation/bu/aws" bash --init-file ssh_jenkins.sh)

@@ -1,0 +1,1 @@
+cmd /c (start /d "C:/whennemuth/documentation/bu/aws" bash --init-file ssh_kc.sh)
