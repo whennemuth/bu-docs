@@ -3,6 +3,8 @@
 ************************************************************
 docker rmi -f $(docker images --filter dangling=true -q)
 
+docker run -d --name kuali_db_mysql -h kuali_db_mysql -p 43306:3306 jefferyb/kuali_db_mysql
+
 docker build \
    -f maven_jenkins_docker_file \
    -t bu-ist/kuali/jenkins:v1.0 \
@@ -14,15 +16,15 @@ docker run \
    -p 80:8080 \
    -p 50000:50000 \
    --name jenkinscontainer \
-   -v /media/sf_share/jenkins_home:/var/jenkins_home \
-   -v /media/sf_share/jenkins_logs:/var/log/jenkins \
-   -v /media/sf_share/jenkins_m2/root/.m2:/root/.m2 \
+   -v /media/sf_share/jenkins/home:/var/jenkins_home \
+   -v /media/sf_share/jenkins/log:/var/log/jenkins \
+   -v /media/sf_share/jenkins/.m2:/root/.m2 \
+   -v /media/sf_share/jenkins/.ssh:/var/jenkins_ssh_mount \
    -v /var/run/docker.sock:/run/docker.sock \
    -v $(which docker):/bin/docker \
    -v /lib/x86_64-linux-gnu/libapparmor.so.1:/lib/x86_64-linux-gnu/libapparmor.so.1 \
    -v /lib/x86_64-linux-gnu/libseccomp.so.2:/lib/x86_64-linux-gnu/libseccomp.so.2 \
    -v /lib/x86_64-linux-gnu/libdevmapper.so.1.02.1:/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1 \
-   
    bu-ist/kuali/jenkins:v1.0
 
 docker exec -it jenkinscontainer bash
@@ -38,13 +40,13 @@ docker build \
    -t bu-ist/kuali/helloworld:v1.0 \
    https://github.com/whennemuth/hello-world.git#master:docker/build.context/helloworld
 
-# NOTE: You cannot specify the entire CATALINA_HOME for a mount - the docker run command throws an error: "Container command not found or does not exist.."
 docker run \
    -d \
    -u root \
-   -p 8080:8080\
+   -p 8080:8080 \
    --name helloworldcontainer \
-   -v /media/sf_share/helloworld/catalina/webapps:/usr/local/tomcat/webapp_arrivals \
+   --link kuali_db_mysql:kuali_db_mysql \
+   -v /media/sf_share/helloworld/catalina/webapps:/usr/local/tomcat/webapp_mount \
    bu-ist/kuali/helloworld:v1.0
 
 docker exec -it helloworldcontainer bash
