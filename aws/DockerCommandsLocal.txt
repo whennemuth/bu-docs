@@ -3,8 +3,6 @@
 ************************************************************
 docker rmi -f $(docker images --filter dangling=true -q)
 
-docker run -d --name kuali_db_mysql -h kuali_db_mysql -p 43306:3306 jefferyb/kuali_db_mysql
-
 docker build \
    -f maven_jenkins_docker_file \
    -t bu-ist/kuali/jenkins:v1.0 \
@@ -35,6 +33,8 @@ docker exec -it jenkinscontainer bash
 ************************************************************
                       APPLICATION VM
 ************************************************************
+docker run -d --name kuali_db_mysql -h kuali_db_mysql -p 43306:3306 jefferyb/kuali_db_mysql
+
 docker build \
    -f hello_world_docker_file \
    -t bu-ist/kuali/helloworld:v1.0 \
