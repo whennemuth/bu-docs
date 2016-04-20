@@ -10,15 +10,14 @@ docker build \
 
 docker run \
    -d \
-   -u root \
+   -u jenkins \
    -p 80:8080 \
    -p 50000:50000 \
    --name jenkinscontainer \
-   -v /var/jenkins/home:/var/jenkins_home \
-   -v /var/jenkins/log:/var/log/jenkins \
-   -v /var/jenkins/.m2:/root/.m2 \
-   -v /var/jenkins/.ssh:/var/jenkins_ssh_mount \
-   -v /var/run/docker.sock:/run/docker.sock \   
+   -v /home/jenkins/home:/var/jenkins_home \
+   -v /home/jenkins/log:/var/log/jenkins \
+   -v /home/jenkins/.m2:/root/.m2 \
+   -v /home/jenkins/.ssh:/var/jenkins_ssh_mount \
    bu-ist/kuali/jenkins:v1.0
 
 docker exec -it jenkinscontainer bash

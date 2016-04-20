@@ -1,41 +1,110 @@
 After shelling into ec2 instance with private key:
 
-1) Install and configure docker:
+1) Create an SSH keypair for the EC2 instances
+   a) ssh-keygen -t rsa -b 2048 -v
+      name the key "jenkins_vm_id_rsa"
+      leave passphrase blank
+   b) repeat, naming the key "kr_vm_id_rsa"
+
+2) Setup a security groups:
+   a) "jenkins-security-group"
+
+      inbound:
+         ---------------------------------------------------
+         Type              Protocol   Port Range   Source 
+         ---------------------------------------------------
+         HTTP              TCP        80           0.0.0.0/0
+         SSH               TCP        22           0.0.0.0/0
+         Custom TCP Rule   TCP        2375         0.0.0.0/0
+
+      outbound (TODO - make more restrictive):
+         ---------------------------------------------------
+         Type              Protocol   Port Range   Source 
+         ---------------------------------------------------
+         All traffic       All        All          0.0.0.0/0
+
+2) Log into the AWS console
+   Goto "Network & Security" --> "Key Pairs" and import the two public keys.
+
+3) Create the following EC2 instances based on the AWS linux AMI and accept the defaults.
+   During creation, you will have the opportunity to specify which public key the instance is to be associated with.
+      - jenkins
+      - kuali-research
+
+4) Install and configure docker:
    a) sudo curl -fsSL https://get.docker.com/ | sh
-   b) Add the centos user to the docker group:
-      usermod -aG docker centos
-   c) Configure the docker daemon to come up on boot:
-      sudo systemctl enable docker
-   d) Start the docker daemon:
-      sudo systemctl start docker
-   e) To check the running status of the docker daemon:
-      sudo systemctl status docker
-   For more details see:
-   https://docs.docker.com/engine/admin/configuring/
+   b) Add the ec2-user user to the docker group:
+      usermod -aG docker ec2-user
 
-2) By default, the docker daemon will listen to calls made to it locally due to a unix domain socket being set up during installation at:
-   /var/run/docker.sock
+5) Install git:
+      sudo yum install git-all
+
+6) By default, the docker daemon will listen to calls made to it locally due to a unix domain socket at /var/run/docker.sock
    To enable the remote API on the docker host allowing access to the daemon remotely you have to set up a tcp socket:
-   In linux distros running systemd, like Ubuntu 15.04, adding -H tcp://0.0.0.0:2375 to /etc/default/docker does not have the effect it used to.
-   Instead, create a file called /etc/systemd/system/docker-tcp.socket to make docker available on a TCP socket on port 2375:
+   a) AWS AMI (runs RHEL Fedora)
+      Modify /etc/sysconfig/docker:
+      replace the existing OPTIONS variable with: 
+      OPTIONS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
+   b) In linux distros running systemd, like Ubuntu 15.04:
+      1) adding -H tcp://0.0.0.0:2375 to /etc/default/docker does not have the effect it used to.
+         Instead, create a file called /etc/systemd/system/docker-tcp.socket to make docker available on a TCP socket on port 2375:
+            [Unit]
+            Description=Docker Socket for the API  
+            [Socket]
+            ListenStream=2375  
+            BindIPv6Only=both  
+            Service=docker.service  
+            [Install]
+            WantedBy=sockets.target
+   
+            Then enable this new socket:
+   
+            systemctl enable docker-tcp.socket
+            systemctl enable docker.socket
+            systemctl stop docker
+            systemctl start docker-tcp.socket
+            systemctl start docker
 
-      [Unit]
-      Description=Docker Socket for the API  
-      [Socket]
-      ListenStream=2375  
-      BindIPv6Only=both  
-      Service=docker.service  
-      [Install]
-      WantedBy=sockets.target
+         2) Configure the docker daemon to come up on boot:
+            sudo systemctl enable docker
+         3) Start the docker daemon:
+            sudo systemctl start docker
+         4) To check the running status of the docker daemon:
+            sudo systemctl status docker
+            For more details see:
+            https://docs.docker.com/engine/admin/configuring/
 
-   Then enable this new socket:
+      source link: http://www.campalus.com/enable-remote-tcp-connections-to-docker-host-running-ubuntu-15-04/
+      other links: https://docs.docker.com/engine/reference/commandline/daemon/
+                   http://blog.trifork.com/2013/12/24/docker-from-a-distance-the-remote-api/
 
-      systemctl enable docker-tcp.socket
-      systemctl enable docker.socket
-      systemctl stop docker
-      systemctl start docker-tcp.socket
-      systemctl start docker
+7) Add Jenkins group and user:
+      sudo groupadd -g 1000 jenkinsgroup
+      sudo useradd -d "/home/jenkins" -u 1000 -g jenkinsgroup -G docker -m -s /bin/bash jenkins
 
-   source link: http://www.campalus.com/enable-remote-tcp-connections-to-docker-host-running-ubuntu-15-04/
-   other links: https://docs.docker.com/engine/reference/commandline/daemon/
-                http://blog.trifork.com/2013/12/24/docker-from-a-distance-the-remote-api/
+8) Populate the jenkins user home dir (content to bind-mount to the jenkins docker container will reside here).
+      sudo su jenkins
+      cd ~
+      mkdir home
+      mkdir .ssh
+      mkdir .m2
+      mkdir log
+
+9) Configure SSH access correctly for each user
+   sudo su root
+   # The ec2-user already has an authorized_keys file with the public key for this EC2 instance in it, so copy this to the jenkins user.
+   cp /home/ec2-user/.ssh/authorized_keys /home/jenkins/.ssh
+   chown jenkins:jenkinsgroup /home/jenkins/.ssh/authorized_keys
+   ssh-keyscan -t rsa github.com >> /home/jenkins/.ssh/known_hosts
+   chown jenkins:jenkinsgroup /home/jenkins/.ssh/known_hosts
+   [in a local shell]: 
+        # transfer private key for github access to jenkins user on jenkins EC2 instance.
+   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/kr_vm_id_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+
+   # Restrict access of these keys to the owner (jenkins) exclusively.
+   chmod 600 github_id_jenkins_rsa
+   chmod 600 kr_vm_id_rsa
+   exit [become ec2-user]
+   ssh-keyscan -t rsa github.com >> /home/ec2-user/.ssh/known_hosts
+
