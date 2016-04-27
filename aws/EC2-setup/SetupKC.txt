@@ -1,0 +1,62 @@
+After creating a new AWS Linux AMI EC2 instance:
+
+1) 
+   a) Create an SSH keypair for the EC2 instance
+         ssh-keygen -t rsa -b 2048 -v
+         name the key "kc_ec2_id_rsa"
+         leave passphrase blank
+
+   b) Log into the AWS console
+      Goto "Network & Security" --> "Key Pairs" and import the public key.
+
+2) Setup a security groups:
+   a) "kc-security-group"
+
+      inbound:
+         ---------------------------------------------------
+         Type              Protocol   Port Range   Source 
+         ---------------------------------------------------
+         HTTP              TCP        80           0.0.0.0/0
+         SSH               TCP        22           0.0.0.0/0
+         Custom TCP Rule   TCP        2375         0.0.0.0/0
+         All ICMP          All        N/A          0.0.0.0/0
+
+      outbound (TODO - make more restrictive):
+         ---------------------------------------------------
+         Type              Protocol   Port Range   Source 
+         ---------------------------------------------------
+         All traffic       All        All          0.0.0.0/0
+
+3) Add a user and group for kc
+      sudo groupadd kcgroup
+      sudo useradd -g kcgroup -m -s /bin/bash kc
+
+5) 
+   a) Install and configure docker and the docker daemon.
+      See detailed instructions in InstallDocker.txt
+   b) Add the kc user to the docker group:
+      sudo usermod -aG docker kc
+
+6) Install git:
+      sudo yum install git-all
+
+8) Add Jenkins group and user and add user to the docker group:
+      sudo groupadd -g 1000 jenkinsgroup
+      sudo useradd -d "/home/jenkins" -u 1000 -g jenkinsgroup -G docker -m -s /bin/bash jenkins
+      sudo usermod -aG docker jenkins
+      sudo mkdir /home/jenkins/.ssh
+
+8) Configure SSH access correctly for each user
+   sudo su root
+   # The ec2-user already has an authorized_keys file with the public key for this EC2 instance in it, so copy this to the jenkins user.
+   cp /home/ec2-user/.ssh/authorized_keys /home/jenkins/.ssh
+   chown -R jenkins:jenkinsgroup /home/jenkins/.ssh
+   # Restrict access of authorized_keys to the owner (jenkins) exclusively.
+   chmod 600 authorized_keys
+
+9) Create a target directory for war files built by the jenkins server to be scp'd to.
+   Jenkins will be the owner, but so will the docker group, and since ec2-user, jenkins, and kc users are all part of this group, they should inherit group privileges.
+      sudo mkdir -p /var/jenkins/kc/war
+      sudo chown -R jenkins:docker jenkins
+      sudo chmod -R 765 jenkins
+

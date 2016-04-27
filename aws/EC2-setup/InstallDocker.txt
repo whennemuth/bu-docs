@@ -1,0 +1,43 @@
+1) Install and configure docker:
+   a) sudo curl -fsSL https://get.docker.com/ | sh
+   b) Add the ec2-user user to the docker group:
+      usermod -aG docker ec2-user
+
+2) By default, the docker daemon will listen to calls made to it locally due to a unix domain socket at /var/run/docker.sock
+   To enable the remote API on the docker host allowing access to the daemon remotely you have to set up a tcp socket:
+   a) AWS AMI (runs RHEL Fedora)
+      Modify /etc/sysconfig/docker:
+      replace the existing OPTIONS variable with: 
+      OPTIONS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"
+   b) In linux distros running systemd, like Ubuntu 15.04:
+      1) adding -H tcp://0.0.0.0:2375 to /etc/default/docker does not have the effect it used to.
+         Instead, create a file called /etc/systemd/system/docker-tcp.socket to make docker available on a TCP socket on port 2375:
+            [Unit]
+            Description=Docker Socket for the API  
+            [Socket]
+            ListenStream=2375  
+            BindIPv6Only=both  
+            Service=docker.service  
+            [Install]
+            WantedBy=sockets.target
+   
+            Then enable this new socket:
+   
+            systemctl enable docker-tcp.socket
+            systemctl enable docker.socket
+            systemctl stop docker
+            systemctl start docker-tcp.socket
+            systemctl start docker
+
+         2) Configure the docker daemon to come up on boot:
+            sudo systemctl enable docker
+         3) Start the docker daemon:
+            sudo systemctl start docker
+         4) To check the running status of the docker daemon:
+            sudo systemctl status docker
+            For more details see:
+            https://docs.docker.com/engine/admin/configuring/
+
+      source link: http://www.campalus.com/enable-remote-tcp-connections-to-docker-host-running-ubuntu-15-04/
+      other links: https://docs.docker.com/engine/reference/commandline/daemon/
+                   http://blog.trifork.com/2013/12/24/docker-from-a-distance-the-remote-api/

@@ -16,6 +16,7 @@ After shelling into ec2 instance with private key:
          HTTP              TCP        80           0.0.0.0/0
          SSH               TCP        22           0.0.0.0/0
          Custom TCP Rule   TCP        2375         0.0.0.0/0
+         All ICMP          All        N/A          0.0.0.0/0
 
       outbound (TODO - make more restrictive):
          ---------------------------------------------------

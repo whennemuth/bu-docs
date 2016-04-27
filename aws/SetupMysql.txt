@@ -1,0 +1,62 @@
+1) Create a new AWS Linux AMI EC2 instance and associate it with an SSH key pair from the AWS account.
+
+2) Create a security group for the instance and associate the instance to it.
+   (narrow down the source ips with list or expression to limit access if necessary)
+
+   Type          Protocol  Port Range  Source     
+   ---------------------------------------------   
+   SSH           TCP       22          0.0.0.0/0   
+   MYSQL/Aurora  TCP       3306        0.0.0.0/0
+
+3) Shell into the EC2 instance using private SSH key
+
+4) sudo yum install mysql-server
+
+5) Configure the mysql service as a linux service that starts on boot and start the service
+
+   sudo chkconfig mysqld on
+   sudo service mysqld start
+
+6) By default, the root user cannot connect remotely to the instance.
+   Use workbench to tunnel into the instance over ssh on port 22 and connect to mysql "locally" with root
+
+   Database --> Manage Connections --> New --> 
+
+   Connection Method: Standard (TCP/IP)
+
+   Parameters tab:
+      SSH Hostname: ec2-xxx-xxx-xxx-xxx.us-west-2.compute.amazonaws.com:22
+      SSH Username: ec2-user
+      SSH Password: none
+      SSH Key File: [specify ssl key you use to shell into ec2 instance]
+      MySQL Hostname: 127.0.0.1
+      MySQL Server Port: 3306
+      Username: root
+      Password: none
+   
+   Test Connection: Should work   
+
+7) Once connected to mysql through the tunnel, create another user with a password:
+
+   CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+   GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost' WITH GRANT OPTION;
+   CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+   GRANT ALL PRIVILEGES ON *.* TO 'username'@'%' WITH GRANT OPTION;
+   FLUSH PRIVILEGES;
+
+8) Go back to workbench and create a connection for this new user
+
+   Database --> Manage Connections --> New --> 
+
+   Connection Method: Standard (TCP/IP)
+
+   Parameters tab:
+      Hostname: ec2-xxx-xxx-xxx-xxx.us-west-2.compute.amazonaws.com
+      Username: [name of new user]
+      Password: Store in Vault... --> [password of new user]
+   
+   Test Connection: Should work   
+
+9) If you want to give a password to the root user do the following: 
+
+   mysqladmin -u root password [your_new_pwd] 

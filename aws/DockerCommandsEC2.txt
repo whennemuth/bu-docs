@@ -1,7 +1,15 @@
 ************************************************************
                       JENKINS VM
 ************************************************************
+
+# clean up unused images
 docker rmi -f $(docker images --filter dangling=true -q)
+
+# clean up unused containers
+docker rm $(docker ps --filter dangling=true -q)
+
+# clean up unused volumes
+docker volume rm $(docker volume ls -qf dangling=true)
 
 docker build \
    -f maven_jenkins_docker_file \
@@ -14,9 +22,9 @@ docker run \
    -p 80:8080 \
    -p 50000:50000 \
    --name jenkinscontainer \
+   --restart unless-stopped \
    -v /home/jenkins/home:/var/jenkins_home \
    -v /home/jenkins/log:/var/log/jenkins \
-   -v /home/jenkins/.m2:/root/.m2 \
    -v /home/jenkins/.ssh:/var/jenkins_ssh_mount \
    bu-ist/kuali/jenkins:v1.0
 
@@ -31,17 +39,17 @@ docker exec -it jenkinscontainer bash
 docker run -d --name kuali_db_mysql -h kuali_db_mysql -p 43306:3306 jefferyb/kuali_db_mysql
 
 docker build \
-   -f hello_world_docker_file \
-   -t bu-ist/kuali/helloworld:v1.0 \
-   https://github.com/whennemuth/hello-world.git#master:docker/build.context/helloworld
+   -f kuali_research_docker_file \
+   -t bu-ist/kuali-research:v1.0 \
+   https://github.com/whennemuth/hello-world.git#master:docker/build.context/kuali-research
 
 docker run \
    -d \
    -u root \
    -p 8080:8080\
-   --name helloworldcontainer \
+   --name kuali-research-container \
    --link kuali_db_mysql:kuali_db_mysql \
-   -v /media/sf_share/helloworld/catalina/webapps:/usr/local/tomcat/webapp_mount \
-   bu-ist/kuali/helloworld:v1.0
+   -v /var/jenkins/kc/war:/usr/local/tomcat/webapp_mount \
+   bu-ist/kuali-research:v1.0 
 
-docker exec -it helloworldcontainer bash
+docker exec -it kuali-research-container bash
