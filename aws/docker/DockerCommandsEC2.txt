@@ -46,10 +46,12 @@ docker build \
 docker run \
    -d \
    -u root \
-   -p 8080:8080\
+   -p 8080:8080 \
+   -p 80:80 \
+   -p 43306:3306 \
    --name kuali-research-container \
-   --link kuali_db_mysql:kuali_db_mysql \
    -v /var/jenkins/kc/war:/usr/local/tomcat/webapp_mount \
+   -v /var/jenkins/kc/logs:/usr/local/tomcat/logs \
    bu-ist/kuali-research:v1.0 
 
 docker exec -it kuali-research-container bash

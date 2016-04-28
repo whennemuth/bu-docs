@@ -33,7 +33,7 @@ After creating a new AWS Linux AMI EC2 instance:
 
 5) 
    a) Install and configure docker and the docker daemon.
-      See detailed instructions in InstallDocker.txt
+      See detailed instructions in ../../docker/InstallDocker.txt
    b) Add the kc user to the docker group:
       sudo usermod -aG docker kc
 
@@ -57,6 +57,18 @@ After creating a new AWS Linux AMI EC2 instance:
 9) Create a target directory for war files built by the jenkins server to be scp'd to.
    Jenkins will be the owner, but so will the docker group, and since ec2-user, jenkins, and kc users are all part of this group, they should inherit group privileges.
       sudo mkdir -p /var/jenkins/kc/war
+      sudo mkdir /var/jenkins/kc/logs
       sudo chown -R jenkins:docker jenkins
-      sudo chmod -R 765 jenkins
+      sudo chmod -R 775 jenkins
 
+10) [OPTIONAL]: Make an alias for rebuilding and running the kc image and container
+
+    a) Shell into the ec2 instance
+    b) touch kcrebuild.sh
+    c) Add all the commands you want (docker stop, rm, rmi, build, run, etc.) to kcrebuild.sh in an editor
+    d) cd ~
+    e) echo "alias kcrebuild='source ~/kcrebuild.sh'" >> .bashrc
+    f) source .bashrc
+
+
+    

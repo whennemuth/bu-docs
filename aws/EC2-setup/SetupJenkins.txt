@@ -30,12 +30,9 @@ After creating a new AWS Linux AMI EC2 instance:
 
 3) 
    a) Install and configure docker and the docker daemon.
-      See detailed instructions in InstallDocker.txt
+      See detailed instructions in ../../docker/InstallDocker.txt
    b) Add the jenkins user to the docker group:
-      usermod -aG docker jenkins
-
-4) Add the ec2-user user to the docker group:
-      usermod -aG docker ec2-user
+      sudo usermod -aG docker jenkins
 
 5) Install git:
       sudo yum install git-all

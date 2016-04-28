@@ -1,7 +1,7 @@
 After shelling into ec2 instance with private key:
 
 1)
-   a) Create an SSH keypair for the EC2 instances
+   a) Create an SSH keypair for the EC2 instance
 
          ssh-keygen -t rsa -b 2048 -v
          name the key "mysql_ec2_id_rsa"
@@ -21,7 +21,7 @@ After shelling into ec2 instance with private key:
          Type              Protocol   Port Range   Source 
          ---------------------------------------------------
          SSH               TCP        22           0.0.0.0/0   
-         MYSQL/Aurora      TCP        3306         0.0.0.0/0
+         Custom TCP Rule   TCP        43306        0.0.0.0/0
          All ICMP          All        N/A          0.0.0.0/0
 
       outbound (TODO - make more restrictive):
@@ -33,6 +33,12 @@ After shelling into ec2 instance with private key:
 3) Shell into the EC2 instance using private SSH key
 
 4) sudo yum install mysql-server
+
+5) Make mysql case insensitive (will be case sensitive with respect to table names because linux is a case-sensitive operating system)
+   sudo vi /etc/my.cnf
+   Add the following line:
+      lower_case_table_names=1
+   Save and restart the server
 
 5) Configure the mysql service as a linux service that starts on boot and start the service
 
