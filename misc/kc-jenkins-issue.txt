@@ -1,0 +1,43 @@
+kc-rice build issue
+
+Hi team...
+
+I am running into an issue that seems somewhat similar to:
+
+   https://groups.google.com/a/kuali.org/forum/#!topic/kc.technical.collab/GG3ClEULN8U
+
+I am running a jenkins build for kc-rice and have included the console out in an attached file.
+What I am seeing is failure of spring-maven-plugin:3.1.0:load (metainf) on project rice-sql.
+The load phase involves instantiation of a Project object that is loaded with properties using the spring PropertyPlaceholderHelper class.
+This fails causing autowiring issues later on down the chain.
+
+The offending code is on line 712 at:
+
+   http://grepcode.com/file/repo1.maven.org/maven2/org.kuali.common/kuali-util/4.4.7/org/kuali/common/util/PropertyUtils.java
+
+... leading to a problem at line 173 at:
+
+   http://grepcode.com/file/repository.springsource.com/org.springframework/org.springframework.core/3.2.1/org/springframework/util/PropertyPlaceholderHelper.java
+
+I notice that the value "1%/" is being used as the key for a property that cannot be found.
+This seems fishy to me because I'd have expected a property placeholder key to include keys that are more human-readable, ie: ${project.java.version}
+
+Initially, this error was triggered during the build of the very first submodule.
+Then I followed the recommendation to cancel the augment/metainf phase in the similar issue referenced above and found that the first 4 or 5 submodules would now go through okay.
+However, the rice-sql submodule build seems to ignore the this and proceeds with the metainf phase.
+This is where the build stops.
+
+   clean -e -X compile install -Dgrm.off=true -Dproject.augment.phase=none -Dproject.metainf.phase=none -Dmaven.test.skip=true
+
+There was talk about using jdk8 being the potential cause, but we have now advanced and the build expects jdk 1.8 and won't like anything lower.
+
+Does anyone see anything in the attached console output that would indicate what I'm doing wrong?
+
+Any help would be much appreciated.
+
+Thanks,
+
+Warren Hennemuth
+Programmer Analyst 3
+Boston University IS&T
+wrh@bu.edu
