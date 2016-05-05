@@ -52,14 +52,14 @@ docker build \
 
 docker run \
    -d \
-   -u jenkins \
+   -u root \
    --privileged \
-   -p 80:8080 \
+   -p 8080:8080 \
    --name jenkinsdindcontainer \
    --restart unless-stopped \
-   -v /home/jenkins/home:/var/lib/jenkins_home \
+   -v /home/jenkins/home:/var/jenkins_home \
    -v /home/jenkins/log:/var/log/jenkins \
-   -v /home/jenkins/.ssh:/var/lib/jenkins_ssh_mount \
+   -v /home/jenkins/.ssh:/var/jenkins_ssh_mount \
    bu-ist/kuali/jenkins-dind:v1.0
 
 docker exec -it jenkinscontainer bash
