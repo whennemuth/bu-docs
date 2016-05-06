@@ -15,4 +15,5 @@ docker run \
    -v /home/jenkins/home:/var/jenkins_home \
    -v /home/jenkins/log:/var/log/jenkins \
    -v /home/jenkins/.ssh:/var/jenkins_ssh_mount \
+   -v /home/jenkins/.m2/repository:/var/jenkins_m2repo \
    bu-ist/kuali/jenkins:v1.0

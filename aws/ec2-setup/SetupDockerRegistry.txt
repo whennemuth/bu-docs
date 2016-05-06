@@ -1,0 +1,21 @@
+sudo su root
+yum install git
+mkdir -p /usr/lib/docker-registry-cert
+cd /usr/lib/docker-registry-cert
+mkdir -p certs && openssl req \
+   -newkey rsa:4096 -nodes -sha256 -keyout certs/domain.key \
+   -x509 -days 365 -out certs/domain.crt
+
+Shell into each ec2 instance running a docker daemon that wants to access the registry and load the resulting domain.crt as follows:
+
+mkdir /etc/docker/certs.d/myregistrydomain.com:5000
+cd /etc/docker/certs.d/myregistrydomain.com:5000
+# assuming the domain.crt was loaded to your home dir:
+mv ~/domain.crt ca.crt
+chown root:root ca.crt
+chmod a+rw ca.crt
+
+Install and configure docker and the docker daemon.
+      See detailed instructions in ../../docker/InstallDocker.txt
+
+docker push ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/kuali/jenkins:v1.0

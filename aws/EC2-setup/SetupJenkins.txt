@@ -45,9 +45,11 @@ After creating a new AWS Linux AMI EC2 instance:
       sudo su jenkins
       cd ~
       mkdir home
+      mkdir home-dind
       mkdir .ssh
       mkdir .m2
       mkdir log
+      mkdir log-dind
 
 8) Configure SSH access correctly for each user
    sudo su root

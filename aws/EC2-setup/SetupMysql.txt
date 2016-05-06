@@ -20,8 +20,10 @@ After shelling into ec2 instance with private key:
          ---------------------------------------------------
          Type              Protocol   Port Range   Source 
          ---------------------------------------------------
-         SSH               TCP        22           0.0.0.0/0   
+         SSH               TCP        22           0.0.0.0/0 
+         MYSQL/Aurora      TCP        3306         0.0.0.0/0
          Custom TCP Rule   TCP        43306        0.0.0.0/0
+         Custom TCP Rule   TCP        5000         0.0.0.0/0   (this port used if you are hosting a docker registry on this server)
          All ICMP          All        N/A          0.0.0.0/0
 
       outbound (TODO - make more restrictive):
