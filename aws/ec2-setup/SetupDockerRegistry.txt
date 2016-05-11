@@ -1,5 +1,6 @@
 sudo su root
 yum install git
+mkdir -p /usr/lib/docker-registry
 mkdir -p /usr/lib/docker-registry-cert
 cd /usr/lib/docker-registry-cert
 mkdir -p certs && openssl req \
@@ -7,15 +8,30 @@ mkdir -p certs && openssl req \
    -x509 -days 365 -out certs/domain.crt
 
 Shell into each ec2 instance running a docker daemon that wants to access the registry and load the resulting domain.crt as follows:
-
-mkdir /etc/docker/certs.d/myregistrydomain.com:5000
-cd /etc/docker/certs.d/myregistrydomain.com:5000
+(Assuming the AWS ec2 instance running your docker registry is called "ec2-52-25-226-38.us-west-2.compute.amazonaws.com")
+mkdir /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000
+cd /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000
 # assuming the domain.crt was loaded to your home dir:
 mv ~/domain.crt ca.crt
 chown root:root ca.crt
 chmod a+rw ca.crt
 
+# If you want to run the registry without security, modify /etc/sysconfig/docker and modify/add the following line:
+OPTIONS="--insecure-registry ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000"
+# Save and restart daemon:
+sudo service docker restart
+# Repeat this configuration on every Engine host that wants to access your registry.
+
 Install and configure docker and the docker daemon.
       See detailed instructions in ../../docker/InstallDocker.txt
 
-docker push ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/kuali/jenkins:v1.0
+# If you have an image called "bu-ist/kuali/jenkins"
+docker tag bu-ist/kuali/jenkins:v1.0 ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/jenkins
+
+docker push ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/jenkins
+
+# Test access from the registry host to its own registry
+curl --cacert /usr/lib/docker-registry-cert/certs/domain.crt https://ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/v2/_catalog
+# Test access from a remote host to the registry
+curl --cacert /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/ca.crt https://ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/v2/_catalog
+

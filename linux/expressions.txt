@@ -1,2 +1,5 @@
 # List directories from the root according to size in descending order:
 sudo du -x -d1 -h / | sort -h -r
+
+# Search all directories for a file by name (case-insensitive search)
+sudo find / -type f -iname "myfile.txt" 

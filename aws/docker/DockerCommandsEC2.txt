@@ -62,10 +62,53 @@ docker run \
    -v /home/jenkins/log-dind:/var/log/jenkins \
    -v /home/jenkins/.ssh:/var/jenkins_ssh_mount \
    -v /home/jenkins/.m2/repository:/var/jenkins_m2repo \
+   -v /etc/docker/certs.d:/etc/docker/certs.d \
    bu-ist/kuali/jenkins-dind:v1.0
 
 docker exec -it jenkinscontainer bash
 
+
+
+************************************************************
+                    HELLO-WORLD VM
+************************************************************
+docker build \
+   -f hello_world_docker_file \
+   -t bu-ist/kuali/helloworld:v1.0 \
+   https://github.com/whennemuth/hello-world.git#master:docker/build.context/helloworld
+
+docker run \
+   -d \
+   -u root \
+   -p 80:8080 \
+   -p 3306:3306 \
+   --name helloworldcontainer \
+   -v /var/jenkins/helloworld/war:/usr/local/tomcat/webapp_mount \
+   -v /var/jenkins/helloworld/logs:/usr/local/tomcat/logs \
+   bu-ist/kuali/helloworld:v1.0
+
+docker exec -it -u root helloworldcontainer bash
+
+
+
+************************************************************
+                   HELLO-WORLD-DIND VM
+************************************************************
+docker build \
+   -f hello_world_dind_docker_file \
+   -t ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/helloworlddind:v1.0 \
+   https://github.com/whennemuth/hello-world.git#master:docker/build.context/helloworld-dind
+
+docker run \
+   -d \
+   -u root \
+   -p 80:8080 \
+   -p 3306:3306 \
+   --name helloworlddindcontainer \
+   -v /var/jenkins/helloworld/logs:/usr/local/tomcat/logs \
+   ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/helloworlddind:v1.0
+
+docker exec -it -u root helloworlddindcontainer bash
 
 
 ************************************************************
@@ -81,8 +124,7 @@ docker build \
 docker run \
    -d \
    -u root \
-   -p 8080:8080 \
-   -p 80:80 \
+   -p 80:8080 \
    -p 3306:3306 \
    --name kuali-research-container \
    -v /var/jenkins/kc/war:/usr/local/tomcat/webapp_mount \
@@ -98,8 +140,60 @@ docker exec -it kuali-research-container bash
 ************************************************************
                       DOCKER REGISTRY
 ************************************************************
-docker run -d -p 5000:5000 --restart=always --name registry \
-  -v `pwd`/certs:/usr/lib/docker-registry-cert/certs \
-  -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
-  -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
-  registry:2
+docker run \
+   -d \
+   -p 5000:5000 \
+    --restart=always \
+   --name registry-secure \
+   -v /usr/lib/docker-registry-cert/certs:/certs \
+   -v /usr/lib/docker-registry:/var/lib/registry \
+   -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+   -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+   registry:2
+
+************************************************************
+                 DOCKER REGISTRY FRONT-END
+************************************************************
+docker run \
+   -d \
+   --name registrybrowser-secure \
+   -e ENV_DOCKER_REGISTRY_HOST=ec2-52-25-226-38.us-west-2.compute.amazonaws.com \
+   -e ENV_DOCKER_REGISTRY_PORT=5000 \
+   -e ENV_USE_SSL=yes \
+   -e ENV_DOCKER_REGISTRY_USE_SSL=1 \
+   -v /usr/lib/docker-registry-cert/certs/domain.crt:/etc/apache2/server.crt:ro \
+   -v /usr/lib/docker-registry-cert/certs/domain.key:/etc/apache2/server.key:ro \
+   -p 443:443 \
+   konradkleine/docker-registry-frontend:v2
+
+
+
+
+************************************************************
+                 DOCKER INSECURE REGISTRY
+************************************************************
+docker run \
+   -d \
+   -p 5000:5000 \
+   -v /usr/lib/docker-registry:/var/lib/registry \
+   --restart=always \
+   --name registry-insecure \
+   registry:2
+
+(NOTE must modify /etc/sysconfig/docker and modify/add the following line:
+ OPTIONS="--insecure-registry ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000"
+ Save and restart daemon:
+ sudo service docker restart
+)
+
+************************************************************
+             DOCKER INSECURE REGISTRY FRONT-END
+************************************************************
+docker run \
+   -d \
+   --name registrybrowser-insecure \
+   -e ENV_DOCKER_REGISTRY_HOST=ec2-52-25-226-38.us-west-2.compute.amazonaws.com \
+   -e ENV_DOCKER_REGISTRY_PORT=5000 \
+   -e ENV_MODE_BROWSE_ONLY=true \
+   -p 8080:80 \
+   konradkleine/docker-registry-frontend:v2
