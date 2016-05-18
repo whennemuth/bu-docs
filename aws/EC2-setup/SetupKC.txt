@@ -31,7 +31,14 @@ After creating a new AWS Linux AMI EC2 instance:
       sudo groupadd kcgroup
       sudo useradd -g kcgroup -m -s /bin/bash kc
 
-5) 
+4) Create the directory structure for the kc-config.xml file (Will be mounted to the docker container).
+   a) Create the directories
+      mkdir -p /home/kc/kuali/main/config
+      mkdir -p /home/kc/kuali/main/dev
+   b) Place a copy of kc-config.xml into each directory
+   c) chown -R kc:kcgroup /home/kc/kuali
+
+5) Install Docker and add kc user to its group
    a) Install and configure docker and the docker daemon.
       See detailed instructions in ../../docker/InstallDocker.txt
    b) Add the kc user to the docker group:

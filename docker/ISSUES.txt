@@ -1,0 +1,11 @@
+1) if you see the following error when trying to run a new container:
+
+      Error response from daemon: Could not find container for entity id [some hash value]
+
+   then you must:
+   a) Delete all of your containers
+   b) Delete /var/lib/docker/linkgraph.db
+   c) sudo service docker restart
+      https://github.com/docker/docker/issues/17691
+
+2) 

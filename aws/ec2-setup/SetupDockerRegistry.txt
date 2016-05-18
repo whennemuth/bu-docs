@@ -1,37 +1,74 @@
+Assume docker is already installed.
+
 sudo su root
-yum install git
-mkdir -p /usr/lib/docker-registry
-mkdir -p /usr/lib/docker-registry-cert
-cd /usr/lib/docker-registry-cert
-mkdir -p certs && openssl req \
-   -newkey rsa:4096 -nodes -sha256 -keyout certs/domain.key \
-   -x509 -days 365 -out certs/domain.crt
 
-Shell into each ec2 instance running a docker daemon that wants to access the registry and load the resulting domain.crt as follows:
-(Assuming the AWS ec2 instance running your docker registry is called "ec2-52-25-226-38.us-west-2.compute.amazonaws.com")
-mkdir /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000
-cd /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000
-# assuming the domain.crt was loaded to your home dir:
-mv ~/domain.crt ca.crt
-chown root:root ca.crt
-chmod a+rw ca.crt
+1) Install the necessary software
+   a) Install and configure docker and the docker daemon.
+         See detailed instructions in ../../docker/InstallDocker.txt
+   b) Install git
+         yum install git
 
-# If you want to run the registry without security, modify /etc/sysconfig/docker and modify/add the following line:
-OPTIONS="--insecure-registry ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000"
-# Save and restart daemon:
-sudo service docker restart
-# Repeat this configuration on every Engine host that wants to access your registry.
+2) Create a directory to mount the registry store to so it survives between successive containers
+      mkdir -p /usr/lib/docker-registry
 
-Install and configure docker and the docker daemon.
-      See detailed instructions in ../../docker/InstallDocker.txt
+3) Create an SSL key and cert and the directory to store them in.
+   mkdir -p /usr/lib/docker-registry-cert
+   cd /usr/lib/docker-registry-cert
+   mkdir -p certs && openssl req \
+      -newkey rsa:4096 -nodes -sha256 -keyout certs/domain.key \
+      -x509 -days 365 -out certs/domain.crt
 
-# If you have an image called "bu-ist/kuali/jenkins"
-docker tag bu-ist/kuali/jenkins:v1.0 ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/jenkins
+4) Shell into each ec2 instance running a docker daemon that wants to access the registry and load the resulting domain.crt as follows:
+   # Assuming the AWS ec2 instance running your docker registry is called "ec2-52-25-226-38.us-west-2.compute.amazonaws.com"
+   mkdir -p /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000
+   cd /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000
+   # assuming the domain.crt was loaded to your home dir:
+   mv ~/domain.crt ca.crt
+   chown root:root ca.crt
+   chmod a+rw ca.crt
+   sudo service docker restart
 
-docker push ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/jenkins
+5) If you want to run the registry without security, modify /etc/sysconfig/docker and 
+   a) modify/add the following line:
+         OPTIONS="--insecure-registry ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000"
+   b) Save and restart daemon:
+         sudo service docker restart
+   c) Repeat this configuration on every Engine host that wants to access your registry.
 
-# Test access from the registry host to its own registry
-curl --cacert /usr/lib/docker-registry-cert/certs/domain.crt https://ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/v2/_catalog
-# Test access from a remote host to the registry
-curl --cacert /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/ca.crt https://ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/v2/_catalog
+6) Run the registry:
+      docker run \
+      -d \
+      -p 5000:5000 \
+      --restart=always \
+      --name registry-secure \
+      --restart always \
+      -v /usr/lib/docker-registry-cert/certs:/certs \
+      -v /usr/lib/docker-registry:/var/lib/registry \
+      -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt \
+      -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key \
+      registry:2
 
+7) REGISTRY USAGE:
+   a) Tag an image with a naming convention that will route it to the registry if pushed:
+      If you have an image called "bu-ist/kuali/jenkins"
+         docker tag bu-ist/kuali/jenkins:v1.0 ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/jenkins
+   b) Push the image:
+         docker push ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/jenkins
+   c) Test access from the registry host to its own registry
+         curl --cacert /usr/lib/docker-registry-cert/certs/domain.crt https://ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/v2/_catalog
+   d) Test access from a remote host to the registry
+         curl --cacert /etc/docker/certs.d/ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/ca.crt https://ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/v2/_catalog
+
+8) Install a web GUI to browse the registry:
+   docker run \
+      -d \
+      --name registrybrowser-secure \
+      --restart always \
+      -e ENV_DOCKER_REGISTRY_HOST=ec2-52-25-226-38.us-west-2.compute.amazonaws.com \
+      -e ENV_DOCKER_REGISTRY_PORT=5000 \
+      -e ENV_USE_SSL=yes \
+      -e ENV_DOCKER_REGISTRY_USE_SSL=1 \
+      -v /usr/lib/docker-registry-cert/certs/domain.crt:/etc/apache2/server.crt:ro \
+      -v /usr/lib/docker-registry-cert/certs/domain.key:/etc/apache2/server.key:ro \
+      -p 443:443 \
+      konradkleine/docker-registry-frontend:v2
