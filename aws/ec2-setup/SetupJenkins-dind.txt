@@ -1,0 +1,71 @@
+After creating a new AWS Linux AMI EC2 instance:
+
+1) 
+   a) Create an SSH keypair for the EC2 instance
+
+         ssh-keygen -t rsa -b 2048 -v
+         name the key "jenkins_ec2_id_rsa"
+         leave passphrase blank
+
+   b) Log into the AWS console
+      Goto "Network & Security" --> "Key Pairs" and import the public key.
+
+2) Setup a security groups:
+   a) "jenkins-security-group"
+
+      inbound:
+         ---------------------------------------------------
+         Type              Protocol   Port Range   Source 
+         ---------------------------------------------------
+         HTTP              TCP        80           0.0.0.0/0
+         SSH               TCP        22           0.0.0.0/0
+         Custom TCP Rule   TCP        2375         0.0.0.0/0
+         All ICMP          All        N/A          0.0.0.0/0
+
+      outbound (TODO - make more restrictive):
+         ---------------------------------------------------
+         Type              Protocol   Port Range   Source 
+         ---------------------------------------------------
+         All traffic       All        All          0.0.0.0/0
+
+3) 
+   a) Install and configure docker and the docker daemon.
+      See detailed instructions in ../../docker/InstallDocker.txt
+   b) Add the jenkins user to the docker group:
+      sudo usermod -aG docker jenkins
+
+5) Install git:
+      sudo yum install git-all
+
+6) Add Jenkins group and user:
+      sudo groupadd -g 1000 jenkinsgroup
+      sudo useradd -d "/home/jenkins" -u 1000 -g jenkinsgroup -G docker -m -s /bin/bash jenkins
+
+7) Populate the jenkins user home dir (content to bind-mount to the jenkins docker container will reside here).
+      sudo su jenkins
+      cd ~
+      mkdir home
+      mkdir home-dind
+      mkdir .ssh
+      mkdir .m2
+      mkdir log
+      mkdir log-dind
+
+8) Configure SSH access correctly for each user
+   sudo su root
+   # The ec2-user already has an authorized_keys file with the public key for this EC2 instance in it, so copy this to the jenkins user.
+   cp /home/ec2-user/.ssh/authorized_keys /home/jenkins/.ssh
+   chown jenkins:jenkinsgroup /home/jenkins/.ssh/authorized_keys
+   ssh-keyscan -t rsa github.com >> /home/jenkins/.ssh/known_hosts
+   chown jenkins:jenkinsgroup /home/jenkins/.ssh/known_hosts
+   [in a local shell]: 
+        # transfer private key for github access to jenkins user on jenkins EC2 instance.
+   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/jenkins_ec2_id_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+
+   # Restrict access of these keys to the owner (jenkins) exclusively.
+   chmod 600 github_id_jenkins_rsa
+   chmod 600 jenkins_ec2_id_rsa
+   exit [become ec2-user]
+   ssh-keyscan -t rsa github.com >> /home/ec2-user/.ssh/known_hosts
+

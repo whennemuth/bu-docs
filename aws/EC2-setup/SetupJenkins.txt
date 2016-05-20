@@ -28,44 +28,193 @@ After creating a new AWS Linux AMI EC2 instance:
          ---------------------------------------------------
          All traffic       All        All          0.0.0.0/0
 
-3) 
-   a) Install and configure docker and the docker daemon.
-      See detailed instructions in ../../docker/InstallDocker.txt
-   b) Add the jenkins user to the docker group:
-      sudo usermod -aG docker jenkins
+3) Shell into the ec2 instance.
+   The Amazon linux AMI comes with java 1.7 installed at /usr/lib/jvm
+   Install the java 1.8 jdk:
+   a) sudo su root
+   b) download the jdk
+         wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u92-b14/jdk-8u92-linux-x64.tar.gz && \
+         tar -zxf jdk-8u92-linux-x64.tar.gz -C /usr/lib/jvm && \
+         rm jdk-8u92-linux-x64.tar.gz
+   c) Edit /etc/bashrc file by adding the following to the end of it:
+         JAVA_HOME=/usr/lib/jvm/jdk1.8.0_92/jre
+         export JAVA_HOME
+         export PATH=$PATH:/usr/lib/jvm/jdk1.8.0_92/bin:/usr/lib/jvm/jdk1.8.0_92/jre/bin
+   d) Put the new JDK first in line (make it the default)
+         update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_92/jre/bin/java" 1
+         update-alternatives --config java
+         # type the option number provided for the added java exe
+         java -version
+         # should be: java version "1.8.0_92"
 
-5) Install git:
-      sudo yum install git-all
+4) Install and configure docker:
+   a) sudo curl -fsSL https://get.docker.com/ | sh
+   b) Add the ec2-user user to the docker group:
+      usermod -aG docker ec2-user
 
-6) Add Jenkins group and user:
-      sudo groupadd -g 1000 jenkinsgroup
-      sudo useradd -d "/home/jenkins" -u 1000 -g jenkinsgroup -G docker -m -s /bin/bash jenkins
+5) Install maven
+   mkdir -p /usr/share/maven \
+   && curl -fsSL http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
+     | tar -xzC /usr/share/maven --strip-components=1 \
+   && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 
-7) Populate the jenkins user home dir (content to bind-mount to the jenkins docker container will reside here).
-      sudo su jenkins
-      cd ~
-      mkdir home
-      mkdir home-dind
-      mkdir .ssh
-      mkdir .m2
-      mkdir log
-      mkdir log-dind
+6) Install the remaining necessary items:
+      yum -y update && \
+      yum install -y git nodejs npm nginx aws-cli
 
-8) Configure SSH access correctly for each user
+7) Install jenkins:
+      wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
+      rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
+      yum install jenkins
+
+8) Add Jenkins user to docker group:
+      usermod -a -G docker jenkins
+
+9) Double check users and groups are set correctly
+
+   getent passwd | grep -P "(jenkins)|(docker)|(ec2-user)"
+   # Output should be like:
+   #     ec2-user:x:500:500:EC2 Default User:/home/ec2-user:/bin/bash
+   #     jenkins:x:1000:1000::/var/lib/jenkins:/bin/bash
+
+   getent group | grep -P "(jenkins)|(docker)|(ec2-user)"
+   # Output should be like:
+   #     wheel:x:10:ec2-user
+   #     ec2-user:x:500:
+   #     docker:x:497:ec2-user,jenkins
+   #     jenkins:x:1000:
+
+9) Configure SSH access correctly for each user
    sudo su root
-   # The ec2-user already has an authorized_keys file with the public key for this EC2 instance in it, so copy this to the jenkins user.
-   cp /home/ec2-user/.ssh/authorized_keys /home/jenkins/.ssh
-   chown jenkins:jenkinsgroup /home/jenkins/.ssh/authorized_keys
-   ssh-keyscan -t rsa github.com >> /home/jenkins/.ssh/known_hosts
-   chown jenkins:jenkinsgroup /home/jenkins/.ssh/known_hosts
+   # Give the jenkins user whatever ssh allowances that the ec2-user has:
+   mkdir /var/lib/jenkins/.ssh
+   chmod 700 /var/lib/jenkins/.ssh
+   cp /home/ec2-user/.ssh/* /var/lib/jenkins/.ssh
+   # If not there already, copy keys that will grant ssh access to the github repo(s), and any other ec2-instances that jenkins will be deploying builds to.
+   ssh-keyscan -t rsa github.com >> /var/lib/jenkins/.ssh/known_hosts
+   # Repeat the above ssh-keyscan for each of the other hosts there is a private key for.
    [in a local shell]: 
         # transfer private key for github access to jenkins user on jenkins EC2 instance.
-   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
-   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/jenkins_ec2_id_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/var/lib/jenkins/.ssh
+   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/other_ec2_id_rsa jenkins@[ec2 public dns]:/var/lib/jenkins/.ssh
+        # etc...
+        chmod 600 /var/lib/jenkins/.ssh/github_id_jenkins_rsa
+        chmod 600 /var/lib/jenkins/.ssh/other_ec2_id_rsa
+        # etc...
+   chown -R jenkins:jenkins /var/lib/jenkins/.ssh
 
    # Restrict access of these keys to the owner (jenkins) exclusively.
    chmod 600 github_id_jenkins_rsa
    chmod 600 jenkins_ec2_id_rsa
    exit [become ec2-user]
    ssh-keyscan -t rsa github.com >> /home/ec2-user/.ssh/known_hosts
+
+10) Start jenkins and set it to restart on boot
+      service jenkins start
+      chkconfig --add jenkins
+
+11) Verify jenkins:
+   Navigate to: http://[ec2 public DNS]:8080/
+   a) Enter the value in /var/lib/jenkins/secrets/initialAdminPassword in the password challenge.
+   b) Next, this version of jenkins will present a selection of plugins.
+      Accept the items checked by default.
+   c) Next, you will be asked to create the first admin user.
+      Enter the appropriate details.
+   d) Go to /configureTools/
+         Click "Add JDK":
+            Uncheck "Install automatically"
+            Name = jdk8
+            JAVA_HOME = /usr/lib/jvm/jdk1.8.0_92
+         Click "Add Maven"
+            Uncheck "Install automatically"
+            Name = maven 3.3.9
+            MAVEN_HOME = /usr/share/maven
+      Click "Save"
+
+   d) Go to /pluginManager/available and add the following plugins:
+
+         Authentication Tokens API Plugin
+         Docker Commons Plugin
+         Pre SCM BuildStep Plugin
+         Docker build step plugin
+         Publish Over SSH
+         FindBugs Plug-in
+         	
+      The total plugins installed should be:
+
+         Folders Plugin 
+         JUnit Plugin 
+         Script Security Plugin 
+         Matrix Project Plugin 
+         OWASP Markup Formatter Plugin 
+         PAM Authentication plugin 
+         Windows Slaves Plugin 
+         Mailer Plugin 
+         LDAP Plugin 
+         Token Macro Plugin 
+         Icon Shim Plugin 
+         Matrix Authorization Strategy Plugin 
+         External Monitor Job Type Plugin 
+         build timeout plugin 
+         Credentials Plugin 
+         Structs Plugin 
+         Pipeline: Step API 
+         Plain Credentials Plugin 
+         Credentials Binding Plugin 
+         Timestamper 
+         Workspace Cleanup Plugin 
+         Ant Plugin 
+         Gradle plugin 
+         JavaScript GUI Lib: jQuery bundles (jQuery and jQuery UI) plugin 
+         Durable Task Plugin 
+         Pipeline: API 
+         Pipeline: Supporting APIs 
+         Pipeline: Job 
+         Pipeline: REST API Plugin 
+         JavaScript GUI Lib: Handlebars bundle plugin 
+         JavaScript GUI Lib: Moment.js bundle plugin 
+         Pipeline: Stage View Plugin 
+         Pipeline: Build Step 
+         JavaScript GUI Lib: ACE Editor bundle plugin 
+         Pipeline: SCM Step 
+         SCM API Plugin 
+         Pipeline: Groovy 
+         SSH Credentials Plugin 
+         Git client plugin 
+         Git server plugin 
+         Pipeline: Shared Groovy Libraries 
+         Branch API Plugin 
+         Pipeline: Multibranch 
+         Pipeline: Nodes and Processes 
+         Pipeline: Input Step 
+         Pipeline: Stage Step 
+         Pipeline: Basic Steps 
+         Pipeline 
+         Javadoc Plugin 
+         GitHub API Plugin 
+         Git plugin 
+         GitHub plugin 
+         GitHub Branch Source Plugin 
+         GitHub Organization Folder Plugin 
+         Pipeline: Stage View Plugin 
+         Git plugin 
+         MapDB API Plugin 
+         Subversion Plug-in 
+         SSH Slaves plugin 
+         Matrix Authorization Strategy Plugin 
+         PAM Authentication plugin 
+         LDAP Plugin 
+         Email Extension Plugin 
+         Mailer Plugin 
+         Maven Integration plugin 
+         Static Analysis Utilities 
+         Checkstyle Plug-in 
+         Cobertura Plugin 
+         JUnit Plugin 
+         Authentication Tokens API Plugin
+         Docker Commons Plugin
+         Pre SCM BuildStep Plugin
+         Docker build step plugin
+         Publish Over SSH
+         FindBugs Plug-in
 
