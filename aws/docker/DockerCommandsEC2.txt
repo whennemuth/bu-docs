@@ -145,8 +145,8 @@ docker run -d --name kuali_db_mysql -h kuali_db_mysql -p 43306:3306 jefferyb/kua
 
 docker build \
    -f kuali_research_docker_file_bundlewar \
-   -t bu-ist/kuali-research:v1.0 \
-   --build-arg JENKINS_URL=ec2-52-37-165-82.us-west-2.compute.amazonaws.com:8080/jenkinsdind \
+   -t ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/kuali-research-dind:${POM_VERSION} \
+   --build-arg SOURCE_WAR=ec2-52-37-165-82.us-west-2.compute.amazonaws.com:8080/job/kc-dind/ws/coeus-webapp/target/coeus-webapp-${POM_VERSION}.war \
    https://github.com/whennemuth/hello-world.git#master:docker/build.context/kuali-research
 
 docker run \
@@ -154,8 +154,20 @@ docker run \
    -u root \
    -p 80:8080 \
    -p 3306:3306 \
+   --restart unless-stopped \
+   --name kcdindcontainer \
+   -v /var/jenkins/kc/logs:/usr/local/tomcat/logs \
+   -v /home/kc/kuali:/root/kuali \
+   ec2-52-25-226-38.us-west-2.compute.amazonaws.com:5000/bu-ist/kuali-research-dind:${POM_VERSION}
+   
+docker run \
+   -d \
+   -u root \
+   -p 80:8080 \
+   -p 3306:3306 \
    --restart always \
    --name kualiresearchcontainer \
+   --restart unless-stopped \
    -v /var/jenkins/kc/war:/usr/local/tomcat/webapp_mount \
    -v /var/jenkins/kc/logs:/usr/local/tomcat/logs \
    -v /home/kc/kuali:/root/kuali \

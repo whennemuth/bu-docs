@@ -60,7 +60,8 @@ After creating a new AWS Linux AMI EC2 instance:
 
 6) Install the remaining necessary items:
       yum -y update && \
-      yum install -y git nodejs npm nginx aws-cli
+      yum install -y git nginx aws-cli \
+      yum install -y nodejs npm --enablerepo=epel
 
 7) Install jenkins:
       wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
@@ -130,8 +131,11 @@ After creating a new AWS Linux AMI EC2 instance:
             Name = maven 3.3.9
             MAVEN_HOME = /usr/share/maven
       Click "Save"
+   e) Some jobs will run other jobs. To do this jenkins-cli.jar is needed.
+      cd /home/jenkins
+      wget http://localhost:8080/jnlpJars/jenkins-cli.jar
 
-   d) Go to /pluginManager/available and add the following plugins:
+   f) Go to /pluginManager/available and add the following plugins:
 
          Authentication Tokens API Plugin
          Docker Commons Plugin
