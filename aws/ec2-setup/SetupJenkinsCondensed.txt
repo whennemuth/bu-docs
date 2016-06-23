@@ -1,0 +1,11 @@
+wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u92-b14/jdk-8u92-linux-x64.tar.gz && \
+         tar -zxf jdk-8u92-linux-x64.tar.gz -C /usr/lib/jvm && \
+         rm -f jdk-8u92-linux-x64.tar.gz
+echo "" >> /etc/bashrc
+echo "JAVA_HOME=/usr/lib/jvm/jdk1.8.0_92/jre" >> /etc/bashrc
+echo "export JAVA_HOME" >> /etc/bashrc
+echo "export PATH=$PATH:/usr/lib/jvm/jdk1.8.0_92/bin:/usr/lib/jvm/jdk1.8.0_92/jre/bin" >> /etc/bashrc
+update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_92/jre/bin/java" 2
+echo 2 | update-alternatives --config java
+curl -fsSL https://get.docker.com/ | sh
+usermod -aG docker ec2-user

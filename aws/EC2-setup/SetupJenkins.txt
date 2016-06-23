@@ -35,7 +35,7 @@ After creating a new AWS Linux AMI EC2 instance:
    b) download the jdk
          wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u92-b14/jdk-8u92-linux-x64.tar.gz && \
          tar -zxf jdk-8u92-linux-x64.tar.gz -C /usr/lib/jvm && \
-         rm jdk-8u92-linux-x64.tar.gz
+         rm -f jdk-8u92-linux-x64.tar.gz
    c) Edit /etc/bashrc file by adding the following to the end of it:
          JAVA_HOME=/usr/lib/jvm/jdk1.8.0_92/jre
          export JAVA_HOME
@@ -132,10 +132,32 @@ After creating a new AWS Linux AMI EC2 instance:
             MAVEN_HOME = /usr/share/maven
       Click "Save"
    e) Some jobs will run other jobs. To do this jenkins-cli.jar is needed.
-      cd /home/jenkins
-      wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+      1. Get the jenkins-cli.jar:
+         cd /home/jenkins
+         wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+      2. In order to make cli commands without encountering "java.io.StreamCorruptedException: invalid stream header: 0A0A0A0A",
+         - Go to http://[jenkins root]/configureSecurity/
+         - Check "Enable Security"
+         - Select "Random" for "TCP port for JNLP agents"
+   f) To setup a webhook click the "Webhooks & services" link in your github respository in the github website.
+      1. Payload URL: http://ec2-52-37-165-82.us-west-2.compute.amazonaws.com:8080/github-webhook/
+      2. Content type: application/x-www-form-urlencoded
+      3. Secret: Leave blank
+      4. Which events would you like to trigger this webhook?: Just the push event.
+      5. Check "Active"
+      For a job to use the webhook, go to the "Source Code Management" section and check "git"
+      Under "Repositories":
+      1. Repository URL: http://github.com/[github account]/[repo name]
+      2. Credentials: None
+      In order to avoid the following error using webhooks with github:
+         "HTTP ERROR 403 No valid crumb was included in the request"
+      Goto "Configure Global Security" and uncheck "Prevent Cross Site Request Forgery exploits".
+      We are not exposing our Jenkins instance to the world, so that should be fine.
+   g) Increase the memory for jobs that run maven builds:
+      "Manage Jenkins" --> "Configure System" --> "Maven Project Configuration" --> "Global MAVEN_OPTS":
+      -Xmx3072m -Xms512m -XX:MaxPermSize=256m
 
-   f) Go to /pluginManager/available and add the following plugins:
+   h) Go to /pluginManager/available and add the following plugins:
 
          Authentication Tokens API Plugin
          Docker Commons Plugin
