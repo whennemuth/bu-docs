@@ -64,9 +64,9 @@ After creating a new AWS Linux AMI EC2 instance:
       yum install -y nodejs npm --enablerepo=epel
 
 7) Install jenkins:
-      wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo && \
-      rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
-      yum install jenkins
+      wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat/jenkins.repo && \
+      rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key && \
+      yes | yum install jenkins
 
 8) Add Jenkins user to docker group:
       usermod -a -G docker jenkins

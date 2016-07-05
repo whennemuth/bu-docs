@@ -1,3 +1,6 @@
+/**********************************************************
+                         CI SERVER
+**********************************************************/
 wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u92-b14/jdk-8u92-linux-x64.tar.gz && \
          tar -zxf jdk-8u92-linux-x64.tar.gz -C /usr/lib/jvm && \
          rm -f jdk-8u92-linux-x64.tar.gz
@@ -9,3 +12,45 @@ update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_92/j
 echo 2 | update-alternatives --config java
 curl -fsSL https://get.docker.com/ | sh
 usermod -aG docker ec2-user
+mkdir -p /usr/share/maven \
+   && curl -fsSL http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz \
+     | tar -xzC /usr/share/maven --strip-components=1 \
+   && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+yum -y update && \
+      yum install -y git nginx aws-cli \
+      yum install -y nodejs npm --enablerepo=epel
+wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat/jenkins.repo && \
+      rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key && \
+      yes | yum install jenkins
+usermod -a -G docker jenkins
+mkdir /var/lib/jenkins/.ssh
+cd /var/lib/jenkins/.ssh
+chmod 700 /var/lib/jenkins/.ssh
+cp /home/ec2-user/.ssh/* /var/lib/jenkins/.ssh
+ssh-keyscan -t rsa github.com >> /var/lib/jenkins/.ssh/known_hosts
+ssh-keyscan -t rsa github.com >> /var/lib/jenkins/.ssh/known_hosts
+ssh-keygen -t rsa -b 2048 -v -f "ci_rsa_key_for_jenkins" -N ""
+
+
+
+
+
+
+
+
+/**********************************************************
+                       APP SERVER
+**********************************************************/
+sudo su root
+groupadd kcgroup
+useradd -g kcgroup -m -s /bin/bash kc
+mkdir -p /home/kc/kuali/main/config
+mkdir -p /home/kc/kuali/main/dev
+chown -R kc:kcgroup /home/kc/kuali
+
+
+
+
+scp -C -i buaws-kuali-rsa testing wrh@ec2-54-172-65-242.compute-1.amazonaws.com:~/
+ssh -A wrh@ec2-54-172-65-242.compute-1.amazonaws.com -i buaws-kuali-rsa "scp -C ~/testing wrh@10.57.237.36:~/"
+ssh -A wrh@ec2-54-172-65-242.compute-1.amazonaws.com -i buaws-kuali-rsa "ssh wrh@10.57.237.36 'sudo mv -f ~/testing /home/kc/kuali/main/config/'"
