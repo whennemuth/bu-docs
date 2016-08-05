@@ -1,0 +1,29 @@
+1) Create an IAM user that the AWS CLI is to use to access the AWS ECR (docker registry)
+   http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-set-up.html#cli-signup
+   a) Goto the IAM console
+   b) Under IAM Resources, click "Users: 0"
+   c) Click "Create New Users"
+   d) Add a user "aws-cli-user"
+   e) Save the access key id and the secret access key in a safe location.
+   f) Under the "Permissions" tab, click "Attach Policy" and select "AmazonEC2ContainerRegistryFullAccess"
+
+2) Configure the AWS CLI on the jenkins server for the jenkins user.
+   http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
+   a) sudo su jenkins
+   b) aws configure
+         AWS Access Key ID [None]: [access key ID]
+         AWS Secret Access Key [None]: [secret key]
+         Default region name [None]: us-west-2
+         Default output format [None]: json
+   c) test logging docker into the registry:
+         eval $(aws ecr get-login --region us-west-2)
+   d) test access to the registry by making a call with the registry api:
+          aws ecr describe-repositories
+
+            
+Access Key ID:
+AKIAI57YJLULTI5N7U7A
+Secret Access Key:
+XRAPIEVdT6ijxCcZFO6a8yIR9/XsthmmT3nDCZu+
+
+

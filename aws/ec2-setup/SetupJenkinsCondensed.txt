@@ -50,7 +50,15 @@ chown -R kc:kcgroup /home/kc/kuali
 
 
 
-
-scp -C -i buaws-kuali-rsa testing wrh@ec2-54-172-65-242.compute-1.amazonaws.com:~/
-ssh -A wrh@ec2-54-172-65-242.compute-1.amazonaws.com -i buaws-kuali-rsa "scp -C ~/testing wrh@10.57.237.36:~/"
-ssh -A wrh@ec2-54-172-65-242.compute-1.amazonaws.com -i buaws-kuali-rsa "ssh wrh@10.57.237.36 'sudo mv -f ~/testing /home/kc/kuali/main/config/'"
+# Bastion = 10.57.236.4
+# Jenkins = 10.57.238.228
+# kuali   = 10.57.237.84
+cd ~/.ssh
+# Copy file to bastion server...
+scp -C -i buaws-kuali-rsa testing wrh@10.57.236.4:~/
+# Do this the first time to copy a file from bastion to prod server...
+ssh -A wrh@10.57.236.4 -i buaws-kuali-rsa "scp  -C -i -oStrictHostKeyChecking=no ~/.ssh/buaws-kuali-rsa ~/testing wrh@10.57.238.228:~/"
+# or...
+ssh -A wrh@10.57.236.4 -i buaws-kuali-rsa "scp -C -oStrictHostKeyChecking=no ~/testing wrh@10.57.238.228:~/"
+# Then copy from home directory to desired directory
+ssh -A wrh@10.57.236.4 -i buaws-kuali-rsa "ssh wrh@10.57.238.228 'sudo mv -f ~/testing /home/kc/kuali/main/config/'"
