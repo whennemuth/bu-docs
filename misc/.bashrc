@@ -15,3 +15,6 @@ alias bld='mvn clean compile source:jar javadoc:jar install -Dgrm.off=true'
 alias blde='mvn clean compile source:jar javadoc:jar install -e -Dgrm.off=true'
 
 alias bldo='mvn clean compile source:jar javadoc:jar install -Poracle -Dgrm.off=true'
+
+alias taillog="logfile=\"$(eval 'sudo ls -lat /home/kc/kuali-logs/ | grep -P \"localhost\\.\" | head -1' | rev | cut -d' ' -f1 | rev)\"; eval 'sudo tail /home/kc/kuali-logs/$logfile -f -n 2000'"
+
