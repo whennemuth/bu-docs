@@ -45,6 +45,8 @@ If you plan to run docker using a host VM that you set up yourself then:
    Do the following steps from a terminal in the VM:
    a) First the gcc prerequisite:
       sudo apt-get -y install gcc make linux-headers-$(uname -r)
+      or for yum...
+      yum install -y gcc make linux-headers-$(uname -r)
    b) From the VirtualBox VM GUI window menu, select "Devices -> Insert Guest Additions CD Image..."
       This will insert the VirtualBox GuestAdditions installation CD into the VM's DVD drive
    c) sudo mount /dev/sr0 /media/warren/VBOXADDITIONS_5.0.16_105871/

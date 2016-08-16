@@ -60,7 +60,7 @@ After creating a new AWS Linux AMI EC2 instance:
 
 6) Install the remaining necessary items:
       yum -y update && \
-      yum install -y git nginx aws-cli \
+      yum install -y git nginx aws-cli && \
       yum install -y nodejs npm --enablerepo=epel
 
 7) Install jenkins:

@@ -16,5 +16,10 @@ alias blde='mvn clean compile source:jar javadoc:jar install -e -Dgrm.off=true'
 
 alias bldo='mvn clean compile source:jar javadoc:jar install -Poracle -Dgrm.off=true'
 
-alias taillog="logfile=\"$(eval 'sudo ls -lat /home/kc/kuali-logs/ | grep -P \"localhost\\.\" | head -1' | rev | cut -d' ' -f1 | rev)\"; eval 'sudo tail /home/kc/kuali-logs/$logfile -f -n 2000'"
+alias taillog="logfile=\"$(eval 'sudo ls -lat /home/kc/kuali-logs/ | grep -P "localhost\." | head -1' | rev | cut -d' ' -f1 | rev)\"; eval 'sudo tail /home/kc/kuali-logs/$logfile -f -n 2000'"
 
+alias cleanrmi='DANGLING=$(docker images --filter dangling=true -q); if [ -n "$DANGLING" ]; then docker rmi -f $DANGLING; else echo "No images to remove!"; fi'
+
+alias cleanvol='DANGLING=$(docker volume ls -qf dangling=true); if [ -n "$DANGLING" ]; then docker volume rm $DANGLING; else echo "No volumes to remove!"; fi'
+
+alias cleanall='cleanrmi && cleanvol'
