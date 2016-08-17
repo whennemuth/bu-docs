@@ -44,15 +44,25 @@ If you plan to run docker using a host VM that you set up yourself then:
    (details at: https://leemendelowitz.github.io/blog/ubuntu-server-virtualbox.html)
    Do the following steps from a terminal in the VM:
    a) First the gcc prerequisite:
-      sudo apt-get -y install gcc make linux-headers-$(uname -r)
-      or for yum...
-      yum install -y gcc make linux-headers-$(uname -r)
+      UBUNTU:
+         sudo apt-get -y install gcc make linux-headers-$(uname -r)
+      CENTOS:
+         sudo yum update -y
+         sudo yum install -y gcc kernel-devel make
    b) From the VirtualBox VM GUI window menu, select "Devices -> Insert Guest Additions CD Image..."
       This will insert the VirtualBox GuestAdditions installation CD into the VM's DVD drive
-   c) sudo mount /dev/sr0 /media/warren/VBOXADDITIONS_5.0.16_105871/
-      you may get output saying "mount: /dev/sr0 is already mounted on /media/warren/VBOXADDITIONS_5.0.16_105871"
-      if so, just go on to the next step.
-   d) sudo /media/warren/VBOXADDITIONS_5.0.16_105871/VBoxLinuxAdditions.run
+   c) UBUNTU:
+         sudo mount /dev/sr0 /media/warren/VBOXADDITIONS_5.0.16_105871/
+         you may get output saying "mount: /dev/sr0 is already mounted on /media/warren/VBOXADDITIONS_5.0.16_105871"
+         if so, just go on to the next step.
+      CENTOS:
+         sudo mkdir /cdrom
+         sudo mount /dev/cdrom /cdrom
+   d) UBUNTU:
+         sudo /media/warren/VBOXADDITIONS_5.0.16_105871/VBoxLinuxAdditions.run
+      CENTOS:
+         sudo yum install -y bzip2
+         sudo /cdrom/VBoxLinuxAdditions.run
    e) Finally, add your user to the vboxsf group so you can access shared folders (in the VM):
       sudo usermod -g vboxsf warren
    f) In the VM, Devices --> Shared Folders --> Shared Folder Settings... --> Click the Add new share icon:

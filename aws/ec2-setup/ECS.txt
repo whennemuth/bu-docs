@@ -7,7 +7,29 @@
    e) Save the access key id and the secret access key in a safe location.
    f) Under the "Permissions" tab, click "Attach Policy" and select "AmazonEC2ContainerRegistryFullAccess"
 
-2) Configure the AWS CLI on the jenkins server for the jenkins user.
+2) Create the registry (ECR)
+   a) go to:
+      https://console.aws.amazon.com/ecs/home?region=us-east-1#/repositories
+   b) Click "Get started" and type "kuali-research" for the repository name.
+      Our AWS account is 730096353738, so this will make the URL for the repo: 
+         https://730096353738.dkr.ecr.us-east-1.amazonaws.com/kuali-research
+   c) Click "Done"
+      This will produce a screen that shows examples of accessing the registry through the cli or docker:
+
+         1) Retrieve the docker login command that you can use to authenticate your Docker client to your registry:
+            aws ecr get-login --region us-east-1
+         
+         2) Run the docker login command that was returned in the previous step.
+         3) Build your Docker image using the following command. For information on building a Docker file from scratch see the instructions here. You can skip this step if your image is already built:
+            docker build -t kuali-research .
+         
+         4) After the build completes, tag your image so you can push the image to this repository:
+            docker tag kuali-research:latest 730096353738.dkr.ecr.us-east-1.amazonaws.com/kuali-research:latest
+         
+         5) Run the following command to push this image to your newly created AWS repository:
+            docker push 730096353738.dkr.ecr.us-east-1.amazonaws.com/kuali-research:latest      
+
+3) Configure the AWS CLI on the jenkins server for the jenkins user.
    http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
    a) sudo su jenkins
    b) aws configure
@@ -16,14 +38,22 @@
          Default region name [None]: us-west-2
          Default output format [None]: json
    c) test logging docker into the registry:
-         eval $(aws ecr get-login --region us-west-2)
+         eval $(aws ecr get-login --region [your region])
    d) test access to the registry by making a call with the registry api:
           aws ecr describe-repositories
 
-            
-Access Key ID:
-AKIAI57YJLULTI5N7U7A
-Secret Access Key:
-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
 
+My own credentials
+------------------- 
+AWS Access Key ID [None]: AKIAI57YJLULTI5N7U7A
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-west-2
+Default output format [None]: json
 
+BU credentials for jenkins user
+--------------------------------
+User ARN: arn:aws:iam::730096353738:user/jenkins
+AWS Access Key ID [None]: AKIAJCBO6OVPMN56RNQA
+AWS Secret Access Key [None]: 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
+Default region name [None]: us-east-1a
+Default output format [None]: json
