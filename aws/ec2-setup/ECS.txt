@@ -3,9 +3,9 @@
    a) Goto the IAM console
    b) Under IAM Resources, click "Users: 0"
    c) Click "Create New Users"
-   d) Add a user "aws-cli-user"
+   d) Add a user "jenkins"
    e) Save the access key id and the secret access key in a safe location.
-   f) Under the "Permissions" tab, click "Attach Policy" and select "AmazonEC2ContainerRegistryFullAccess"
+   f) Under the "Permissions" tab, click "Attach Policy" and select "AmazonEC2ContainerRegistryFullAccess" and "AmazonEC2FullAccess"
 
 2) Create the registry (ECR)
    a) go to:
@@ -29,17 +29,151 @@
          5) Run the following command to push this image to your newly created AWS repository:
             docker push 730096353738.dkr.ecr.us-east-1.amazonaws.com/kuali-research:latest      
 
-3) Configure the AWS CLI on the jenkins server for the jenkins user.
+3) Install docker if it is not already:
+   a) sudo curl -fsSL https://get.docker.com/ | sh
+   b) If not already installed to start on boot create the following:
+         sudo echo "service docker start" > /etc/profile.d/start-docker.sh
+
+4) Install java 8 jdk if not already (NOTE AWS AMI comes with the only the 1.7 openjdk jre, not jdk - "openjdk" is misleading)
+   a) Install it:
+         yum install -y java-1.8.0-openjdk-devel
+         update-alternatives --display java | grep Current
+   b) Get the JAVA_HOME variable to be set on startup (NOTE - maven will find this location anyway, even if JAVA_HOME is not set):
+         echo "export JAVA_HOME=/usr/lib/jvm/java-1.8.0/" > /etc/profile.d/set-java-home.sh
+
+5) Install maven 3
+      sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+      sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+      sudo yum install -y apache-maven
+      mvn --version
+
+6) Install the remaining necessary items:
+      yum -y update && \
+      yum install -y git-all && \
+      yum install -y git nginx aws-cli && \
+      yum install -y nodejs npm --enablerepo=epel
+
+7) Install Jenkins:
+      a) Install from stable RPM:
+            sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat-stable/jenkins.repo
+            sudo rpm --import http://pkg.jenkins.io/redhat-stable/jenkins.io.key
+            sudo yum install -y jenkins
+      b) Add jenkins user to docker group
+            sudo usermod -aG docker jenkins
+            getent group | grep -P "(jenkins)|(docker)|(root)"
+      c) Log into the EC2 instance(s) that jenkins will deploy to and create a jenkins user there in the docker group:
+            sudo su root
+            useradd -d "/home/jenkins" -u 1000 -g docker -m -s /bin/bash jenkins
+            mkdir -m 700 /home/jenkins/.ssh
+            cd /home/jenkins/.ssh            
+            ssh-keygen -b 2048 -t rsa -f bu_kuali_id_jenkins_rsa -q -N ""
+            touch authorized_keys
+            chmod 600 authorized_keys
+            cat bu_kuali_id_jenkins_rsa.pub >> authorized_keys
+            rm bu_kuali_id_jenkins_rsa.pub
+            # NOTE: Save the private key locally before you delete it.
+            rm -f bu_kuali_id_jenkins_rsa
+            chown -R jenkins:docker /home/jenkins/.ssh
+            
+      d) Log back into the CI instance and configure SSH access
+            mkdir /var/lib/jenkins/.ssh
+            cd .ssh
+            # NOTE: If not there already, copy keys that will grant ssh access to the github repo(s), and any other ec2-instances that jenkins will be deploying builds to.
+            # Avoid ssh prompt to accept host when connecting by putting host in known_hosts file:
+            ssh-keyscan -t rsa github.com >> /var/lib/jenkins/.ssh/known_hosts
+            ssh-keyscan -t rsa 10.57.237.84 >> /var/lib/jenkins/.ssh/known_hosts
+            # etc...
+            chown -R jenkins:jenkins /var/lib/jenkins/.ssh
+            chmod 700 /var/lib/jenkins/.ssh
+            chmod 600 /var/lib/jenkins/.ssh/*
+
+8) Install the AWS CLI if it is not already installed:
+      curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+      unzip awscli-bundle.zip
+      ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+9) Configure the AWS CLI on the jenkins server for the jenkins user.
    http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
    a) sudo su jenkins
    b) aws configure
          AWS Access Key ID [None]: [access key ID]
          AWS Secret Access Key [None]: [secret key]
-         Default region name [None]: us-west-2
+         Default region name [None]: us-east-1
          Default output format [None]: json
    c) test logging docker into the registry:
-         eval $(aws ecr get-login --region [your region])
+         eval $(aws ecr get-login --region us-east-1)
    d) test access to the registry by making a call with the registry api:
           aws ecr describe-repositories
 
+10) Start jenkins and set it to restart on boot
+      service jenkins start
+      chkconfig --add jenkins
 
+11) Configure jenkins:
+   Navigate to: http://[ec2 public DNS]:8080/
+   a) Enter the value in /var/lib/jenkins/secrets/initialAdminPassword in the password challenge.
+   b) Next, this version of jenkins will present a selection of plugins.
+      Accept the items checked by default.
+   c) Next, you will be asked to create the first admin user.
+      Enter the appropriate details.
+   d) Jenkins --> Global Tool Configuration:	
+         JDK: JDK Installations:
+             Name = "jdk-1.8.0"
+             JAVA_HOME	= /usr/lib/jvm/java-1.8.0/ (echo JAVA_HOME if unsure)
+             Install automatically = UNCHECKED
+         Maven: Maven Installations
+             Name = "maven 3.3.9"
+             MAVEN_HOME = /usr/share/apache-maven/ (echo MAVEN_HOME if unsure) 
+             Install automatically = UNCHECKED
+   e) Some jobs will run other jobs. To do this jenkins-cli.jar is needed.
+      1. Get the jenkins-cli.jar:
+         cd /var/lib/jenkins
+         wget http://localhost:8080/jnlpJars/jenkins-cli.jar
+         chown jenkins:jenkins /var/lib/jenkins/jenkins-cli.jar
+
+      2. In order to make cli commands without encountering "java.io.StreamCorruptedException: invalid stream header: 0A0A0A0A",
+         - Go to http://[jenkins root]/configureSecurity/
+         - Check "Enable Security"
+         - Select "Random" for "TCP port for JNLP agents"
+   f) To setup a webhook click the "Webhooks & services" link in your github respository in the github website.
+      1. Payload URL: http://[url of jenkins ec2 instance]:8080/github-webhook/
+      2. Content type: application/x-www-form-urlencoded
+      3. Secret: Leave blank
+      4. Which events would you like to trigger this webhook?: Just the push event.
+      5. Check "Active"
+      For a job to use the webhook, go to the "Source Code Management" section and check "git"
+      Under "Repositories":
+      1. Repository URL: http://github.com/[github account]/[repo name]
+      2. Credentials: None
+      In order to avoid the following error using webhooks with github:
+         "HTTP ERROR 403 No valid crumb was included in the request"
+      Goto "Configure Global Security" and uncheck "Prevent Cross Site Request Forgery exploits".
+      We are not exposing our Jenkins instance to the world, so that should be fine.
+   g) Increase the memory for jobs that run maven builds:
+      "Manage Jenkins" --> "Configure System" --> "Maven Project Configuration" --> "Global MAVEN_OPTS":
+      -Xmx3072m -Xms512m -XX:MaxPermSize=256m
+   h) Pull any saved jenkins jobs from github:
+      cd /var/lib/jenkins/jobs
+         git init
+         git remote add github git@github.com:bu-ist/kuali-research-jenkins.git
+         git fetch github master 
+         git reset --hard FETCH_HEAD
+         chown jenkins:jenkins *
+         chown -R jenkins:jenkins .git
+         chown jenkins:jenkins .gitignore
+   i) Setup security for the AWS CLI:
+         cd /var/lib/jenkins && \
+         mkdir .aws && \
+         cd .aws && \
+         touch config && \
+         echo "[profile sandbox]" >> config && \
+         echo "aws_access_key_id=foo" >> config && \
+         echo "aws_secret_access_key=bar" >> config && \
+         echo "region=us-east-1" >> config && \
+         echo "output=json" >> config && \
+         echo "[profile test]" >> config && \
+         echo "# etc..." >> config && \
+         cd .. && \
+         chown -R jenkins:jenkins .aws && \
+         chmod 700 .aws && \
+         chmod 600 .aws/config

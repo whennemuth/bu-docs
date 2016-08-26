@@ -96,8 +96,8 @@ After creating a new AWS Linux AMI EC2 instance:
    # Repeat the above ssh-keyscan for each of the other hosts there is a private key for.
    [in a local shell]: 
         # transfer private key for github access to jenkins user on jenkins EC2 instance.
-   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/var/lib/jenkins/.ssh
-   	scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/other_ec2_id_rsa jenkins@[ec2 public dns]:/var/lib/jenkins/.ssh
+   	scp -C -i ~/.ssh/ec2_rsa ~/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/var/lib/jenkins/.ssh
+   	scp -C -i ~/.ssh/ec2_rsa ~/.ssh/other_ec2_id_rsa jenkins@[ec2 public dns]:/var/lib/jenkins/.ssh
         # etc...
         chmod 600 /var/lib/jenkins/.ssh/github_id_jenkins_rsa
         chmod 600 /var/lib/jenkins/.ssh/other_ec2_id_rsa

@@ -1,0 +1,45 @@
+When performing a maven build for kuali-research in a minimum centos environment, you may encounter the following error:
+
+	[INFO] make: Entering directory `/var/kc/coeus-webapp/src/main/jsfrontend/node_modules/aglio/node_modules/drafter/node_modules/protagonist/build'
+	[INFO]   CXX(target) Release/obj.target/libmarkdownparser/drafter/ext/snowcrash/ext/markdown-parser/src/ByteBuffer.o
+	[ERROR] make: g++: Command not found
+	[INFO] make: Leaving directory `/var/kc/coeus-webapp/src/main/jsfrontend/node_modules/aglio/node_modules/drafter/node_modules/protagonist/build'
+	[ERROR] make: *** [Release/obj.target/libmarkdownparser/drafter/ext/snowcrash/ext/markdown-parser/src/ByteBuffer.o] Error 127
+	[ERROR] gyp ERR! build error
+	[ERROR] gyp ERR! stack Error: `make` failed with exit code: 2
+	[ERROR] gyp ERR! stack     at ChildProcess.onExit (/var/kc/coeus-webapp/target/node/node_modules/npm/node_modules/node-gyp/lib/build.js:269:23)
+	[ERROR] gyp ERR! stack     at ChildProcess.emit (events.js:110:17)
+	[ERROR] gyp ERR! stack     at Process.ChildProcess._handle.onexit (child_process.js:1074:12)
+	[ERROR] gyp ERR! System Linux 3.10.0-327.28.3.el7.x86_64
+	[ERROR] gyp ERR! command "node" "/var/kc/coeus-webapp/target/node/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js" "rebuild"
+	[ERROR] gyp ERR! cwd /var/kc/coeus-webapp/src/main/jsfrontend/node_modules/aglio/node_modules/drafter/node_modules/protagonist
+	[ERROR] gyp ERR! node -v v0.12.7
+	[ERROR] gyp ERR! node-gyp -v v1.0.3
+	[ERROR] gyp ERR! not ok
+	[ERROR] npm ERR! Linux 3.10.0-327.28.3.el7.x86_64
+	[ERROR] npm ERR! argv "/var/kc/coeus-webapp/target/node/node" "/var/kc/coeus-webapp/target/node/node_modules/npm/bin/npm-cli.js" "install" "--color=false"
+	[ERROR] npm ERR! node v0.12.7
+	[ERROR] npm ERR! npm  v2.7.6
+	[ERROR] npm ERR! code ELIFECYCLE
+	[ERROR]
+	[ERROR] npm ERR! protagonist@0.20.1 install: `node-gyp rebuild`
+	[ERROR] npm ERR! Exit status 1
+	[ERROR] npm ERR!
+	[ERROR] npm ERR! Failed at the protagonist@0.20.1 install script 'node-gyp rebuild'.
+	[ERROR] npm ERR! This is most likely a problem with the protagonist package,
+	[ERROR] npm ERR! not with npm itself.
+	[ERROR] npm ERR! Tell the author that this fails on your system:
+	[ERROR] npm ERR!     node-gyp rebuild
+	[ERROR] npm ERR! You can get their info via:
+	[ERROR] npm ERR!     npm owner ls protagonist
+	[ERROR] npm ERR! There is likely additional logging output above.
+	[ERROR]
+	[ERROR] npm ERR! Please include the following file with any support request:
+	[ERROR] npm ERR!     /var/kc/coeus-webapp/src/main/jsfrontend/npm-debug.log
+
+This is due to the fact that the compiler that npm uses is missing.
+To correct this, run:
+
+yum install gcc gcc-c++ make openssl-devel
+
+

@@ -1,0 +1,34 @@
+When performing a maven build of the kuali-research application on a windows environment, an error will occur looking something like this:
+
+Caused by: org.apache.xmlbeans.SchemaTypeLoaderException: /media/sf_kc/coeus-impl/target/generated-classes/xmlbeans/schemaorg_apache_xmlbeans/javaname/gov/nih/era/projectmgmt/sbir/cgap/nihspecificNamespace/ResearchApplicationExtensionDocument/ResearchApplicationExtension/NewApplicationQualifiers/SBIRQuestions/Phase2Details.xsb (Operation not permitted) (schemaorg_apache_xmlbeans.system.s46BACDD164F0D4E480711C286396008B.schemaorg_apache_xmlbeans/javaname/gov/nih/era/projectmgmt/sbir/cgap/nihspecificNamespace/ResearchApplicationExtensionDocument/ResearchApplicationExtension/NewApplicationQualifiers/SBIRQuestions/Phase2Details) - code 9
+        at org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl$XsbReader.getSaverStream(SchemaTypeSystemImpl.java:2238)
+        at org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl$XsbReader.writeRealHeader(SchemaTypeSystemImpl.java:1604)
+        at org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl.savePointerFile(SchemaTypeSystemImpl.java:386)
+        at org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl.savePointersForClassnames(SchemaTypeSystemImpl.java:369)
+        at org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl.savePointers(SchemaTypeSystemImpl.java:350)
+        at org.apache.xmlbeans.impl.schema.SchemaTypeSystemImpl.save(SchemaTypeSystemImpl.java:1320)
+        at org.apache.xmlbeans.impl.tool.SchemaCompiler.compile(SchemaCompiler.java:1126)
+        at org.codehaus.mojo.xmlbeans.AbstractXmlBeansPlugin.execute(AbstractXmlBeansPlugin.java:280)
+        at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:134)
+
+
+This is due to the fact that a maven is trying to write a file sufficently deep in path structure to exceed the 260 character limit for windows file names.
+Registry hacks and group policy manipulations are unsuccessful to override this behavior which is only now being addressed with windows 10.
+
+To get around this, you can perform the build in a linux environment hosted by virtualbox.
+If the project being build is mounted to an outside windows directory, the issue will arise again.
+If so, an alternate way to get around the problem is to tell maven that the build directory for the offending module is to be located in an unmounted location within the linux environment.
+To do this, add this to the modules POM file in the <profiles> section.
+
+        <profile>
+        	<id>windows</id>
+            <activation>
+                <property>
+                    <name>operating.system</name>
+                    <value>windows</value>
+                </property>
+            </activation>
+            <build>
+            	<directory>/tmp/coeus-impl/target</directory>
+        	</build>
+        </profile>
