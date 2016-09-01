@@ -63,15 +63,32 @@ After creating a new AWS Linux AMI EC2 instance:
       yum install -y git nginx aws-cli && \
       yum install -y nodejs npm --enablerepo=epel
 
-7) Install jenkins:
+7) If jenkins is being installed on an Amazon Linux AMI instance, then the aws cli should already be installed.
+   If not and you want aws cli commands available to your jenkins jobs, install it:
+      curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+      unzip awscli-bundle.zip
+      ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+
+8) If jenkins is being installed on an Amazon Linux AMI instance, then the aws ssm agent should already be installed. 
+   If not and you want to execute shell commands remotely through the aws cli on another ec2 instance, install it:
+      mkdir /tmp/ssm
+      curl https://amazon-ssm-region.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm -o /tmp/ssm/amazon-ssm-agent.rpm
+      sudo yum install -y /tmp/ssm/amazon-ssm-agent.rpm
+      # CentOS 7.x
+           sudo systemctl start amazon-ssm-agent
+           sudo systemctl status amazon-ssm-agent
+      # CentOS 6.x
+           sudo start amazon-ssm-agent
+           status amazon-ssm-agent
+
+9) Install jenkins:
       wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins.io/redhat/jenkins.repo && \
       rpm --import http://pkg.jenkins.io/redhat/jenkins.io.key && \
       yes | yum install jenkins
 
-8) Add Jenkins user to docker group:
+10) Add Jenkins user to docker group:
       usermod -a -G docker jenkins
-
-9) Double check users and groups are set correctly
+11) Double check users and groups are set correctly
 
    getent passwd | grep -P "(jenkins)|(docker)|(ec2-user)"
    # Output should be like:
@@ -85,7 +102,7 @@ After creating a new AWS Linux AMI EC2 instance:
    #     docker:x:497:ec2-user,jenkins
    #     jenkins:x:1000:
 
-9) Configure SSH access correctly for each user
+12) Configure SSH access correctly for each user
    sudo su root
    # Give the jenkins user whatever ssh allowances that the ec2-user has:
    mkdir /var/lib/jenkins/.ssh
@@ -110,11 +127,11 @@ After creating a new AWS Linux AMI EC2 instance:
    exit [become ec2-user]
    ssh-keyscan -t rsa github.com >> /home/ec2-user/.ssh/known_hosts
 
-10) Start jenkins and set it to restart on boot
+13) Start jenkins and set it to restart on boot
       service jenkins start
       chkconfig --add jenkins
 
-11) Verify jenkins:
+14) Verify jenkins:
    Navigate to: http://[ec2 public DNS]:8080/
    a) Enter the value in /var/lib/jenkins/secrets/initialAdminPassword in the password challenge.
    b) Next, this version of jenkins will present a selection of plugins.

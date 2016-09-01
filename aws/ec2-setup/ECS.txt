@@ -87,12 +87,25 @@
             chmod 700 /var/lib/jenkins/.ssh
             chmod 600 /var/lib/jenkins/.ssh/*
 
-8) Install the AWS CLI if it is not already installed:
+8) If jenkins is being installed on an Amazon Linux AMI instance, then the aws cli should already be installed.
+   If not and you want aws cli commands available to your jenkins jobs, install it:
       curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
       unzip awscli-bundle.zip
       ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
-9) Configure the AWS CLI on the jenkins server for the jenkins user.
+9) If jenkins is being installed on an Amazon Linux AMI instance, then the aws ssm agent should already be installed. 
+   If not and you want to execute shell commands remotely through the aws cli on another ec2 instance, install it:
+      mkdir /tmp/ssm
+      curl https://amazon-ssm-region.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm -o /tmp/ssm/amazon-ssm-agent.rpm
+      sudo yum install -y /tmp/ssm/amazon-ssm-agent.rpm
+      # CentOS 7.x
+           sudo systemctl start amazon-ssm-agent
+           sudo systemctl status amazon-ssm-agent
+      # CentOS 6.x
+           sudo start amazon-ssm-agent
+           status amazon-ssm-agent
+
+10) Configure the AWS CLI on the jenkins server for the jenkins user.
    http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html
    a) sudo su jenkins
    b) aws configure
@@ -105,11 +118,11 @@
    d) test access to the registry by making a call with the registry api:
           aws ecr describe-repositories
 
-10) Start jenkins and set it to restart on boot
+11) Start jenkins and set it to restart on boot
       service jenkins start
       chkconfig --add jenkins
 
-11) Configure jenkins:
+12) Configure jenkins:
    Navigate to: http://[ec2 public DNS]:8080/
    a) Enter the value in /var/lib/jenkins/secrets/initialAdminPassword in the password challenge.
    b) Next, this version of jenkins will present a selection of plugins.
