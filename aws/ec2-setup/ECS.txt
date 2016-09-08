@@ -187,6 +187,10 @@
          echo "[profile test]" >> config && \
          echo "# etc..." >> config && \
          cd .. && \
-         chown -R jenkins:jenkins .aws && \
+         chown -R jenkins:docker .aws && \
          chmod 700 .aws && \
          chmod 600 .aws/config
+   j) The last parts of a docker build include running an aws command remotely using an aws ssm send-command locally.
+      Therefore, since "the Amazon SSM agent runs as root on Linux", the same aws configuration needs to be set for root:
+         sudo su root
+         cp -r /home/jenkins/.aws ~/  
