@@ -31,6 +31,8 @@ docker run \
 
 docker exec -it jenkinscontainer bash
 
+# Remove all containers regardless of their status
+docker rm -f $(docker ps -a -q)
 
 
 ************************************************************

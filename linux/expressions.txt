@@ -13,7 +13,7 @@ sudo du -x -d1 -h / | sort -h -r
 # Search all directories for a file by name (case-insensitive search)
 sudo find / -type f -iname "myfile.txt" 
 
-# sed example using regex and captured match.
+# sed example using regex and captured match to make a replacement (in a file, using -i parameter)
 # Replace a quoted value with itself, followed by a space and another quoted value
 # The quoted value in the example is 'protocol="AJP/1.3"'
 # NOTE: it is difficult to escape single quotes within single quotes with sed, so bound the expression with double-quotes.

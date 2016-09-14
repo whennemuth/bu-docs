@@ -148,6 +148,14 @@
          - Go to http://[jenkins root]/configureSecurity/
          - Check "Enable Security"
          - Select "Random" for "TCP port for JNLP agents"
+
+      3. A single jenkins job may call another job which in turn may call yet another.
+         This means there need to be a minimum of 3 executors available to jenkins (3 concurrent jobs).
+         Also, aside from this multiple related jobs scenario, it is likely that there may be multiple DIS-related jobs running concurrently.
+         Therefore, start with a modest default of 5 executors:
+         - Go to http://[jenkins root]/configure/
+         - Change the entry in "# of executors" from the default of "2" to "5"
+
    f) To setup a webhook click the "Webhooks & services" link in your github respository in the github website.
       1. Payload URL: http://[url of jenkins ec2 instance]:8080/github-webhook/
       2. Content type: application/x-www-form-urlencoded
@@ -190,7 +198,21 @@
          chown -R jenkins:docker .aws && \
          chmod 700 .aws && \
          chmod 600 .aws/config
-   j) The last parts of a docker build include running an aws command remotely using an aws ssm send-command locally.
-      Therefore, since "the Amazon SSM agent runs as root on Linux", the same aws configuration needs to be set for root:
+   j) The last parts of a docker build include running an aws ecr command remotely using an aws ssm send-command locally.
+      Therefore, since "the Amazon SSM agent runs as root on Linux", the same aws configuration needs to be set for root on the application EC2 instance:
          sudo su root
-         cp -r /home/jenkins/.aws ~/  
+         cd ~ && \
+         mkdir .aws && \
+         cd .aws && \
+         touch config && \
+         echo "[profile sandbox]" >> config && \
+         echo "aws_access_key_id=foo" >> config && \
+         echo "aws_secret_access_key=bar" >> config && \
+         echo "region=us-east-1" >> config && \
+         echo "output=json" >> config && \
+         echo "[profile test]" >> config && \
+         echo "# etc..." >> config && \
+         cd .. && \
+         chown -R root:docker .aws && \
+         chmod 700 .aws && \
+         chmod 600 .aws/config
