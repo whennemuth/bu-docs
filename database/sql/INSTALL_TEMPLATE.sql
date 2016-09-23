@@ -1,0 +1,80 @@
+insert into mylog values ('INSTALL_TEMPLATE.sql');
+
+/*
+cd C:\whennemuth\mytechnicalstuff\java\workspaces\kuali_workspace\coeus\coeus-db\coeus-db-sql\src\main\resources\co\kuali\coeus\data\migration\sql\mysql
+mysql --max_allowed_packet=64M -v -u root -p < INSTALL_TEMPLATE.sql
+Enter password: admin
+*/
+use kc;
+SET GLOBAL foreign_key_checks = 0;
+SET foreign_key_checks = 0;
+SET optimizer_switch = 'derived_merge=off';
+
+source 001_mysql_kc_upgrade.sql;
+source 001_mysql_kc_rice_server_upgrade.sql;
+source 300_mysql_kc_upgrade.sql;
+source 300_mysql_rice_server_upgrade.sql;
+source 301_mysql_kc_upgrade.sql;
+source 301_mysql_rice_server_upgrade.sql;
+source 310_mysql_kc_upgrade.sql;
+source 310_mysql_rice_server_upgrade.sql;
+source 311_mysql_kc_upgrade.sql;
+source 311_mysql_rice_server_upgrade.sql;
+source 320_mysql_kc_upgrade.sql;
+source 320_mysql_rice_server_upgrade.sql;
+source 400_mysql_kc_upgrade.sql;
+source 400_mysql_rice_server_upgrade.sql;
+source 500_mysql_kc_upgrade.sql;
+source 500_mysql_rice_server_upgrade.sql;
+source 500_mysql_kc_rice_server_upgrade.sql;
+source 501_mysql_kc_upgrade.sql;
+source 501_mysql_kc_rice_server_upgrade.sql;
+source 510_mysql_kc_upgrade.sql;
+source 510_mysql_rice_server_upgrade.sql;
+source 510_mysql_kc_rice_server_upgrade.sql;
+source 511_mysql_kc_upgrade.sql;
+source 511_mysql_rice_server_upgrade.sql;
+source 511_mysql_kc_rice_server_upgrade.sql;
+source 520_mysql_kc_upgrade.sql;
+source 520_mysql_rice_server_upgrade.sql;
+source 520_mysql_kc_rice_server_upgrade.sql;
+source 521_mysql_kc_upgrade.sql;
+source 521_mysql_kc_rice_server_upgrade.sql;
+source 521_mysql_kc_demo.sql;
+source 521_mysql_rice_demo.sql;
+source 600_mysql_kc_upgrade.sql;
+source 600_mysql_rice_server_upgrade.sql;
+source 600_mysql_kc_rice_server_upgrade.sql;
+source 600_mysql_kc_demo.sql;
+source 601_mysql_kc_upgrade.sql;
+source 601_mysql_kc_rice_server_upgrade.sql;
+source 601_mysql_kc_demo.sql;
+source 601_mysql_rice_demo.sql;
+source 602_mysql_kc_upgrade.sql;
+source 602_mysql_kc_rice_server_upgrade.sql;
+source 602_mysql_kc_demo.sql;
+source 1505_mysql_kc_upgrade.sql;
+source 1505_mysql_kc_rice_server_upgrade.sql;
+source 1505_mysql_kc_demo.sql;
+source 1506_mysql_kc_upgrade.sql;
+source 1506_mysql_rice_server_upgrade.sql;
+source 1506_mysql_kc_rice_server_upgrade.sql;
+source 1506_mysql_kc_demo.sql;
+source 1507_mysql_kc_upgrade.sql;
+source 1507_mysql_kc_rice_server_upgrade.sql;
+source 1507_mysql_kc_demo.sql;
+source 1508_mysql_kc_upgrade.sql;
+source 1508_mysql_kc_rice_server_upgrade.sql;
+source 1509_mysql_kc_upgrade.sql;
+source 1509_mysql_kc_rice_server_upgrade.sql;
+source 1510_mysql_kc_upgrade.sql;
+source 1510_mysql_kc_rice_server_upgrade.sql;
+source 1511_mysql_kc_upgrade.sql;
+source 1511_mysql_kc_rice_server_upgrade.sql;
+source 1512_mysql_kc_upgrade.sql;
+source 1512_mysql_kc_rice_server_upgrade.sql;
+source 1601_mysql_kc_upgrade.sql;
+source 1601_mysql_rice_server_upgrade.sql;
+source 1601_mysql_kc_rice_server_upgrade.sql;
+SET foreign_key_checks = 1;
+SET GLOBAL foreign_key_checks = 1;
