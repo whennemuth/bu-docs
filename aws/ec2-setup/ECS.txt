@@ -89,9 +89,15 @@
 
 8) If jenkins is being installed on an Amazon Linux AMI instance, then the aws cli should already be installed.
    If not and you want aws cli commands available to your jenkins jobs, install it:
-      curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-      unzip awscli-bundle.zip
-      ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+      a) 
+         curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" && \
+         unzip awscli-bundle.zip && \
+         ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+      b)
+         In browser, go to: "[jenkins root]/configure
+         Global Properties --> Environment variables --> Add:
+         Name = PATH
+         Value = $PATH:/usr/local/bin
 
 9) If jenkins is being installed on an Amazon Linux AMI instance, then the aws ssm agent should already be installed. 
    If not and you want to execute shell commands remotely through the aws cli on another ec2 instance, install it:
