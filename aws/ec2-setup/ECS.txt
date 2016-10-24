@@ -65,7 +65,7 @@
             sudo su root
             useradd -d "/home/jenkins" -u 1000 -g docker -m -s /bin/bash jenkins
             mkdir -m 700 /home/jenkins/.ssh
-            cd /home/jenkins/.ssh            
+            cd /home/jenkins/.ssh        
             ssh-keygen -b 2048 -t rsa -f bu_kuali_id_jenkins_rsa -q -N ""
             touch authorized_keys
             chmod 600 authorized_keys
@@ -76,7 +76,7 @@
             chown -R jenkins:docker /home/jenkins/.ssh
             
       d) Log back into the CI instance and configure SSH access
-            mkdir /var/lib/jenkins/.ssh
+            if [ ! -d /var/lib/jenkins/.ssh ] ; then mkdir /var/lib/jenkins/.ssh; fi
             cd .ssh
             # NOTE: If not there already, copy keys that will grant ssh access to the github repo(s), and any other ec2-instances that jenkins will be deploying builds to.
             # Avoid ssh prompt to accept host when connecting by putting host in known_hosts file:
@@ -87,6 +87,16 @@
             chmod 700 /var/lib/jenkins/.ssh
             chmod 600 /var/lib/jenkins/.ssh/*
 
+            # NOTE: If security is enabled, credentials need to be used by jenkins-cli that matched the logged in user (or if not logged in, the jenkins user)
+            # Explicitly using the user and password (or password file) does not work with jenkins-cli, so you must use an ssh key instead.
+            # You enter the public key value in a field at localhost:8080/user/[username]/configure
+            # Jenkins will look for the corresponding private key as ~/.ssh/id_rsa. If you do not use this name you must explicitly name the private key file with
+            # -i "path/to/private/key/mykey" when executing a cli command.
+            cd /var/lib/jenkins/.ssh
+            ssh-keygen -b 2048 -t rsa -f id_rsa -q -N ""
+            # when jenkins is running, paste contents of /var/lib/jenkins/.ssh/id_rsa.pub to localhost:8080/user/[username]/configure
+            # where [username] is any user who can log in and whose credentials derive from the global system credentials.
+ 
 8) If jenkins is being installed on an Amazon Linux AMI instance, then the aws cli should already be installed.
    If not and you want aws cli commands available to your jenkins jobs, install it:
       a) 
