@@ -29,3 +29,6 @@ grep -P '(Mem)|(Cache)|(Swap)' /proc/meminfo
 tcpdump -XX -n port 8080 | grep -i -P '(forwarded-for)|(REMOTE_USER)' -A 10 -B 10
 tcpdump -XX -n port not 22 | grep -i -P '(forwarded-for)|(REMOTE_USER)' -A 10 -B 10
 tcpdump k /opt/kuali/tls/private/kuali-research.bu.edu-2048bit-sha256-2016.key -i eth0 -dXXn port 8080 or 443
+
+# Find out what the latest release of a major version of tomcat is (tomcat 8 in this case)
+curl "https://archive.apache.org/dist/tomcat/tomcat-8/?C=M;O=A" | grep 'v8' | tail -n 1 | grep -Po '(?<=>)[^<>]+(?=</a>)' | sed 's/\///'
