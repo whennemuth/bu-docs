@@ -1,3 +1,4 @@
+#!/bin/bash
 #############################################################################
 #
 # The html footer in the kuali-research web application displays version info
@@ -13,8 +14,13 @@
 #
 #############################################################################
 
-if [ -z "${KCWAR}" ] ; then KCWAR="kc.war"; fi
+# There should be 4 parameters passed to the subshell running this script
+KCWAR=$1
+POM_VERSION=$2
+GIT_BRANCH=$3
+GIT_COMMIT=$4
 
+if [ -z "${KCWAR}" ] ; then KCWAR="kc.war"; fi
 if [ -z "${POM_VERSION}" ] ; then POM_VERSION="coeus-unknown-version"; fi
 if [ -z "${GIT_BRANCH}" ] ; then GIT_BRANCH="unknown-git-branch"; fi
 if [ -z "${GIT_COMMIT}" ] ; then GIT_COMMIT="unknown-git-ref"; fi
@@ -25,13 +31,17 @@ CANCELLED=false
 FILE_MISSING=false
 INSERT=true
 
-if [ -n "$(unzip -l ${KCWAR} | grep ${CFG})" ] ; then
+if [ ! -f $KCWAR ] ; then
+   CANCELLED=true;
+   echo 'No such file: ${KCWAR}'
+elif [ -n "$(unzip -l ${KCWAR} | grep ${CFG})" ] ; then
 	echo "Found ${CFG} in ${KCWAR}"
 	# \x22 = hex for ", \x27 = hex for '
-	CONTENT="$(unzip -qp ${KCWAR} ${CFG})"
-	echo "" && echo "EXISTING CONFIG CONTENT:" && echo "" && echo "$CONTENT" && echo ""
+	# CONTENT="$(unzip -qp ${KCWAR} ${CFG})"
+	unzip -o $KCWAR $CFG 
+	echo "" && echo "EXISTING CONFIG CONTENT:" && echo "" && cat $CFG && echo ""
 	
-	PARAM="$(echo $CONTENT | grep -i -o -P '<param[^>]+?name=[\x22\x27]?version[\x22\x27]?[^>]*>([^<>]+)</param>')"
+	PARAM="$(cat $CFG | grep -i -o -P '<param[^>]+?name=[\x22\x27]?version[\x22\x27]?[^>]*>([^<>]+)</param>')"
 	
 	if [ -n "$PARAM" ] ; then
 		echo "\"${PARAM}\" found in ${CFG}"
@@ -45,7 +55,7 @@ if [ -n "$(unzip -l ${KCWAR} | grep ${CFG})" ] ; then
 		else
 			echo "Replacing its element value with \"${VERSION_INFO}\"" 
 			NEW_PARAM="<param name=\\\"version\\\">${VERSION_INFO}<\\/param>"
-			CONTENT=$(echo $CONTENT | sed -r "s/<param[^>]*name=[\"']?version[\"']?[^>]*>[^<>]*<\/param>/${NEW_PARAM}/g")
+			sed -i -r "s/<param[^>]*name=[\"']?version[\"']?[^>]*>[^<>]*<\/param>/${NEW_PARAM}/g" $CFG
 		fi
 		
 	else
@@ -60,19 +70,22 @@ fi
 
 if $CANCELLED; then
 	echo "CANCELLED!";
+	exit 1
 else 
 	if $FILE_MISSING; then
 		echo "Creating new file with ${VERSION_INFO}"
-		echo "<config>" > kc-config-build.xml
-		echo "   <param name=\"version\">${CONTENT}</param>" >> kc-config-build.xml
-    		echo "   <param name=\"spring.profiles.active\" system=\"true\"></param>" >> kc-config-build.xml
-		echo "</config>" >> kc-config-build.xml
-	elif $INSERT; then
-		echo "Inserting ${VERSION_INFO}"
-		echo $CONTENT > kc-config-build.xml
+		echo "<config>" > $CFG
+		echo "   <param name=\"version\">${VERSION_INFO}</param>" >> $CFG
+    		echo "   <param name=\"spring.profiles.active\" system=\"true\"></param>" >> $CFG
+		echo "</config>" >> $CFG
 	else
-		echo "Replacing with ${VERSION_INFO}"
-		echo $CONTENT > kc-config-build.xml
+		if $INSERT; then
+			echo "Inserting ${VERSION_INFO}"
+		else
+			echo "Replacing with ${VERSION_INFO}"
+		fi
+		zip -u $KCWAR $CFG
 	fi
-	echo "" && echo "NEW CONFIG CONTENT:" && echo "" && cat kc-config-build.xml
+	echo "" && echo "NEW CONFIG CONTENT:" && echo "" && cat $CFG
+	exit 0
 fi

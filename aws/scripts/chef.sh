@@ -8,9 +8,6 @@
 #    1) Docker installed
 #    2) Git installed
 # 
-# Overview:
-#    
-#
 ########################################################################
 
 sudo su root
@@ -22,6 +19,7 @@ mkdir -p /var/log/shibboleth
 mkdir -p /var/log/shibboleth-www
 mkdir -p /var/log/kuali/printing
 mkdir -p /var/log/kuali/javamelody
+mkdir -p /var/log/kuali/attachments
 
 # 2) Pull certs, keys, etc. from s3 to /opt, retaining the same directory hierarchy. 
 #    These also serve as mount points for docker containers.

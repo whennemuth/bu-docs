@@ -32,3 +32,15 @@ tcpdump k /opt/kuali/tls/private/kuali-research.bu.edu-2048bit-sha256-2016.key -
 
 # Find out what the latest release of a major version of tomcat is (tomcat 8 in this case)
 curl "https://archive.apache.org/dist/tomcat/tomcat-8/?C=M;O=A" | grep 'v8' | tail -n 1 | grep -Po '(?<=>)[^<>]+(?=</a>)' | sed 's/\///'
+
+# Send the output of a command to nothing (won't get printed)
+mycommand > /dev/null
+
+# Send the output of stdout to stderr
+mycommand > 1>&2
+
+# Suppress output unless it's an error
+mycommand > /dev/null 2>&1
+
+# SCP example
+scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
