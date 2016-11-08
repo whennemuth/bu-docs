@@ -21,11 +21,7 @@ GIT_BRANCH=$3
 GIT_COMMIT=$4
 
 if [ -z "${KCWAR}" ] ; then KCWAR="kc.war"; fi
-if [ -z "${POM_VERSION}" ] ; then POM_VERSION="coeus-unknown-version"; fi
-if [ -z "${GIT_BRANCH}" ] ; then GIT_BRANCH="unknown-git-branch"; fi
-if [ -z "${GIT_COMMIT}" ] ; then GIT_COMMIT="unknown-git-ref"; fi
-	
-VERSION_INFO="${POM_VERSION}\\/git:branch=${GIT_BRANCH},ref=${GIT_COMMIT}"
+
 CFG=WEB-INF/classes/META-INF/kc-config-build.xml
 CANCELLED=false
 FILE_MISSING=false
@@ -36,24 +32,37 @@ if [ ! -f $KCWAR ] ; then
    echo 'No such file: ${KCWAR}'
 elif [ -n "$(unzip -l ${KCWAR} | grep ${CFG})" ] ; then
 	echo "Found ${CFG} in ${KCWAR}"
+	echo ""
 	# \x22 = hex for ", \x27 = hex for '
 	# CONTENT="$(unzip -qp ${KCWAR} ${CFG})"
 	unzip -o $KCWAR $CFG 
-	echo "" && echo "EXISTING CONFIG CONTENT:" && echo "" && cat $CFG && echo ""
+	#echo "" && echo "EXISTING CONFIG CONTENT:" && echo "" && cat $CFG && echo ""
 	
 	PARAM="$(cat $CFG | grep -i -o -P '<param[^>]+?name=[\x22\x27]?version[\x22\x27]?[^>]*>([^<>]+)</param>')"
 	
 	if [ -n "$PARAM" ] ; then
-		echo "\"${PARAM}\" found in ${CFG}"
+		#echo "\"${PARAM}\" found in ${CFG}"
 		VAL=$(echo $PARAM | grep -i -P -o '>[^<>]*<' | grep -o -P "[^<>]*")
 			
 		if ([ -n "$(echo ${VAL} | grep -P '[^\\s]+')" ] && [ $VAL != "\${build.version}" ]) ; then
 			# If val is not empty, not all whitespace, and not equal to "\${build.version}", then it is specific version.
 			# If this is the case, then leave it alone.
-			echo "Valid version info already set: ${VAL}"
+			echo "Found valid build.version info already set: "
+			echo ""
+			echo "    ${VAL}"
 			CANCELLED=true
 		else
-			echo "Replacing its element value with \"${VERSION_INFO}\"" 
+			echo "Found build.version param, but no value is set. Setting value: "
+			echo ""
+			echo "    \"${VERSION_INFO}\""
+ 
+			if [ -z "${POM_VERSION}" ] ; then read -p "Please enter the pom version (ie: \"1609.0057-SNAPSHOT\")" POM_VERSION; fi
+			if [ -z "${POM_VERSION}" ] ; then POM_VERSION="coeus-unknown-version"; fi
+			if [ -z "${GIT_BRANCH}" ] ; then read -p "Please enter the git branch (ie: \"bu-master\")" GIT_BRANCH; fi
+			if [ -z "${GIT_BRANCH}" ] ; then GIT_BRANCH="unknown-git-branch"; fi
+			if [ -z "${GIT_COMMIT}" ] ; then read -p "Please enter the git revision (ie: \"5fcb9824f34e8fa0421b3429bb0b4a22cc9fff6f\")" GIT_COMMIT; fi	
+			if [ -z "${GIT_COMMIT}" ] ; then GIT_COMMIT="unknown-git-ref"; fi	
+			VERSION_INFO="${POM_VERSION}\\/git:branch=${GIT_BRANCH},ref=${GIT_COMMIT}"
 			NEW_PARAM="<param name=\\\"version\\\">${VERSION_INFO}<\\/param>"
 			sed -i -r "s/<param[^>]*name=[\"']?version[\"']?[^>]*>[^<>]*<\/param>/${NEW_PARAM}/g" $CFG
 		fi
@@ -69,9 +78,11 @@ else
 fi
 
 if $CANCELLED; then
-	echo "CANCELLED!";
+	echo ""
+	echo "build.version insertion cancelled!";
 	exit 1
 else 
+	echo ""
 	if $FILE_MISSING; then
 		echo "Creating new file with ${VERSION_INFO}"
 		echo "<config>" > $CFG
@@ -84,7 +95,8 @@ else
 		else
 			echo "Replacing with ${VERSION_INFO}"
 		fi
-		zip -u $KCWAR $CFG
+		# zip -u $KCWAR $CFG
+		echo "zip -u $KCWAR $CFG"
 	fi
 	echo "" && echo "NEW CONFIG CONTENT:" && echo "" && cat $CFG
 	exit 0

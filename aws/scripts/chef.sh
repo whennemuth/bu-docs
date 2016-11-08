@@ -25,6 +25,15 @@ mkdir -p /var/log/kuali/attachments
 #    These also serve as mount points for docker containers.
 aws s3 cp  s3://kuali-research-ec2-setup/${LANDSCAPE} /opt/ --recursive
 
+# 3) Move the certs and private keys into their mor
+if [ ! -d /etc/pki/tls/private ] ; then mkdir -p /etc/pki/tls/private; fi
+mv /opt/kuali/tls/private/*.key -t /etc/pki/tls/private/
+rm -f "/etc/pki/tls/private/*-${LANDSCAPE}*"
+if [ ! -d /etc/pki/tls/certs ] ; then mkdir -p /etc/pki/tls/certs; fi
+mv /opt/kuali/tls/certs/* -t /etc/pki/tls/certs/ 
+rm -f "/etc/pki/tls/certs/*-${LANDSCAPE}*"
+rm -r -f /opt/kuali/tls
+
 # 3) Pull access keys to make secure REST or Query protocol requests to the ECR AWS service API
 if [ ! -d /root/.aws ] ; then mkdir -p /root/.aws; fi
 aws s3 cp  s3://kuali-research-ec2-setup/${LANDSCAPE}/ecr.credentials.cfg /root/.aws/config
