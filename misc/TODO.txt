@@ -14,29 +14,35 @@
 4) Create documentation for git job usage and explanation.
    Include scenarios and how to accordingly set parameters.
 
-5) Include the script for setting of ${build.version} environment
+5) Create documentation for all directories and resources to 
+   monitor with regard to our cloud/container environments.
+
+6) Include the script for setting of ${build.version} environment
    variable for manual docker image builds. Push it to github and
    pull from github on each ec2 instance.
 
-6) Resume work on Selenium-Test project.
+7) Replace master branch for docker build contexts in git with
+   apache branch and remove apache branch and update jenkins.
 
-7a) Deploy COI DB to a container
+8) Resume work on Selenium-Test project.
+
+9a) Deploy COI DB to a container
 
  b) Deploy uncustomized COI in a container and point to DB 
     container.
 
-8a) Setup taigaio for trial run of agile platform in docker
+10a) Setup taigaio for trial run of agile platform in docker
    containers.
    https://taigaio.github.io/taiga-doc/dist/setup-production.html
    
    or...
 
- b) Containerize agilephant free version for trial run of agile 
+  b) Containerize agilephant free version for trial run of agile 
    platform.
    https://github.com/Agilefant/agilefant/wiki/Agilefant-
    installation-guide
 
    or...
 
- c) Find other comparable open-source software
+  c) Find other comparable open-source software
     http://alternativeto.net/software/agilefant/?license=free
