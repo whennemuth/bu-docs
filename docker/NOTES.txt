@@ -40,6 +40,11 @@ If you plan to run docker using a host VM that you set up yourself then:
    sudo apt-get update
    sudo apt-get install openssh-server
    sudo ufw allow 22
+   NOTE: This is not necessary with CENTOS, but the minimal installation does not come with any enable ip 
+         address other than localhost. To enable another ip for outward communication, do the following:
+         sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
+            [change "ONBOOT=no" to "ONBOOT=yes"]
+         reboot
 8) To share folders outside the VM and to get a better screen resolution, install virtual box linux additions.
    (details at: https://leemendelowitz.github.io/blog/ubuntu-server-virtualbox.html)
    Do the following steps from a terminal in the VM:
