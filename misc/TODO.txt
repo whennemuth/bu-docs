@@ -31,7 +31,11 @@
  b) Deploy uncustomized COI in a container and point to DB 
     container.
 
-10a) Setup taigaio for trial run of agile platform in docker
+10) Write servlet for health check
+
+11) Extend Jenkins jobs to also build against feature branches
+
+12a) Setup taigaio for trial run of agile platform in docker
    containers.
    https://taigaio.github.io/taiga-doc/dist/setup-production.html
    

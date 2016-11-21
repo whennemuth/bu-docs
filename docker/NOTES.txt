@@ -72,7 +72,7 @@ If you plan to run docker using a host VM that you set up yourself then:
       sudo usermod -g vboxsf warren
    f) In the VM, Devices --> Shared Folders --> Shared Folder Settings... --> Click the Add new share icon:
       "Folder Path:": Select a directory in you file system to mount to
-      "Folder Name:": The name you type here will appear in the ubuntu file explorer as a shared folder with this name prepended with "sf_"
+      "Folder Name:": The name you type here will appear in the /media directory as a shared folder with this name prepended with "sf_"
       check "Auto-mount"
       check "Make Permanent" 
 9) Modify ssh access so the a private key can be used instead of a password:
