@@ -44,3 +44,6 @@ mycommand > /dev/null 2>&1
 
 # SCP example
 scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+
+# Get the number of files in a directory whose name(s) match a specified pattern ("*_rsa" in this case)
+ls -1 *_rsa | wc -l

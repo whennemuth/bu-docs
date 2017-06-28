@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/ -->
+<html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface no-generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <title>Install a CentOS 7 Minimal Virtual Machine with VirtualBox</title>
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <meta name="description" content="Step-By-Step instructions to setting up a minimal CentOS 7 virtual machine with VirtualBox.">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Install a CentOS 7 Minimal Virtual Machine with VirtualBox">
+    <meta name="twitter:description" content="Step-By-Step instructions to setting up a minimal CentOS 7 virtual machine with VirtualBox.">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Install a CentOS 7 Minimal Virtual Machine with VirtualBox">
+    <meta property="og:description" content="Step-By-Step instructions to setting up a minimal CentOS 7 virtual machine with VirtualBox.">
+
+    <meta name="twitter:site" content="@jeramyRR">
+
+<meta name="twitter:creator" content="@jeramyRR">
+
+<meta name="google-site-verification" content="">
+
+<meta property="fb:admins" content="">
+
+    <link href="http://www.jeramysingleton.com/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="http://www.jeramysingleton.com/apple-touch-icon-precomposed.png" rel="apple-touch-icon">
+
+    <link href="http://fonts.googleapis.com/" rel="dns-prefetch">
+    <link href="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/css" rel="stylesheet">
+
+    <link rel="stylesheet" href="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/main.min.css">
+
+    <script src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/analytics.js.download"></script><script type="text/javascript">
+      var ga_ua = 'UA-63064944-1';
+
+var disqus_shortname = 'beastbytes';
+
+var enable_pjax = true;
+
+      // Pace Options
+      // ==============
+      window.paceOptions = {
+        catchupTime: 100,
+        minTime: 100,
+        elements: false,
+        restartOnRequestAfter: 500,
+        startOnPageLoad: false
+      }
+
+      // Ghostium Globals
+      // ==============
+      window.GHOSTIUM = {};
+      GHOSTIUM.haveGA = typeof ga_ua !== 'undefined' && ga_ua !== 'UA-XXXXX-X';
+      GHOSTIUM.haveDisqus = typeof disqus_shortname !== 'undefined' && disqus_shortname !== 'example';
+      GHOSTIUM.enablePjax = typeof enable_pjax !== 'undefined' ? enable_pjax : true;
+    </script>
+
+    <script src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/head-scripts.min.js.download"></script>
+
+    <link rel="canonical" href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/">
+    
+    <meta property="og:site_name" content="Jeramy Singleton">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Install a CentOS 7 Minimal Virtual Machine with VirtualBox">
+    <meta property="og:description" content="Step-By-Step instructions to setting up a minimal CentOS 7 virtual machine with VirtualBox.">
+    <meta property="og:url" content="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/">
+    <meta property="article:published_time" content="2015-09-13T21:15:00.000Z">
+    <meta property="article:modified_time" content="2015-09-20T20:42:03.119Z">
+    <meta property="article:tag" content="CentOS">
+    <meta property="article:tag" content="VirtualBox">
+    <meta property="article:tag" content="VM">
+    <meta property="article:tag" content="virtualization">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Install a CentOS 7 Minimal Virtual Machine with VirtualBox">
+    <meta name="twitter:description" content="Step-By-Step instructions to setting up a minimal CentOS 7 virtual machine with VirtualBox.">
+    <meta name="twitter:url" content="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Jeramy Singleton",
+    "author": {
+        "@type": "Person",
+        "name": "Jeramy Singleton",
+        "image": "//www.gravatar.com/avatar/73dc619101603d23ff8042dbff56123d?s=250&d=mm&r=x",
+        "url": "http://www.jeramysingleton.com/author/jeramy",
+        "sameAs": null,
+        "description": null
+    },
+    "headline": "Install a CentOS 7 Minimal Virtual Machine with VirtualBox",
+    "url": "http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/",
+    "datePublished": "2015-09-13T21:15:00.000Z",
+    "dateModified": "2015-09-20T20:42:03.119Z",
+    "keywords": "CentOS, VirtualBox, VM, virtualization",
+    "description": "Step-By-Step instructions to setting up a minimal CentOS 7 virtual machine with VirtualBox."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.6">
+    <link rel="alternate" type="application/rss+xml" title="Jeramy Singleton" href="http://www.jeramysingleton.com/rss/">
+  <script async="" type="text/javascript" src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/embed.js.download"></script><script async="" type="text/javascript" src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/count.js.download"></script><script src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/count-data.js.download"></script></head>
+  <body class="post-template tag-centos tag-virtualbox tag-vm tag-virtualization">
+
+    <button data-action="open-drawer" id="drawer-button" class="drawer-button"><i class="fa fa-bars"></i></button>
+<nav tabindex="-1" class="drawer">
+  <div class="drawer-container">
+    <!--.drawer-search(role="search")-->
+    <ul role="navigation" class="drawer-list">
+      
+<li class="drawer-list-item">
+  <a href="http://www.jeramysingleton.com/" data-pjax="">
+    <i class="fa fa-home"></i>Home
+  </a>
+</li>
+<li class="drawer-list-item">
+  <a href="http://www.jeramysingleton.com/rss/">
+    <i class="fa fa-rss"></i>Subscribe to Feed
+  </a>
+</li>
+<li class="drawer-list-divider"></li>
+<li class="drawer-list-item drawer-list-title">
+  Follow me
+</li>
+<li class="drawer-list-item">
+  <a href="http://twitter.com/jeramyRR" target="_blank">
+    <i class="fa fa-twitter"></i>Twitter
+  </a>
+</li>
+<li class="drawer-list-item">
+  <a href="http://github.com/jeramyRR" target="_blank">
+    <i class="fa fa-github"></i>Github
+  </a>
+</li>
+    </ul>
+  </div>
+</nav>
+
+    <div class="drawer-overlay"></div>
+    <main id="container" role="main" class="container">
+      <div class="surface">
+        <div class="surface-container">
+          <div data-pjax-container="" class="content">
+            
+<section class="wrapper wrapper-post">
+  <div class="wrapper-container">
+    <article itemscope="" itemtype="http://schema.org/BlogPosting" role="article" class="post post tag-centos tag-virtualbox tag-vm tag-virtualization">
+        <section class="post-container">
+          <header class="post-header">
+            <ul class="post-meta-list">
+              <li class="post-meta-item">
+                <time datetime="2015-09-13" itemprop="datePublished">
+                  2 years ago
+                </time>
+              </li>
+                <li class="post-meta-item">
+                    <a itemprop="articleSection" href="http://www.jeramysingleton.com/tag/centos/" data-pjax="">CentOS</a>, 
+                    <a itemprop="keywords" href="http://www.jeramysingleton.com/tag/virtualbox/" data-pjax="">VirtualBox</a>, 
+                    <a itemprop="keywords" href="http://www.jeramysingleton.com/tag/vm/" data-pjax="">VM</a>, 
+                    <a itemprop="keywords" href="http://www.jeramysingleton.com/tag/virtualization/" data-pjax="">virtualization</a> 
+                </li>
+              <li class="post-meta-item">
+                <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/#disqus_thread" data-disqus-identifier="11">11 Comments</a>
+              </li>
+            </ul>
+            <h1 itemprop="name headline" class="post-title"><a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/" itemprop="url" data-pjax="" title="Install a CentOS 7 Minimal Virtual Machine with VirtualBox">Install a CentOS 7 Minimal Virtual Machine with VirtualBox</a></h1>
+            <!--h2 itemprop="about" class="post-subtitle"></h2-->
+          </header>
+          <aside class="post-side">
+            <div class="post-author">
+                <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/" class="post-author-avatar">
+                  <img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/73dc619101603d23ff8042dbff56123d" alt="Jeramy Singleton">
+                </a>
+              <div class="post-author-info">
+                <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/" class="post-author-name">
+                  Jeramy Singleton
+                </a>
+                <p class="post-author-bio"></p>
+              </div>
+            </div>
+          </aside>
+          <div itemprop="articleBody" class="post-body">
+            <p>For an upcoming project and blog article, I'm going to need a Linux setup on my main machine.  The project requires me to use a minimal install of CentOS 7 (Linux) as the operating system.  In order to run another operating system on my hardware I will use VirtualBox so that I can run CentOS alongside OS X.</p>
+
+<p>VirtualBox is a free and open source virtualization app that allows users to run multiple operating systems on their machine from within their main operating system.  In other words, you can run a linux box (or whatever your favorite flavor of OS is) as if it were any other application inside your Windows OS, Mac OS X, or even on another Linux box.  This is also known as running a Virtual Machine (VM).</p>
+
+<h2 id="whatisavirtualizationapplication">What is a Virtualization Application?</h2>
+
+<p>Different operating systems have different processes for interacting with hardware.  VirtualBox, and other virtualization apps, simulate hardware in a way that the virtualized operating system (the VM) thinks that it's running on real hardware.  What VirtualBox is really doing underneath the hood is translating the VMs systems calls to calls that the main operating system can understand.  VirtualBox sits between the two operating systems translating calls and responses between the two.</p>
+
+<h2 id="whywouldwewanttorunavirtualmachine">Why would we want to run a Virtual Machine?</h2>
+
+<p>One of the main reasons to run a VM is to gain access to technology and functionality that does not exist in the current operating system running on our hardware.  </p>
+
+<p>For example, my operating system of choice is OS X, but if I want to do any serious Windows development I need to use Visual Studio.  Microsoft hasn't released an OS X version of Visual Studio as of yet so to use the IDE I have to run Windows in a VM.  </p>
+
+<p>Another example would be the need to run an ssh server like openssh-server, or a source control server like Gitolite.  Yes, you can do both on OS X, but Linux or FreeBSD generally provides a better environment for server like functions.</p>
+
+<p>Virtual Machines give us the freedom of choice no matter what operating system sits on top of our hardware.  There is also the added bonus of separating responsibilities.  We can have different VMs running different types of servers with totally different setups.  You could have a Rails app running in Apache on one VM, and another Rails app running in Nginx on another VM.</p>
+
+<h2 id="isthereadisadvantagetovirtualization">Is there a disadvantage to virtualization?</h2>
+
+<p>Virtual Machines can help us solve a lot of problems, but there are some fallbacks.  </p>
+
+<p>One of the main fallbacks is the virtualization itself.  Virtualbox has to spend extra time converting calls from one operating system to another, so there is inherently a loss in performance.  </p>
+
+<p>Most machines, now days, have powerful, multi-core cpus and large amounts of RAM so this isn't really a big deal.</p>
+
+<h2 id="wherecanigetvirtualbox">Where can I get VirtualBox?</h2>
+
+<p>At the time of writing this article the current version of VirtualBox was 5.0.4.  </p>
+
+<p>VirtualBox can be downloaded by following this link: <a href="http://www.virtualbox.org/">virtualbox.org</a></p>
+
+<h3 id="downloadingcentos7">Downloading CentOS 7</h3>
+
+<p>I will be using the CentOS 7 Minimal ISO which is a 636MB download versus a 4GB download for the DVD ISO.  The minimal install is exactly what it sounds like,  minimal.  It doesn't come with a windows manager or any development tools.  It's a bare bones install that allows us to customize the environment to fit our exact needs.</p>
+
+<p>CentOS 7 can be found here: <a href="https://www.centos.org/download/">centos.org</a></p>
+
+<h2 id="theinstall">The Install</h2>
+
+<p>I'm not going to walk you through the VirtualBox install because it's simple and straight forward.  I will however, go through the steps of installing CentOS in VirtualBox.</p>
+
+<p>Once you have VirtualBox installed, open it up and click on the New icon on the top left of the toolbar.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/new_install.png" alt="New Install"></p>
+
+<p>Name your VM anything you want, but make sure you choose <code class="  language-markup">Linux</code> as the type and <code class="  language-markup">Red Hat (64-bit)</code> as the version.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/name_vm.png" alt="Naming your VM"></p>
+
+<p>Next, choose the amount of memory you'd like to reserve for this VM.   I usually just go with the suggested amount, which in this case is 768MB.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/selecting_memory.png" alt="Selecting Memory"></p>
+
+<p>The next prompt will ask you to add a virtual hard disk.  Go ahead and select <code class="  language-markup">Create a virtual hard disk now</code> which should be the default. </p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/select_hdd.png" alt="Selecting a virtual hard disk"></p>
+
+<p>Next, you can select whichever type of VM hard disk type you'd like.  I usually just select VDI.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/hard_disk_type.png" alt="Select Hard Disk Type"></p>
+
+<p>The next prompt will ask you if you'd like dynamic storage or fixed storage.  Select <code class="  language-markup">dynamic</code>. Dynamic storage means that VirtualBox will only use the amount of space, on your real hard drive, that the VM actually needs until it reaches the maximum we allot.  This will also allow us to add more to the VM later if we need it.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/storage_type.png" alt="Storage Type"></p>
+
+<p>The next step is to actually allot the amount of hard disk space for the VM.  8.00GB will be more than plenty to start off.  Go ahead and press the <code class="  language-markup">Create</code> button to finish up this part of the process.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/vm_space.png" alt="VM Space"></p>
+
+<p>Now that we've setup the setup, it's time to install the VM.  Your VirtualBox window should now contain a VM that is powered off. </p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/virtualbox_manager.png" alt="VirtualBox Manager"></p>
+
+<p>Find your newly created VM space and double click on it to start it up.  You'll be prompted to point the manager to the iso we downloaded earlier.  Locate the file and click start.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/iso.png" alt="Pointing the VM to the ISO"></p>
+
+<p>After you click start, VirtualBox will start the iso and you will be prompted to select an install mode.  I usually just select <code class="  language-markup">Install CentOS 7</code>, but it defaults to <code class="  language-markup">Test this media &amp; install CentOS 7</code>.  </p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/install_selection.png" alt="Install Selection"></p>
+
+<p>The install process will begin by asking you to select your language of preference.  Once you've done that the next prompt will be to select the install destination.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/install_destination.png" alt="Install Destination"></p>
+
+<p>Click on the Install Destination label and then immediately click <code class="  language-markup">Done</code> at the top of the next window.  Everything in this part of the install wizard has been set for us because of earlier selections we made when setting up the VM space.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/install_destination2-1.png" alt="Clicking Done on the Install Destination"></p>
+
+<p>You'll now notice that the Install Destination section no longer contains the warning that was previously there.  Now you can click on <code class="  language-markup">Begin Install</code>.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/begin_install.png" alt="Begin Install"></p>
+
+<p>The install will begin, but there are still two more steps we need to take.  The next window will give us the opportunity to set the root password and to add an additional account.  Lets do both now.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/configuration.png" alt="Configuration"></p>
+
+<p>Select <code class="  language-markup">Root Password</code> and create a new password for the root account.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/root_password-2.png" alt="Root Password"></p>
+
+<p>Add another account so that you can log in to the VM without directly logging into root.  Go ahead and make the user an administrator.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/create_user-1.png" alt="User Account"></p>
+
+<p>Click on <code class="  language-markup">Finish configuration</code>.  </p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/finish_config.png" alt="Finish Configuration"></p>
+
+<p>The installer will complete a few more things and then you'll see a message at the bottom that says <code class="  language-markup">Complete</code> and will find a button to reboot the VM.  Go ahead and click <code class="  language-markup">Reboot</code> to startup the VM for the first time.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/reboot.png" alt="Reboot"></p>
+
+<p>Once the VM reboots you'll be able to log in.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/login.png" alt="Log In"></p>
+
+<h2 id="settingupsshaccessonthevm">Setting up ssh access on the VM</h2>
+
+<p>There is a small oddity when installing CentOS when it comes to accessing the internet.  When you first install the OS you may or may not be able to connect to the outside world, but after the first reboot you most certainly will not have a connection.  This is due to the <code class="  language-markup">ONBOOT</code> property in the ifcfg config file being set to <code class="  language-markup">no</code> by default.</p>
+
+<p>If you type <code class="  language-markup">ip addr</code> at the command-line you'll notice a lack of any other ip address other than 127.0.0.1.</p>
+
+<p>Change the working directory to <code class="  language-markup">/etc/sysconfig/network-scripts/</code> and edit the <code class="  language-markup">ifcfg-enp0s3</code> config file and set ONBOOT to yes. You may need to run <code class="  language-markup">vi</code> as sudo if you aren't logged in as root (which is never recommended).</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/ifcfg-config-1.png" alt="ifcfg-enp0s3"></p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/vi_config.png" alt="edit config"></p>
+
+<p>After you reboot (via the <code class="  language-markup">reboot</code> command) and the system comes back up type <code class="  language-markup">ip addr</code> once again to view your VMs ip address.</p>
+
+<p>CentOS minimal comes with an ssh server so the last step needed to be able to ssh in from our local machine is to setup port forwarding on our VM.</p>
+
+<p>The status bar, on the bottom of the running vm, should have a bunch of icons.  The one of interest to us is the network (double monitor) icon.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/select_network_settings-1.png" alt="Network Settings"></p>
+
+<p>The dialog that opens shows the current configuration of the network adapter.  </p>
+
+<p>Next press the <code class="  language-markup">Port Forwarding</code> button to bring up the settings that will allow us to ssh into the VM.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/port_forwarding.png" alt="Port Forwarding Settings"></p>
+
+<p>In the Port Forwarding dialog click on the green plus icon to add a new Rule.  In this new rule enter information for Host IP, Host Port, Guest IP, and Guest Port.</p>
+
+<p>I use the following settings:</p>
+
+<ul>
+<li>Host IP: 127.0.0.1 - this is the IP address (localhost) of the host operating system (not the VM). If you want to access the VM from anywhere on the internet you'll need to use your computers real IP.</li>
+<li>Host Port: 2222 - use a port that is open on your machine.  </li>
+<li>Guest IP - this is the IP address shown when <code class="  language-markup">ip addr</code> is typed in the VM command-line.  In my case it has been 10.0.2.15 every time I have only one VM running.</li>
+<li>Guest Port - 22 is the default ssh port and that's what we want to use here.</li>
+</ul>
+
+<p>Click the OK button to finalize the port forwarding settings.</p>
+
+<p>Now you should be able to ssh in from a local terminal.</p>
+
+<p><img src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/ssh_local_terminal.png" alt="Local ssh"></p>
+
+<h2 id="wrappingup">Wrapping up</h2>
+
+<p>We should now have a running, minimal version of CentOS 7 in VirtualBox.  VirtualBox makes it extremely easy to run many different operating systems on existing hardware without having a separate machine for each different operating system we want to run.</p>
+
+<p>Having this setup will save some time for the next article where we'll go through <a href="http://www.jeramysingleton.com/install-erlang-and-elixir-on-centos-7-minimal/">installing Erlang and Elixir on our CentOS 7 VM</a>.</p>
+          </div>
+          <footer class="post-footer">
+            <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" class="post-author">
+                <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/" class="post-author-avatar">
+                  <img itemprop="image" src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/73dc619101603d23ff8042dbff56123d" alt="Jeramy Singleton">
+                </a>
+              <div class="post-author-info">
+                <h4 class="post-footer-heading">Written By</h4>
+                <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/" itemprop="url" class="post-author-name">
+                  <span itemprop="name">Jeramy Singleton</span>
+                </a>
+                <p itemprop="description" class="post-author-bio"></p>
+                <p class="post-info">
+                  <b class="post-info-title">Published on</b>
+                  <time class="post-date">September 13, 2015</time>
+                </p>
+              </div>
+            </div>
+            <div class="post-social">
+              <h4 class="post-footer-heading">Spread the word</h4>
+              <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/#" data-action="share-twitter"><i class="fa fa-fw fa-lg fa-twitter"></i></a>
+              <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/#" data-action="share-facebook"><i class="fa fa-fw fa-lg fa-facebook"></i></a>
+              <a href="http://www.jeramysingleton.com/install-centos-7-minimal-in-virtualbox/#" data-action="share-gplus"><i class="fa fa-fw fa-lg fa-google-plus"></i></a>
+            </div>
+          </footer>
+        </section>
+      <section itemprop="comment" class="post-comments">
+        <div id="disqus_thread"><iframe id="dsq-app1" name="dsq-app1" allowtransparency="true" frameborder="0" scrolling="no" tabindex="0" title="Disqus" width="100%" src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/saved_resource.html" style="width: 1px !important; min-width: 100% !important; border: none !important; overflow: hidden !important; height: 1615px !important;" horizontalscrolling="no" verticalscrolling="no"></iframe></div>
+      </section>
+    </article>
+
+    <footer role="contentinfo" class="footer">
+  <p><small>© 2017. All Rights Reserved.</small></p>
+  <p><small><a href="http://ghostium.oswaldoacauan.com/" target="_blank">Ghostium Theme</a> by <a href="http://twitter.com/oswaldoacauan" target="_blank">@oswaldoacauan</a></small></p>
+  <p><small>Proudly published with <a href="http://ghost.org/" target="_blank">Ghost</a></small></p>
+</footer>
+  </div>
+</section>
+
+<script type="text/javascript">
+  if(GHOSTIUM.haveDisqus) {
+    var disqus_identifier = '11';
+
+    if(typeof DISQUS !== 'object') {
+      (function () {
+      var s = document.createElement('script'); s.async = true;
+      s.type = 'text/javascript';
+      s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+      }());
+    }
+  } else {
+    document.querySelector('.post-comments').remove();
+  }
+</script>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/jquery.min.js.download"></script>
+
+    <script src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/foot-scripts.min.js.download"></script>
+
+    <script type="text/javascript">
+
+      if(GHOSTIUM.haveGA) {
+        (function(g,h,o,s,t,z){g.GoogleAnalyticsObject=s;g[s]||(g[s]=
+        function(){(g[s].q=g[s].q||[]).push(arguments)});g[s].s=+new Date;
+        t=h.createElement(o);z=h.getElementsByTagName(o)[0];
+        t.src='//www.google-analytics.com/analytics.js';
+        z.parentNode.insertBefore(t,z)}(window,document,'script','ga'));
+        ga('create',ga_ua);ga('send','pageview');
+      }
+
+      if(GHOSTIUM.haveDisqus) {
+        (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+      }
+    </script>
+  
+
+<iframe style="display: none;" src="./Install a CentOS 7 Minimal Virtual Machine with VirtualBox_files/saved_resource(1).html"></iframe></body></html>

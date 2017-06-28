@@ -1,0 +1,35 @@
+
+1) cd [root of node application]
+
+2) The conventional way of starting node would be to refer to an item in the scripts collection of package.json:
+
+     npm myscript
+
+   or directly...
+
+     node dist/index.js
+
+   to debug remotely using chrome, do this instead...
+
+     node --inspect /var/core/dist/index.js
+     or...
+     npm chrome # where "chrome" is the name of a script in packages.json where the above command is referenced.
+
+3) When node starts, the --inspect flag will cause it to output to the console a url that can be used in the 
+   chrome browser to access the server for debugging info for the session. Example: 
+
+     chrome-devtools://devtools/remote/serve_file/@60cd6e859b9f557d2312f5bf532f6aec5f284980/inspector.html?experiments=true&v8only=true&ws=127.0.0.1:9229/f6d1d89c-3a15-4441-8bd6-aeb25342fa19
+   
+   Paste this url to the clipboard.
+
+4) Open chrome and paste the url from the clipboard into the navigation window and hit enter.
+   A debugging screen should appear with a navigation frame displaying server content to the left.
+
+5) Using the navigation frame, select a js file and place a breakpoint somewhere on the page where you expect execution to reach.
+   Open up a new tab in chrome and navigate to a website location that should trigger the code with the breakpoint.
+   You should see execution break at the breakpoint and you can step through the code from there.
+
+SHORTCUT: Make an alias that cherry-picks the chrome debug link out of console output.
+   The following example picks the url out of node console ouput running in a docker container:
+
+     alias debuglink='docker logs core | grep "chrome-devtools" | tail -n1'

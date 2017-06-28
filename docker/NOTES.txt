@@ -45,6 +45,11 @@ If you plan to run docker using a host VM that you set up yourself then:
          sudo vi /etc/sysconfig/network-scripts/ifcfg-enp0s3
             [change "ONBOOT=no" to "ONBOOT=yes"]
          reboot
+   NOTE: If you intend to login to root over ssh with a private key and you don't want to be prompted for
+         a password and did not leave the password blank when setting up the centos VM, then you must login and do this:
+         passwd -d root
+         vi /etc/ssh/sshd_config
+            Uncomment "PermitEmptyPasswords" and change its value to "yes"
 8) To share folders outside the VM and to get a better screen resolution, install virtual box linux additions.
    (details at: https://leemendelowitz.github.io/blog/ubuntu-server-virtualbox.html)
    Do the following steps from a terminal in the VM:
