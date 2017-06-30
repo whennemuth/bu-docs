@@ -1,0 +1,11 @@
+Scenario: You want to restore the tip of a branch to what it was when 10 commits ago.
+However, you have already pushed to other repos, so you don't want to use git reset.
+Adding a new commit that duplicates that 10th commit can be done with git revert as follows:
+(Assuming the branch we are interested in is master).
+
+1) git checkout master
+2) git checkout -b tempbranch
+3) git checkout master
+4) git reset --hard master~10
+5) git merge --strategy=ours tempbranch
+6) git branch -d tempbranch
