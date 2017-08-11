@@ -29,7 +29,7 @@ installKuali() {
 }
 
 runKuali() {
-  
+  echo "NOT DONE"  
 }
 
 installJava() {
@@ -137,6 +137,18 @@ configureKuali() {
 }
 
 buildKuali() {
+  echo "NOT DONE"
+}
 
+propertyFileLookup() {
+  [ -z "$1" ] && return 1
+  [ ! -f $(pwd)/setup.properties ] && return 1
+  echo "$(cat setup.properties | grep -Po '(?<='$1')\s*=.*' | sed  's/=//' | trim)"
+}
+
+trim() {
+  read input
+  [ -z "$input" ] && input="$1"
+  echo $input | sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'
 }
 
