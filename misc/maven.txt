@@ -1,0 +1,11 @@
+# Download all dependencies
+mvn dependency:resolve
+
+# Download single dependency
+mvn dependency:get -Dartifact=groupId:artifactId:version
+
+# Build a single maven submodule:
+# execute the following in the parent folder of the module (where the parent pom.xml is)
+# mvn -e -Dmaven.test.skip=true -pl coeus-impl clean compile source:jar javadoc:jar package -Dgrm.off=true
+# exclude javadoc:jar, it takes up too much time. Exclude source:jar to save even more time.
+mvn -e -Dmaven.test.skip=true -pl coeus-impl clean compile package -Dgrm.off=true

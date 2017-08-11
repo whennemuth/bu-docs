@@ -1,0 +1,14 @@
+<config>
+  <param name="server.url">http://localhost:8080</param>
+  <param name="application.http.scheme">http</param>
+  <param name="application.host">localhost</param>
+  <param name="http.port">8080</param>
+  <param name="app.context.name">kc</param>
+  <param name="build.environment" override="true">dev</param>
+  
+  <param name="datasource.url">jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(FAILOVER=OFF)(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=DB_HOST)(PORT=1521)))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=DB_SERVICE_NAME)))</param>
+  <param name="datasource.username" override="true">DB_SCHEMA</param>
+  <param name="datasource.password" override="true">DB_PASSWORD</param>
+  <param name="datasource.ojb.platform">Oracle9i</param>
+  <param name="kc.schemaspy.enabled">false</param>
+</config>

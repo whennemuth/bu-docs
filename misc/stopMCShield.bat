@@ -1,2 +1,2 @@
-net stop masvc
+# net stop masvc
 net stop MCShield

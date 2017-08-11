@@ -1,0 +1,19 @@
+<Context 
+	reloadable="false"  
+	cachingAllowed="false" 
+	antiResourceLocking="false" 
+	docBase="C:/whennemuth/workspaces/kuali_workspace/kuali-research/coeus-webapp/target/coeus-webapp-1705.0034-SNAPSHOT" 
+	workDir="C:/whennemuth/workspaces/kuali_workspace/kuali-research/coeus-webapp/workdir" >
+
+	<Loader loaderClass="org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader" cachingAllowed="false" 
+	/>
+
+	<Resources className="org.apache.catalina.webresources.StandardRoot">
+		<PreResources className="org.apache.catalina.webresources.DirResourceSet"
+			base="C:/whennemuth/workspaces/kuali_workspace/kuali-research/coeus-impl/target/classes"
+			internalPath="/" 
+			webAppMount="/WEB-INF/classes" />
+	</Resources>
+<!--
+-->
+</Context>
