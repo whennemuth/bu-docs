@@ -76,7 +76,7 @@ installTomcat8() {
 
 getKuali() {
   # Make the necessary directory structure
-  mkdir -p /opt/kuali
+  [ ! -d /opt/kuali ] && mkdir -p /opt/kuali
 
   GIT_HOST="$(propertyFileLookup GIT_HOST)"
   GIT_REFSPEC="$(propertyFileLookup GIT_REFSPEC)"
