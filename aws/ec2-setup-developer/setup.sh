@@ -5,31 +5,20 @@
 # This tomcat instance is started in such a way as to accept remote debugging sessions
 # from anyone who is tunnelled in through port 8080
 
-
-install() {
-  installEnvironment
-  installKuali
-}
-
 run() {
-  runKuali
-}
-
-installEnvironment() {
   installJava
   installMaven
   installTools
   installTomcat8
-}
-
-installKuali() {
   getKuali
+  setMavenVersions /opt/kuali/kc/pom.xml
+  getSchemaSpy
+  getRice
+  getApi
+  getS2sgen
   configureKuali
   buildKuali
-}
-
-runKuali() {
-  echo "NOT DONE"  
+  runKuali
 }
 
 installJava() {
@@ -75,15 +64,19 @@ installTomcat8() {
 }
 
 getKuali() {
-  # Make the necessary directory structure
-  [ ! -d /opt/kuali ] && mkdir -p /opt/kuali
+  local KC=/opt/kuali/kc
+  if [ -f $KC/pom.xml ] ; then
+    echo "Kuali codebase already exists at $KC"
+    echo "Cancelling git clone."
+    return 0
+  fi
 
-  GIT_HOST="$(propertyFileLookup GIT_HOST)"
-  GIT_REFSPEC="$(propertyFileLookup GIT_REFSPEC)"
-  GIT_KEY="$(propertyFileLookup GIT_KEY)"
-
+  local GIT_HOST="$(propertyFileLookup GIT_HOST)"
+  local GIT_REPO="$(propertyFileLookup GIT_REPO)"
+  local GIT_REFSPEC="$(propertyFileLookup GIT_REFSPEC)"
+  local GIT_KEY="$(propertyFileLookup GIT_KEY)"
   local GIT_URL=""
-  GIT_KEY="$(propertyFileLookup GIT_KEY)"
+
   if [ -n "$GIT_KEY" ] ; then
     echo "Git private ssh key found. Using ssh to clone repo"
     ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts;
@@ -92,8 +85,13 @@ getKuali() {
     ssh-add $GIT_KEY    
     GIT_URL="git@$GIT_HOST:${GIT_REPO}.git"
   else
+    # Get the user and password. NOTE Assume the git password is an arg passed to this function, 
+    # else go to the properties file for it.
     GIT_USER="$(propertyFileLookup GIT_USER)"
-    GIT_PASSWORD="$(propertyFileLookup GIT_PASSWORD)"
+    GIT_PASSWORD="$1"
+    [ -z "$GIT_PASSWORD" ] && GIT_PASSWORD="$(propertyFileLookup GIT_PASSWORD)"
+
+    # Compose the full git url
     if [ -n "$GIT_USER" ] && [ -n "$GIT_PASSWORD" ] ; then 
       echo "No git private ssh key found. Trying http protocol with username and password"
       GIT_URL="https://${GIT_USER}@${GIT_HOST}/${GIT_REPO}.git"
@@ -104,13 +102,58 @@ getKuali() {
     fi
   fi
 
+  # 
   if [ -z "$GIT_PASSWORD" ] ; then
-    git clone --no-checkout GIT_URL
+    local CMD="git clone --no-checkout $GIT_URL $KC"
+    echo $CMD
   else
-    echo "$GIT_PASSWORD" | git clone --no-checkout GIT_URL <&0
+    local CMD="echo \"$GIT_PASSWORD\" | git clone --no-checkout $GIT_URL $KC <&0"
+    echo "echo \"*******\" | git clone --no-checkout $GIT_URL $KC <&0"
   fi
   
-  git checkout $GIT_REFSPEC
+  # Clone from git
+  eval $CMD
+ 
+  # Checkout kuali coeus code
+  CMD="cd $KC && git checkout $GIT_REFSPEC"
+  echo $CMD && eval $CMD
+}
+
+# The kuali-research pom file is analyzed here for maven version numbers of each module that needs to be built.
+# The results are output to session variables.
+setMavenVersions() {
+  # Get the content of the pom file with all return/newline characters removed.
+  local POM="$1"
+  local content=$(cat ${POM} | sed ':a;N;$!ba;s/\n//g')
+
+  # Get versions of dependencies, use a zero width lookbehind for the open element and capture
+  # all following characters thereafter until a closing element character is encountered
+
+  SCHEMASPY_VERSION=$(echo "$content" | grep -Po '(?<=<schemaspy\.version>)([^<]+)')
+  RICE_VERSION=$(echo "$content" | grep -Po '(?<=<rice\.version>)([^<]+)')
+  API_VERSION=$(echo "$content" | grep -Po '(?<=<coeus\-api\-all\.version>)([^<]+)')
+  S2SGEN_VERSION=$(echo "$content" | grep -Po '(?<=<coeus\-s2sgen\.version>)([^<]+)')
+
+  echo "SCHEMASPY_VERSION = $SCHEMASPY_VERSION"
+  echo "RICE_VERSION = $RICE_VERSION"
+  echo "API_VERSION = $API_VERSION"
+  echo "S2SGEN_VERSION = $S2SGEN_VERSION"
+}
+
+getSchemaSpy() {
+  [ -z "$SCHEMASPY_VERSION" ] && setMavenVersions /opt/kuali/kc/pom.xml
+}
+
+getRice() {
+  [ -z "$RICE_VERSION" ] && setMavenVersions /opt/kuali/kc/pom.xml
+}
+
+getApi() {
+  [ -z "$API_VERSION" ] && setMavenVersions /opt/kuali/kc/pom.xml
+}
+
+getS2sgen() {
+  [ -z "$S2SGEN_VERSION" ] && setMavenVersions /opt/kuali/kc/pom.xml
 }
 
 configureKuali() {
@@ -137,6 +180,10 @@ configureKuali() {
 }
 
 buildKuali() {
+  echo "NOT DONE"
+}
+
+runKuali() {
   echo "NOT DONE"
 }
 
