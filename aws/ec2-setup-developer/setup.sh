@@ -75,7 +75,11 @@ installMaven() {
 installTools() {
   yum -y update && \
   yum install -y git nginx aws-cli && \
-  yum install -y nodejs npm --enablerepo=epel
+  yum install -y gcc-c++ make
+
+  # Doesn't seem to be necessary to install node and npm as the build bundles its own version and uses that.
+  # curl -sL https://rpm.nodesource.com/setup_8.x | sudo -E bash - && \
+  # yum install -y nodejs 
 }
 
 installTomcat8() {
@@ -297,7 +301,7 @@ checkAwardNotice() {
   local ARTIFACT="$GROUP:$ARTIFACTID:$VERSION"
   local LOCALREPO="file://~/.m2/repository"
 
-  local AWARDNOTICE=mvn dependency:get -Dartifact=$ARTIFACT -o -DrepoUrl=$LOCALREPO | grep 'BUILD SUCCESS'
+  local AWARDNOTICE="$(mvn dependency:get -Dartifact=$ARTIFACT -o -DrepoUrl=$LOCALREPO | grep 'BUILD SUCCESS')"
 
   if [ -z "$AWARDNOTICE" ] ; then
     mvn install:install-file \
