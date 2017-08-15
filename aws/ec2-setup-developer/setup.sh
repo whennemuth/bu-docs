@@ -7,7 +7,7 @@
 
 BASE=/opt/kuali
 KC=$BASE/kc
-
+i
 run() {
 
   installJava
@@ -38,7 +38,11 @@ run() {
 
   buildKuali
 
-  configureKuali
+  copyJarsToLibDir
+
+  configureContextXml
+
+  configureKcConfig
 
   runKuali
 }
@@ -313,7 +317,7 @@ checkAwardNotice() {
   fi
 }
 
-configureKuali() {
+copyJarsToLibDir() {
   local base=/usr/share/apache-tomcat-8.5.20
   local lib=$base/lib
   local conf=$base/conf/Catalina/localhost
@@ -322,18 +326,42 @@ configureKuali() {
   cp spring-instrument-tomcat-3.2.13.RELEASE.jar $lib
   cp ojdbc7.jar $lib
   cp org.eclipse.persistence.oracle-2.4.2.jar $lib
+}
+
+configureContextXml() {
+  local base=/usr/share/apache-tomcat-8.5.20
+  local lib=$base/lib
+  local conf=$base/conf/Catalina/localhost
 
   # Put the context xml for kuali where tomcat will look for it.
   [ ! -d $tomcat/conf/Catalina/localhost ] && mkdir -p $conf
-  cp kc.xml $conf
 
-  # Put the missing values into kc-config.xml
+  local TARGETDIR=$KC/coeus-webapp/target
+  if [ ! -d $TARGETDIR ] ; then
+    echo "$TARGETDIR does not exist. Cannot configure kc.xml"
+    return 1
+  fi
+  local DOCBASE=$TARGETDIR/$(ls -1 $TARGETDIR/ | grep -iP '^coeus-webapp.*?(?!\.war)$' | sed 's/.war//' | head -n1)
+  local IMPL_CLASSES=$KC/coeus-impl/target/classes
+  local WORKDIR=$TARGETDIR/workdir
+
+  cat kc.xml \
+    | sed 's/DOCBASE/$DOCBASE/' \
+    | sed 's/IMPL_CLASSES/$IMPL_CLASSES/' \
+    | sed 's/WORKDIR/$WORKDIR/' \
+    >
+
+  cp kc.xml $conf
+}
+
+# Put the missing values into kc-config.xml
+configureKcConfig() {
   DB_HOST="$(propertyFileLookup DB_HOST)"
   DB_SERVICE_NAME="$(propertyFileLookup DB_SERVICE_NAME)"
   DB_SCHEMA="$(propertyFileLookup DB_SCHEMA)"
   sed -i "s/DB_HOST/$DB_HOST/g" kc-config.xml
   sed -i "s/DB_SERVICE_NAME/$DB_SERVICE_NAME/g" kc-config.xml
-  sed -i "s/DB_SCHEMA/$DB_SCHEMA/g" kc-config.xml  
+  sed -i "s/DB_SCHEMA/$DB_SCHEMA/g" kc-config.xml
 }
 
 runKuali() {
