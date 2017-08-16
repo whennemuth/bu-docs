@@ -7,7 +7,7 @@
 
 BASE=/opt/kuali
 KC=$BASE/kc
-i
+
 run() {
 
   installJava
@@ -334,7 +334,7 @@ configureContextXml() {
   local conf=$base/conf/Catalina/localhost
 
   # Put the context xml for kuali where tomcat will look for it.
-  [ ! -d $tomcat/conf/Catalina/localhost ] && mkdir -p $conf
+  [ ! -d $conf ] && mkdir -p $conf
 
   local TARGETDIR=$KC/coeus-webapp/target
   if [ ! -d $TARGETDIR ] ; then
@@ -345,13 +345,13 @@ configureContextXml() {
   local IMPL_CLASSES=$KC/coeus-impl/target/classes
   local WORKDIR=$TARGETDIR/workdir
 
-  cat kc.xml \
-    | sed 's/DOCBASE/$DOCBASE/' \
-    | sed 's/IMPL_CLASSES/$IMPL_CLASSES/' \
-    | sed 's/WORKDIR/$WORKDIR/' \
-    >
+  [ ! -d $WORKDIR ] && mkdir -p $WORKDIR
 
-  cp kc.xml $conf
+  cat kc.xml \
+    | sed "s|DOCBASE|$DOCBASE|" \
+    | sed "s|IMPL_CLASSES|$IMPL_CLASSES|" \
+    | sed "s|WORKDIR|$WORKDIR|" \
+    > $conf/kc.xml
 }
 
 # Put the missing values into kc-config.xml
@@ -359,9 +359,16 @@ configureKcConfig() {
   DB_HOST="$(propertyFileLookup DB_HOST)"
   DB_SERVICE_NAME="$(propertyFileLookup DB_SERVICE_NAME)"
   DB_SCHEMA="$(propertyFileLookup DB_SCHEMA)"
-  sed -i "s/DB_HOST/$DB_HOST/g" kc-config.xml
-  sed -i "s/DB_SERVICE_NAME/$DB_SERVICE_NAME/g" kc-config.xml
-  sed -i "s/DB_SCHEMA/$DB_SCHEMA/g" kc-config.xml
+  DB_PASSWORD="$(propertyFileLookup DB_PASSWORD)"
+
+  [ ! -d $DEV ] && mkdir -p $DEV
+ 
+  cat kc-config.xml \
+    | sed "s/DB_HOST/$DB_HOST/g" \
+    | sed "s/DB_SERVICE_NAME/$DB_SERVICE_NAME/g" \
+    | sed "s/DB_SCHEMA/$DB_SCHEMA/g" \
+    | sed "s/DB_PASSWORD/$DB_PASSWORD/g" \
+    > $BASE/kc-config.xml
 }
 
 runKuali() {
