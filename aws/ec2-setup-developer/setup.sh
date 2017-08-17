@@ -4,11 +4,17 @@
 # with a single command to startup the tomcat instance that it will run on.
 # This tomcat instance is started in such a way as to accept remote debugging sessions
 # from anyone who is tunnelled in through port 8080
+#
+# NOTE: Run this script as root.
 
 BASE=/opt/kuali
+if [ ! -d $BASE ] ; then
+  sudo mkdir -p $BASE
+  sudo chown -R ec2-user $BASE
+fi
 KC=$BASE/kc
 
-run() {
+install() {
 
   installJava
 
@@ -17,6 +23,9 @@ run() {
   installTools
 
   installTomcat8
+}
+
+build() {
 
   getKuali
 
@@ -43,7 +52,10 @@ run() {
   configureContextXml
 
   configureKcConfig
+}
 
+run() {
+  
   runKuali
 }
 
@@ -69,7 +81,7 @@ installMaven() {
     echo "Maven installation found at $mvndir Deleting"
     rm -rf $mvndir
   fi
-  mkdir -p 
+  mkdir -p $mvndir
   curl -fsSL http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz | tar -xzC $mvndir --strip-components=1
   # The following symlink should make mvn available as a command because /usr/bin is already part of the PATH env variable.
   ln -s $mvndir/bin/mvn /usr/bin/mvn
@@ -124,12 +136,13 @@ getKuali() {
     if [ -z "$GIT_BU_PASSWORD" ] ; then
       GIT_BU_PASSWORD="$(propertyFileLookup GIT_BU_PASSWORD)"
     fi
+    # url encode the password
     GIT_BU_PASSWORD="$(echo -ne $GIT_BU_PASSWORD | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')"
 
     # Compose the full git url
     if [ -n "$GIT_BU_USER" ] && [ -n "$GIT_BU_PASSWORD" ] ; then 
       echo "No git private ssh key found. Trying http protocol with username and password"
-      GIT_BU_URL="https://${GIT_BU_USER}:${$GIT_BU_PASSWORD}@${GIT_BU_HOST}/${GIT_BU_ORG}/${GIT_BU_REPO}.git"
+      GIT_BU_URL="https://${GIT_BU_USER}:${GIT_BU_PASSWORD}@${GIT_BU_HOST}/${GIT_BU_ORG}/${GIT_BU_REPO}.git"
     else
       GIT_BU_PASSWORD=""
       echo "No git authentication available. Assuming public access ..."
@@ -137,15 +150,11 @@ getKuali() {
     fi
   fi
 
-  if [ -z "$GIT_BU_PASSWORD" ] ; then
-    local CMD="git clone --no-checkout $GIT_BU_URL $KC"
-  else
-    local CMD="git clone --no-checkout $GIT_BU_URL $KC"
-  fi
+  local CMD="git clone --no-checkout $GIT_BU_URL $KC"
   
   # Clone from git
   echo $CMD && eval $CMD
- 
+
   # Checkout kuali coeus code
   CMD="cd $KC && git checkout $GIT_BU_REFSPEC"
   echo $CMD && eval $CMD
@@ -361,8 +370,6 @@ configureKcConfig() {
   DB_SCHEMA="$(propertyFileLookup DB_SCHEMA)"
   DB_PASSWORD="$(propertyFileLookup DB_PASSWORD)"
 
-  [ ! -d $DEV ] && mkdir -p $DEV
- 
   cat kc-config.xml \
     | sed "s/DB_HOST/$DB_HOST/g" \
     | sed "s/DB_SERVICE_NAME/$DB_SERVICE_NAME/g" \
