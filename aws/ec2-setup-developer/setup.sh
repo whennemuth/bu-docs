@@ -41,7 +41,7 @@ build() {
 
   buildRice
 
-  build Api
+  buildApi
 
   buildS2sgen
 
@@ -103,6 +103,8 @@ installTomcat8() {
     rm -rf /usr/share/apache-tomcat-8.5.20
   fi
   curl -fsSL http://ftp.itu.edu.tr/Mirror/Apache/tomcat/tomcat-8/v8.5.20/bin/apache-tomcat-8.5.20.tar.gz | tar -xzC /usr/share
+  sudo chown -R ec2-user /usr/share/apache-tomcat-8.5.20
+  sudo chmod -R 777 /usr/share/apache-tomcat-8.5.20
 }
 
 getKuali() {
@@ -379,7 +381,32 @@ configureKcConfig() {
 }
 
 runKuali() {
-  echo "NOT DONE"
+  local TOMCAT=/usr/share/apache-tomcat-8.5.20
+  local JAVA=/usr/lib/jvm/java-1.8.0-openjdk
+  local CMD=$(cat <<EOF
+    java  
+      -cp $JAVA/lib/tools.jar:$TOMCAT/bin/tomcat-juli.jar:$TOMCAT/bin/bootstrap.jar:$TOMCAT/lib/* 
+      -Xdebug 
+      -Xrunjdwp:transport=dt_socket,address=1043,server=y,suspend=n 
+      -Xms1024m 
+      -Xmx4096m 
+      -Xmn1024m 
+      -XX:PermSize=256m 
+      -XX:MaxPermSize=512m 
+      -noverify 
+      -Dalt.config.location=/opt/kuali/kc-config.xml 
+      -Dcatalina.home=$TOMCAT 
+      -Dcatalina.base=$TOMCAT 
+      -Djava.endorsed.dirs=$TOMCAT/endorsed 
+      -Djava.io.tmpdir=$TOMCAT/temp 
+      -Dfile.encoding=UTF8  
+      org.apache.catalina.startup.Bootstrap 
+      -config $TOMCAT/conf/server.xml start
+EOF
+  )
+  
+  echo $CMD 
+  eval $CMD 
 }
 
 propertyFileLookup() {
