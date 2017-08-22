@@ -103,7 +103,7 @@ git pull github master
 
   <li>Install all software - java, tomcat, maven, and all kuali modules<br>
     Installing a kuali module means pulling from git and building it with maven<br>
-      <pre>
+    <pre>
 # Become root and install basic software
 sudo su root
 source setup.sh
@@ -111,11 +111,30 @@ install
 
 # Return to ec2-user and build kuali
 exit
-source setup.sh
 build</pre>
   </li>
   
   <li>
-    Run coeus-webapp under tomcat with remote debugging accomodated.
+    Run coeus-webapp under tomcat with remote debugging accomodated.<br>
+    <pre>
+sudo su root
+source setup.sh
+run</pre>
   </li>
+
+  <li>
+    Rsync is the best option to synchronize source files and libraries between your local development environment and the EC2 instance because it only transfers the delta between the two endpoints.
+    <ol>
+      <li type="a">
+        If running on windows and using git bash, install the Git for Windows SDK:<br>   <code>https://github.com/git-for-windows/build-extra/releases</code><br>
+      </li>
+      <li type="a">
+        Navigate to the root of the installation and run mingw64.exe:<br>
+        <pre># Install rsync:
+pacman -Sy
+pacman -S rsync</pre>
+      </li>
+    </ol>
+  </li>
+
 </ol>
