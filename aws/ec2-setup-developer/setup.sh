@@ -294,9 +294,9 @@ buildModule() {
       # If the local maven repo does not have the artifacts required to run tests, then you
       # cannot skip tests in the build. That is, "-Dmaven.test.skip=true" has to be ommitted.
       # You may, however, be able to skip tests on subsequent builds.
-      mvn clean compile install -e -Dgrm.off=true
+      mvn clean compile source:jar install -e -Dgrm.off=true
     else
-      mvn clean compile install -e -Dgrm.off=true -Dmaven.test.skip=true
+      mvn clean compile source:jar install -e -Dgrm.off=true -Dmaven.test.skip=true
     fi
   fi
   cd $BUILD_CONTEXT
