@@ -60,14 +60,24 @@ run() {
 }
 
 installJava() {
-  yum install -y java-1.8.0-openjdk-devel
+  NOTE: Install Oracle JDK, NOT Open JDK
+  wget \
+    -O /tmp/jdk-8u141-linux-x64.tar.gz \
+    --no-cookies \
+    --no-check-certificate \
+    --header \
+      "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
+      "http://download.oracle.com/otn-pub/java/jdk/8u141-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-8u141-linux-x64.tar.gz"
+
+  tar -zxf /tmp/jdk-8u141-linux-x64.tar.gz -C /usr/lib/jvm
   # Existing java was 1.7, so new install should be 2nd, thus...
+  update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_141/bin/java" 1
   echo "2" | update-alternatives --config java <&0
   # Make path and java home get set at startup
   cat <<-EOF > /etc/profile.d/set-java-home.sh
-    export JAVA_HOME=/usr/lib/jvm/java-1.8.0/
-    if [ -z "$(echo $PATH | grep /usr/lib/jvm/java-1.8.0/)" ] ; then
-      export PATH=$PATH:/usr/lib/jvm/java-1.8.0/bin
+    export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_141/
+    if [ -z "\$(echo \$PATH | grep /usr/lib/jvm/jdk1.8.0_141/)" ] ; then
+      export PATH=\$PATH:/usr/lib/jvm/jdk1.8.0_141/bin
     fi
 EOF
   source /etc/profile.d/set-java-home.sh
