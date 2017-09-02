@@ -10,6 +10,9 @@ uname -a
 # List directories from the root according to size in descending order:
 sudo du -x -d1 -h / | sort -h -r
 
+# How much memory do I have (megabytes)
+free -m
+
 # Search all directories for a file by name (case-insensitive search)
 sudo find / -type f -iname "myfile.txt" 
 
@@ -47,3 +50,13 @@ scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ss
 
 # Get the number of files in a directory whose name(s) match a specified pattern ("*_rsa" in this case)
 ls -1 *_rsa | wc -l
+
+# Create an rsa key:
+ssh-keygen -b 2048 -t rsa -f bu_kuali_id_jenkins_rsa -q -N ""
+
+# Show a log of only those git commits that are tagged and show the date, ref and tag
+git log --tags --simplify-by-decoration --pretty="format:%h %ci %d" -n 10
+
+# urlencode a string. Can be used to supply a password along with a command against a git repository that requires authentication (if not using a key).
+ENCODED_PASSWORD="$(echo -ne $GIT_PASSWORD | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')"
+git pull https://$GIT_USER:$ENCODED_PASSWORD@myrepo master

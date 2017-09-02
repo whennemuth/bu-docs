@@ -24,7 +24,7 @@
 
 ### Steps ###
 <ol style=" font-family:arial; font-size: 16px;">
-  <li>Create a key pair for the AWS ec2 instance
+  <li>Create a key pair for the AWS ec2 instance and an alias to use it.
       <br><pre>
 cd ~/.ssh
 ssh-keygen -b 2048 -t rsa -f [name of key] -q -N ""
@@ -56,10 +56,6 @@ source ~/.bashrc</pre>
 
   <li>Create a new ec2 instance on AWS
       <br><pre>
-# Create an alias to for shell access with your ssh key: 
-echo "alias mydevbox='ssh -i ~/.ssh/[name of key] ec2-user@[private ip of ec2 instance]'" >> ~/.bashrc
-source ~/.bashrc
-
 # From now on use only the following command to shell in.
 mydevbox
 Warning: Permanently added '10.57.237.89' (ECDSA) to the list of known hosts.
