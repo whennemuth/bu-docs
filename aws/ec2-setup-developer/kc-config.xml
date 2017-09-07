@@ -11,4 +11,5 @@
   <param name="datasource.password" override="true">DB_PASSWORD</param>
   <param name="datasource.ojb.platform">Oracle9i</param>
   <param name="kc.schemaspy.enabled">false</param>
+  <param name="kc.struts.message.resources">ApplicationResources,BUApplicationResources</param>
 </config>
