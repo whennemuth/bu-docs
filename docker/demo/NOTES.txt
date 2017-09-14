@@ -9,6 +9,23 @@ git remote add github https://github.com/whennemuth/bu-docs.git && \
 git config core.sparsecheckout true && \
 echo docker/demo/ >> .git/info/sparse-checkout && \
 git pull github master && \
-cd docker/demo && ls -la
+cd docker/demo && ls -la && \
+
+2) Add a default page for apache in a directory we create to be mounted to the docker container
+
+mkdir www && \
+echo "Hello World!" > index.html
+
+3) Build the docker image:
+docker build --build-arg MY_BUILD_ARG=oranges -t hello-world:docker-demo .
+
+4) Run a container from the docker image:
+docker run \
+  -d \
+  -p 8080:80 \
+  -e MY_RUN_ENV=bannanas \
+  -v $(pwd)/www:/var/www \
+  --name helloworld \
+  hello-world:docker-demo
 
 
