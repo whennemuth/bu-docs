@@ -7,6 +7,8 @@ cd /opt/dockerdemo && \
 git init && \
 git remote add github https://github.com/whennemuth/bu-docs.git && \
 git config core.sparsecheckout true && \
-echo docker/dockerdemo/ >> .git/info/sparse-checkout && \
+echo docker/demo/ >> .git/info/sparse-checkout && \
 git pull github master && \
-cd docker/dockerdemo && ls -la
+cd docker/demo && ls -la
+
+

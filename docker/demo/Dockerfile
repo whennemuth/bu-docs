@@ -5,7 +5,9 @@ RUN apt-get update -y
 RUN apt-get install -y apache2
 
 # Install apache and write hellow world message
-RUN echo "Hello World!" > /var/www/index.html
+# RUN echo "Hello World!" > /var/www/index.html
+VOLUME /var/www/
+VOLUME /var/log/
 
 # Configure apache
 RUN a2enmod rewrite
