@@ -1,5 +1,4 @@
 1) Download the docker build context:
-
 sudo rm -rf /opt/dockerdemo && \
 sudo mkdir -p /opt/dockerdemo && \
 sudo chown ec2-user /opt/dockerdemo && \
@@ -12,7 +11,6 @@ git pull github master && \
 cd docker/demo && ls -la && \
 
 2) Add a default page for apache in a directory we create to be mounted to the docker container
-
 mkdir www && \
 echo "Hello World!" > index.html
 
@@ -34,7 +32,6 @@ docker build \
 docker run \
   -d \
   -p 8080:80 \
-  -e MY_RUN_ENV=bannanas \
   -v $(pwd)/www:/var/www \
   --name helloworld \
   $DOCKER_TAG
