@@ -10,11 +10,7 @@ echo docker/demo/ >> .git/info/sparse-checkout && \
 git pull github master && \
 cd docker/demo && ls -la && \
 
-2) Add a default page for apache in a directory we create to be mounted to the docker container
-mkdir www && \
-echo "Hello World!" > index.html
-
-3) Declare the value used to tag the docker image with once created
+2) Declare the value used to tag the docker image with once created
 ECR_REGISTRY_URL=730096353738.dkr.ecr.us-east-1.amazonaws.com && \
 REGISTRY_REPO_NAME=hello-world && \
 DOCKER_TAG_VERSION=docker-demo.version.0.0.1 && \
@@ -22,13 +18,13 @@ ECR_REPO_URL="${ECR_REGISTRY_URL}/${REGISTRY_REPO_NAME}" && \
 DOCKER_TAG="${ECR_REPO_URL}:${DOCKER_TAG_VERSION}" && \
 echo $DOCKER_TAG
 
-4) Build the docker image:
+3) Build the docker image:
 docker build \
   --build-arg MY_BUILD_ARG=oranges \ 
   -t $DOCKER_TAG \
   .
 
-5) Run a container from the docker image:
+4) Run a container from the docker image:
 docker run \
   -d \
   -p 8080:80 \
@@ -36,6 +32,6 @@ docker run \
   --name helloworld \
   $DOCKER_TAG
 
-6) Push the docker image to the docker registry:
+5) Push the docker image to the docker registry:
 eval $(aws ecr get-login --profile ecr.access) && \
 docker push $DOCKER_TAG
