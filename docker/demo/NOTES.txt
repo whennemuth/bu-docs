@@ -19,10 +19,7 @@ DOCKER_TAG="${ECR_REPO_URL}:${DOCKER_TAG_VERSION}" && \
 echo $DOCKER_TAG
 
 3) Build the docker image:
-docker build \
-  --build-arg MY_BUILD_ARG=oranges \ 
-  -t $DOCKER_TAG \
-  .
+docker build -t $DOCKER_TAG .
 
 4) Run a container from the docker image:
 docker run \
