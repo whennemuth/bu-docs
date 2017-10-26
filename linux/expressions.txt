@@ -45,8 +45,15 @@ mycommand > 1>&2
 # Suppress output unless it's an error
 mycommand > /dev/null 2>&1
 
-# SCP example
-scp -C -i /c/[path to your home dir]/.ssh/ec2_rsa /c/[path to your home dir]/.ssh/github_id_jenkins_rsa jenkins@[ec2 public dns]:/home/jenkins/.ssh
+# SCP example: Quick transfer of war files between servers:
+# 1) Transfer private key to jenkins server from laptop.
+scp -C -i /c/Users/wrh/.ssh/buaws-kuali-rsa /c/Users/wrh/.ssh/buaws-kuali-rsa wrh@10.57.236.6:/home/wrh/.ssh/
+# 2) log into jenkins server and reduce permissions on the private key
+chmod 600 ~/.ssh/buaws-kuali-rsa
+# 3) From the jenkins server transfer the last built war file to another server (staging in this case)
+scp -C -i ~/.ssh/buaws-kuali-rsa /var/lib/jenkins/workspace/kuali-research-1-build-war/coeus-webapp/target/coeus-webapp-1709.0037.war wrh@10.57.236.68:/home/wrh/
+# 4) Remove the private key
+rm -f ~/.ssh/buaws-kuali-rsa
 
 # Get the number of files in a directory whose name(s) match a specified pattern ("*_rsa" in this case)
 ls -1 *_rsa | wc -l

@@ -1,0 +1,37 @@
+# To get a dump of traffic going from kc/core to coi in the form of REST service calls:
+# 'eyJhbGc' identifies the first characters of the service token (found in kc-config.xml)
+# 172.17.0.3 identifies the ip address of the container running coi.
+# docker0 is the network containers are on (you may also be able to use eth0)
+tcpdump -XX -i docker0 dst 172.17.0.3 | grep 'eyJhbGc'
+
+# Get all status info from coi for a specific project (project id = 23
+curl -i \
+-X GET \
+http://localhost:8092/api/coi/project-disclosure-statuses/KC-PD/23 \
+--data '{}' \
+--header "Content-Type: application/json" \
+--header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk"
+
+
+[
+	{
+		"userId":"U15364542",
+		"disposition":"None",
+		"annualDisclosureStatus":"Submitted for Approval",
+		"status":"Up To Date"
+	},
+	{
+		"userId":"U21967744",
+		"disposition":"None",
+		"annualDisclosureStatus":"Submitted for Approval",
+		"status":"Up To Date"
+	}
+]
+
+
+curl \
+-X POST \
+-H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk' \
+-H 'Content-Type: application/json' \
+-d @users.json \
+http://localhost:3000/api/v1/users
