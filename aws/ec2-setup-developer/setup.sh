@@ -270,43 +270,56 @@ getFromKualiCo() {
 }
 
 buildSchemaSpy() {
-  buildModule GIT_KUALICO_SCHEMASPY_REPO
+  runMaven GIT_KUALICO_SCHEMASPY_REPO build
 }
 
 buildRice() {
-  buildModule GIT_KUALICO_RICE_REPO
+  runMaven GIT_KUALICO_RICE_REPO build
 }
 
 buildApi() {
-  buildModule GIT_KUALICO_API_REPO
+  runMaven GIT_KUALICO_API_REPO build
 }
 
 buildS2sgen() {
-  buildModule GIT_KUALICO_S2SGEN_REPO
+  runMaven GIT_KUALICO_S2SGEN_REPO build
 }
 
 buildKuali() {
-  buildModule "kc"
+  runMaven "kc" build
 }
 
-buildModule() {
+compileKuali() {
+  runMaven "kc" compile
+}
+
+runMaven() {
   local BUILD_CONTEXT="$(pwd)"
+  local TARGET="$2"
   if [ $1 == "kc" ] ; then
     cd $BASE/kc
     
     checkAwardNotice "$BUILD_CONTEXT/bu-awardnotice-1.1.jar"
-
-    mvn clean compile package -e -Dgrm.off=true -Dmaven.test.skip=true
+    
+    if [ "$TARGET" == "build" ] ; then
+      mvn clean compile package -e -Dgrm.off=true -Dmaven.test.skip=true
+    elif [ "$TARGET" == "compile" ] ; then
+      mvn compiler:compile -e -Dgrm.off=true
+    fi
   else
     local REPO="$(propertyFileLookup $1)"
-    cd $BASE/$REPO    
-    if [ -n "$(echo $1 | grep -i rice)" ] ; then
-      # If the local maven repo does not have the artifacts required to run tests, then you
-      # cannot skip tests in the build. That is, "-Dmaven.test.skip=true" has to be ommitted.
-      # You may, however, be able to skip tests on subsequent builds.
-      mvn clean compile source:jar install -e -Dgrm.off=true
-    else
-      mvn clean compile source:jar install -e -Dgrm.off=true -Dmaven.test.skip=true
+    cd $BASE/$REPO 
+    if [ "$TARGET" == "build" ] ; then
+      if [ -n "$(echo $1 | grep -i rice)" ] ; then
+        # If the local maven repo does not have the artifacts required to run tests, then you
+        # cannot skip tests in the build. That is, "-Dmaven.test.skip=true" has to be ommitted.
+        # You may, however, be able to skip tests on subsequent builds.
+        mvn clean compile source:jar install -e -Dgrm.off=true
+      else
+        mvn clean compile source:jar install -e -Dgrm.off=true -Dmaven.test.skip=true
+      fi
+    elif [ "$TARGET" == "compile" ] ; then
+      mvn compiler:compile -e -Dgrm.off=true
     fi
   fi
   cd $BUILD_CONTEXT
