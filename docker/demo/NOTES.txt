@@ -1,0 +1,34 @@
+1) Download the docker build context:
+sudo rm -rf /opt/dockerdemo && \
+sudo mkdir -p /opt/dockerdemo && \
+sudo chown ec2-user /opt/dockerdemo && \
+cd /opt/dockerdemo && \
+git init && \
+git remote add github https://github.com/whennemuth/bu-docs.git && \
+git config core.sparsecheckout true && \
+echo docker/demo/ >> .git/info/sparse-checkout && \
+git pull github master && \
+cd docker/demo && ls -la && \
+
+2) Declare the value used to tag the docker image with once created
+ECR_REGISTRY_URL=730096353738.dkr.ecr.us-east-1.amazonaws.com && \
+REGISTRY_REPO_NAME=hello-world && \
+DOCKER_TAG_VERSION=docker-demo.version.0.0.1 && \
+ECR_REPO_URL="${ECR_REGISTRY_URL}/${REGISTRY_REPO_NAME}" && \
+DOCKER_TAG="${ECR_REPO_URL}:${DOCKER_TAG_VERSION}" && \
+echo $DOCKER_TAG
+
+3) Build the docker image:
+docker build -t $DOCKER_TAG .
+
+4) Run a container from the docker image:
+docker run \
+  -d \
+  -p 8080:80 \
+  -v $(pwd)/www:/var/www \
+  --name helloworld \
+  $DOCKER_TAG
+
+5) Push the docker image to the docker registry:
+eval $(aws ecr get-login --profile ecr.access) && \
+docker push $DOCKER_TAG
