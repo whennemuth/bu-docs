@@ -54,6 +54,27 @@ build() {
   configureKcConfig
 }
 
+revert() {
+
+  cd $KC
+  read -p "Type the name of the branch you want to revert to: " branch
+  git log --oneline $branch -1
+  [ $? -gt 0 ] && echo "No such branch: $branch" && echo "Cancelling..." && cd - && return 1
+  echo "Checking out branch: $branch"
+  git checkout $branch
+  cd -
+
+  buildKuali
+
+  copyJarsToLibDir
+
+  configureContextXml
+
+  configureKcConfig
+
+  [ "${1,,i}" == "run" ] && run
+}
+
 run() {
   
   runKuali
@@ -118,6 +139,7 @@ installTomcat8() {
 }
 
 getKuali() {
+  [ ! -f setup.properties ] && echo "Cannot find $(pwd)/setup.properties" && exit 1
   HERE="$(pwd)"
   [ -z "$KC" ] && KC=/opt/kuali/kc
   if [ -f $KC/pom.xml ] ; then
@@ -221,6 +243,7 @@ getS2sgen() {
 }
 
 getFromKualiCo() {
+  [ ! -f setup.properties ] && echo "Cannot find $(pwd)/setup.properties" && exit 1
   local HERE="$(pwd)"
   local VERSION=""
   local PROPERTY="$1"
@@ -294,10 +317,11 @@ compileKuali() {
 }
 
 runMaven() {
+  [ ! -f setup.properties ] && echo "Cannot find $(pwd)/setup.properties" && exit 1
   local BUILD_CONTEXT="$(pwd)"
   local TARGET="$2"
   if [ $1 == "kc" ] ; then
-    cd $BASE/kc
+    cd $KC
     
     checkAwardNotice "$BUILD_CONTEXT/bu-awardnotice-1.1.jar"
     
@@ -357,7 +381,7 @@ copyJarsToLibDir() {
   local conf=$base/conf/Catalina/localhost
 
   # Add to the tomcat lib directory the extra jars needed.
-  cp spring-instrument-tomcat-3.2.13.RELEASE.jar $lib
+  #/usr/share/apache-tomcat-8.5.20 cp spring-instrument-tomcat-3.2.13.RELEASE.jar $lib
   cp ojdbc7.jar $lib
   cp org.eclipse.persistence.oracle-2.4.2.jar $lib
 }
@@ -390,6 +414,7 @@ configureContextXml() {
 
 # Put the missing values into kc-config.xml
 configureKcConfig() {
+  [ ! -f setup.properties ] && echo "Cannot find $(pwd)/setup.properties" && exit 1
   DB_HOST="$(propertyFileLookup DB_HOST)"
   DB_SERVICE_NAME="$(propertyFileLookup DB_SERVICE_NAME)"
   DB_SCHEMA="$(propertyFileLookup DB_SCHEMA)"
@@ -406,30 +431,43 @@ configureKcConfig() {
 runKuali() {
   local TOMCAT=/usr/share/apache-tomcat-8.5.20
   local JAVA=/usr/lib/jvm/java-1.8.0-openjdk
+
+
   local CMD=$(cat <<EOF
-    java  
-      -cp $JAVA/lib/tools.jar:$TOMCAT/bin/tomcat-juli.jar:$TOMCAT/bin/bootstrap.jar:$TOMCAT/lib/* 
-      -Xdebug 
-      -Xrunjdwp:transport=dt_socket,address=1043,server=y,suspend=n 
-      -Xms1024m 
-      -Xmx4096m 
-      -Xmn1024m 
-      -XX:PermSize=256m 
-      -XX:MaxPermSize=512m 
-      -noverify 
-      -Dalt.config.location=/opt/kuali/kc-config.xml 
-      -Dcatalina.home=$TOMCAT 
-      -Dcatalina.base=$TOMCAT 
-      -Djava.endorsed.dirs=$TOMCAT/endorsed 
-      -Djava.io.tmpdir=$TOMCAT/temp 
-      -Dfile.encoding=UTF8  
-      org.apache.catalina.startup.Bootstrap 
+    java
+      -cp $JAVA/lib/tools.jar:$TOMCAT/bin/tomcat-juli.jar:$TOMCAT/bin/bootstrap.jar:$TOMCAT/lib/*
+      -Xdebug
+      -Xrunjdwp:transport=dt_socket,address=1043,server=y,suspend=n
+      -Xms1024m
+      -Xmx4096m
+      -Xmn1024m
+      -XX:PermSize=256m
+      -XX:MaxPermSize=512m
+      -noverify
+      -Dalt.config.location=/opt/kuali/kc-config.xml
+      -Dcatalina.home=$TOMCAT
+      -Dcatalina.base=$TOMCAT
+      -Djava.endorsed.dirs=$TOMCAT/endorsed
+      -Djava.io.tmpdir=$TOMCAT/temp
+      -Dfile.encoding=UTF8
+      org.apache.catalina.startup.Bootstrap
       -config $TOMCAT/conf/server.xml start
 EOF
   )
-  
+
   echo $CMD 
   eval $CMD 
+
+  # OR, if to start from catalina.sh use the following:
+  # --------------------------------------------------
+  # local opts="-Xmx4096m"
+  # opts="$opts -Xms2048m"
+  # opts="$opts -XX:MaxPermSize=1024m"
+  # opts="$opts -Xdebug"
+  # opts="$opts -Xrunjdwp:transport=dt_socket,address=1043,server=y,suspend=n"
+  # opts="$opts -Dalt.config.location=/opt/kuali/kc-config.xml"
+  # export JAVA_OPTS="$opts"
+  # /usr/share/apache-tomcat-8.5.20/bin/catalina.sh run
 }
 
 propertyFileLookup() {

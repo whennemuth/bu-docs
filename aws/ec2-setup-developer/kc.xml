@@ -4,11 +4,13 @@
         antiResourceLocking="false"
         docBase="DOCBASE"
         workDir="WORKDIR" >
-
+	
+        <!--
         <Loader loaderClass="org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader" cachingAllowed="false"
         />
+	-->
 
-        <Resources className="org.apache.catalina.webresources.StandardRoot">
+        <Resources className="org.apache.catalina.webresources.StandardRoot" cachingAllowed="false">
                 <PreResources className="org.apache.catalina.webresources.DirResourceSet"
                         base="IMPL_CLASSES"
                         internalPath="/"
