@@ -327,6 +327,22 @@ runMaven() {
     
     if [ "$TARGET" == "build" ] ; then
       mvn clean compile package -e -Dgrm.off=true -Dmaven.test.skip=true
+      
+      # Transfer newly packaged jar to coeus-webapp lib directory
+      local webtar=$KC/coeus-webapp/target
+      local impltar=$KC/coeus-impl/target 
+      local implname=$(ls -1 $impltar/ | grep -iP '^coeus-impl.*?(?!\.jar)$' | sed 's/.jar//' | head -n1)
+      local webname=$(ls -1 $webtar/ | grep -iP '^coeus-webapp.*?(?!\.war)$' | sed 's/.war//' | head -n1)
+      local weblib=$webtar/$webname/WEB-INF/lib
+      local impljar=$impltar/${implname}.jar
+      if [ ! -d $weblib ] ; then
+        echo "ERROR!!! $weblib does not exist. Could not transfer $impljar"
+      elif [ ! -f $impljar ] ; then
+        echo "ERROR!!! $impjar does not exist. Could not transfer to $weblib"
+      else
+        echo "Copying $impljar to $weblib"
+        cp $impljar $weblib
+      fi
     elif [ "$TARGET" == "compile" ] ; then
       mvn compiler:compile -e -Dgrm.off=true
     fi
@@ -419,12 +435,14 @@ configureKcConfig() {
   DB_SERVICE_NAME="$(propertyFileLookup DB_SERVICE_NAME)"
   DB_SCHEMA="$(propertyFileLookup DB_SCHEMA)"
   DB_PASSWORD="$(propertyFileLookup DB_PASSWORD)"
+  AUTH_SYSTEM_TOKEN="$(propertyFileLookup AUTH_SYSTEM_TOKEN)"
 
   cat kc-config.xml \
     | sed "s/DB_HOST/$DB_HOST/g" \
     | sed "s/DB_SERVICE_NAME/$DB_SERVICE_NAME/g" \
     | sed "s/DB_SCHEMA/$DB_SCHEMA/g" \
     | sed "s/DB_PASSWORD/$DB_PASSWORD/g" \
+    | sed "s/AUTH_SYSTEM_TOKEN/$AUTH_SYSTEM_TOKEN/g" \
     > $BASE/kc-config.xml
 }
 

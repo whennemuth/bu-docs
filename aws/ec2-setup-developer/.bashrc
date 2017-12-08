@@ -38,13 +38,20 @@ rsync-impl-resources() {
 }
 
 rsync-impl-jar() {
-  rsync -a /opt/kuali/kc/coeus-impl/target/coeus-impl-1705.0034-SNAPSHOT.jar /opt/kuali/kc/coeus-webapp/target/coeus-webapp-1705.0034-SNAPSHOT/WEB-INF/lib
+  local webtar=/opt/kuali/kc/coeus-webapp/target
+  local impltar=/opt/kuali/kc/coeus-impl/target
+  local implname=$(ls -1 $impltar/ | grep -iP '^coeus-impl.*?(?!\.jar)$' | sed 's/.jar//' | head -n1)
+  local webname=$(ls -1 $webtar/ | grep -iP '^coeus-webapp.*?(?!\.war)$' | sed 's/.war//' | head -n1)
+  local weblib=$webtar/$webname/WEB-INF/lib
+  local impljar=$impltar/${implname}.jar
+
+  rsync -a $impljar $weblib
 }
 
 gitpull() {
   cd /opt/kuali/kc
-  git checkout meatball
-  git pull origin meatball
+  git checkout dashboard
+  git pull origin dashboard
 }
 
 killtomcat() {
@@ -64,7 +71,7 @@ runkc() {
 redeploy() {
   local pull=""
   read -p "Pull all code from git first? ('y' or 'enter' for no): " pull
-  if [ "$pull" == "y" ] || [ "$pull" == "Y"] ; then
+  if [ "${pull,,}" == "y" ] ; then
     gitpull
   fi
 
