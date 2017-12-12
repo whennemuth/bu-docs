@@ -45,6 +45,8 @@ rsync-impl-jar() {
   local weblib=$webtar/$webname/WEB-INF/lib
   local impljar=$impltar/${implname}.jar
 
+  rm -f $weblib/coeus-impl-*.jar
+
   rsync -a $impljar $weblib
 }
 
@@ -98,4 +100,3 @@ alias scpsandbox='scp -C -i ~/.ssh/buaws-kuali-rsa /opt/kuali/kc/coeus-webapp/ta
 alias redeployimpl='redeploy coeus-impl'
 alias redeployall='redeploy'
 alias runkc='runkc'
-
