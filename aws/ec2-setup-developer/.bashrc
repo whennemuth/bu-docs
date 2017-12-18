@@ -52,8 +52,16 @@ rsync-impl-jar() {
 
 gitpull() {
   cd /opt/kuali/kc
-  git checkout dashboard
-  git pull origin dashboard
+  local branch="$1"
+  [ -z "$branch" ] && branch=master
+  local branchtest="$(git rev-parse --verify --quiet $branch)" 
+  if [ -n "$branchtest" ] ; then
+    git checkout $branch
+    git pull origin $branch
+  else
+    git fetch origin $branch
+    git checkout -b $branch
+  fi
 }
 
 killtomcat() {
@@ -74,7 +82,10 @@ redeploy() {
   local pull=""
   read -p "Pull all code from git first? ('y' or 'enter' for no): " pull
   if [ "${pull,,}" == "y" ] ; then
-    gitpull
+    local branch=""
+    read -p "What git branch to pull? (enter key for default of 'dashboard'): " branch
+    [ -z "$branch" ] && branch=dashboard
+    gitpull $branch
   fi
 
   local module="$1"
