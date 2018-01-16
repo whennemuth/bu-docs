@@ -36,3 +36,24 @@ SHORTCUT: Make an alias that cherry-picks the chrome debug link out of console o
    The following example picks the url out of node console ouput running in a docker container:
 
      alias debuglink='docker logs core | grep "chrome-devtools" | tail -n1'
+
+
+NOTE: You cannot do this for coi as the server javascript is transpiled.
+      However you can write out variables as json to a file by adding something like this to the transpiled javascript file:
+
+function logForWarren(obj) {
+  var fs = require('fs');
+  var filename='notification-service';
+  var filepath='/var/research-coi-config/'+filename+'.log';
+  fs.appendFile(filepath, JSON.stringify(obj)+',', function (err) {
+    if (err) {
+      console.log("BU-CUSTOMIZATION ERROR: " + err);
+      throw err;
+    }
+    console.log(filepath + ' saved!');
+  });
+}
+
+Then you would call this as follows:
+
+logForWarren({"myvar":myvar, "myvar2":myvar2});

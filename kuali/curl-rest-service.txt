@@ -7,7 +7,14 @@ tcpdump -XX -i docker0 dst 172.17.0.3 | grep 'eyJhbGc'
 # Get all status info from coi for a specific project (project id = 23
 curl -i \
 -X GET \
-http://localhost:8092/api/coi/project-disclosure-statuses/KC-PD/23 \
+http://localhost:8092/api/coi/project-disclosure-statuses/KC-PD/2 \
+--data '{}' \
+--header "Content-Type: application/json" \
+--header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk"
+
+curl -i \
+-X GET \
+https://kuali-research-qa.bu.edu/api/coi/project-disclosure-statuses/KC-PD/2 \
 --data '{}' \
 --header "Content-Type: application/json" \
 --header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk"
@@ -35,3 +42,27 @@ curl \
 -H 'Content-Type: application/json' \
 -d @users.json \
 http://localhost:3000/api/v1/users
+
+
+# Get disclosure info from coi for a specific user and project (user id = U21967744)
+curl -i \
+-X GET \
+http://localhost:8092/api/coi/users/U21967744/disclosures/annual \
+--data '{}' \
+--header "Content-Type: application/json" \
+--header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk"
+
+curl -i \
+-X GET \
+https://kuali-research-qa.bu.edu/api/coi/users/U21967744/disclosures/annual \
+--data '{}' \
+--header "Content-Type: application/json" \
+--header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk"
+
+
+
+curl \
+-H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVhMzgzMDU3OTU1MjMyMDA4NzRmMmUwYyIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTQ1MTY3ODMxLCJpYXQiOjE1MTM2MzE4MzF9.uy6srJZbhnmP4266wFNXwaIawGhX0bZt9Gs0N6WVlUE" \
+-H "Content-Type: application/json" \
+-X POST \
+-d '{"displayName":"luigi-service-user"}' https://kuali-research-qa.bu.edu/api/v1/apps

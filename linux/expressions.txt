@@ -65,7 +65,7 @@ ssh-keygen -b 2048 -t rsa -f bu_kuali_id_jenkins_rsa -q -N ""
 git log --tags --simplify-by-decoration --pretty="format:%h %ci %d" -n 10
 
 # Show only the names of files that have been committed in the last 3 months by the specified committers
-git log --no-merges --committer=wrh --committer=mukadder --name-only --pretty=format:"" | sort -u
+git log --no-merges --committer=wrh --committer=mukadder --name-only --pretty=format:"" --since=3.months.ago | sort -u
 
 # urlencode a string. Can be used to supply a password along with a command against a git repository that requires authentication (if not using a key).
 ENCODED_PASSWORD="$(echo -ne $GIT_PASSWORD | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')"
@@ -75,4 +75,11 @@ git pull https://$GIT_USER:$ENCODED_PASSWORD@myrepo master
 base64var="$(base64 -w 0 myfile.txt)"
 echo ${base64var} | base64 --decode > myfile.copy.txt
 
-
+# Grep a javascript codebase without getting minified results and map files:
+grep -r \
+--exclude=*.bundle.js \
+--exclude=bundle.js \
+--exclude=*.min.js \
+--exclude=*.min.js.* \
+--exclude=*.map \
+'NODE_ENV' .
