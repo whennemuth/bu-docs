@@ -1,24 +1,50 @@
 
 # Connect to the atlas mongo "core-development" database and list out all of the collections.
-mongo "mongodb://ci-cluster-shard-00-00-nzjcq.mongodb.net:27017,ci-cluster-shard-00-01-nzjcq.mongodb.net:27017,ci-cluster-shard-00-02-nzjcq.mongodb.net:27017/test?replicaSet=ci-cluster-shard-0" \
---ssl \
---authenticationDatabase admin \
---db core-development \
---username admin \
---password [password] && \
-use core-development && \
-db.getCollectionNames()
+mongo \
+  "mongodb://ci-cluster-shard-00-00-nzjcq.mongodb.net:27017/test?replicaSet=ci-cluster-shard-0" \
+  --ssl \
+  --authenticationDatabase admin \
+  --db core-development \
+  --username admin \
+  --password [password] && \
+  use core-development && \
+  db.getCollectionNames()
 
 
 # This works to move dump all data from the local mongo "core-development" database on the AWS instance to the atlas mongo "core-development" database
 mongodump --archive -d "core-development" | \
-mongorestore --host ci-cluster-shard-0/ci-cluster-shard-00-00-nzjcq.mongodb.net:27017,ci-cluster-shard-00-01-nzjcq.mongodb.net:27017,ci-cluster-shard-00-02-nzjcq.mongodb.net:27017 \
---archive \
---ssl \
--u admin \
--p '[password]' \
---authenticationDatabase admin \
---nsExclude 'admin.system.users' \
---nsExclude 'admin.system.roles' \
---drop \
---dryRun
+mongorestore \
+  --host ci-cluster-shard-0/ci-cluster-shard-00-00-nzjcq.mongodb.net:27017,ci-cluster-shard-00-01-nzjcq.mongodb.net:27017,ci-cluster-shard-00-02-nzjcq.mongodb.net:27017 \
+  --archive \
+  --ssl \
+  -u admin \
+  -p '[password]' \
+  --authenticationDatabase admin \
+  --nsExclude 'admin.system.users' \
+  --nsExclude 'admin.system.roles' \
+  --drop \
+  --dryRun
+
+# Connect to atlas db, referencing primary shard only.
+mongo \
+#  "mongodb://ci-cluster-shard-00-00-nzjcq.mongodb.net:27017/core-development" \
+  "mongodb://ci-cluster-shard-00-00-nzjcq.mongodb.net:27017" \
+  --verbose --ssl \
+  --authenticationDatabase admin \
+  --username admin \
+  --password [password] \
+  --eval 'db.getSisterDB("core-development").getCollection("institutions").find({"name":"Kuali"})'
+#  --eval 'db.getCollection("institutions").find({"name":"Kuali"})'
+
+
+
+mongo \
+  --ssl \
+  --host mongodb://ci-cluster-shard-00-00-nzjcq.mongodb.net:27017,ci-cluster-shard-00-01-nzjcq.mongodb.net:27017,ci-cluster-shard-00-02-nzjcq.mongodb.net:27017/core-development?replicaSet=ci-cluster-shard-0 \
+  --verbose \
+  --authenticationDatabase admin \
+  --username admin \
+  --password [password] \
+  --eval 'db.getCollection("institutions").find({"name":"Kuali"})'
+#  --eval 'db.runCommand( { listCollections: 1 } )'
+

@@ -66,3 +66,23 @@ curl \
 -H "Content-Type: application/json" \
 -X POST \
 -d '{"displayName":"luigi-service-user"}' https://kuali-research-qa.bu.edu/api/v1/apps
+
+
+curl \
+-X POST \
+-H "Authorization: Basic $(echo -n "wrh:password" | base64 -w 0)" \
+-H "Content-Type: application/json" \
+"https://kuali-research-qa.bu.edu/api/v1/auth/authenticate"
+
+curl \
+-X POST \
+-H "Content-Type: application/json" \
+"https://wrh:password@kuali-research-qa.bu.edu/api/v1/auth/authenticate"
+
+
+curl -i \
+-X GET \
+https://kuali-research-qa.bu.edu/api/v1/users?sort=uid \
+--header "Content-Type: application/json" \
+--header "Authorization: Bearer $(curl -X POST -H "Authorization: Basic $(echo -n "wrh:password" | base64 -w 0)" -H "Content-Type: application/json" https://kuali-research-qa.bu.edu/api/v1/auth/authenticate | sed 's/token//g' | sed "s/[{}\"':]//g" | sed "s/[[:space:]]//g")"
+
