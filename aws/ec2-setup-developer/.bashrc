@@ -34,7 +34,7 @@ promptMaven() {
 }
 
 rsync-impl-resources() {
-  rsync -a --exclude '*.java' /opt/kuali/kc/coeus-impl/src/main/resources /opt/kuali/kc/coeus-impl/target/classes;
+  rsync -a --exclude '*.java' /opt/kuali/kc/coeus-impl/src/main/resources/* /opt/kuali/kc/coeus-impl/target/classes;
 }
 
 rsync-impl-jar() {
