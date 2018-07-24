@@ -35,13 +35,23 @@ https://kuali-research-qa.bu.edu/api/coi/project-disclosure-statuses/KC-PD/2 \
 	}
 ]
 
-
+# Add a new user
 curl \
 -X POST \
 -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjU5ZDNhZjUwNzEwODM2MDA4NzNlNWFlMiIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoxNTM4NTgxMjAwLCJpYXQiOjE1MDcwNDUyMDB9.H-Dzs9zomxA3VyqPNYVP2f3l4NX6kzM2A6dnPlSLUTk' \
 -H 'Content-Type: application/json' \
--d @users.json \
+-d @user.json \
 http://localhost:3000/api/v1/users
+
+# Add multiple users. You are in a directory that has multiple user#.json files (where # is an integer)
+for f in user*.json ; do \
+  curl \
+  -X POST \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViMTA1MjY2Mzg2OTk0MDM3NWJiMzhhMCIsImlzcyI6Imt1YWxpLmNvIiwiZXhwIjoyNzM3Mzk2MzI2LCJpYXQiOjE1Mjc3OTYzMjZ9.V33OgmfwiHeim2DEJJzCr6lSgsOC7qUAd2YRt2Q0NAo' \
+  -H 'Content-Type: application/json' \
+  -d @$f \
+  https://kuali-research-qa.bu.edu/api/v1/users
+done
 
 
 # Get disclosure info from coi for a specific user and project (user id = U21967744)
