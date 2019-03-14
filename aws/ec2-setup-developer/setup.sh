@@ -13,6 +13,8 @@ if [ ! -d $BASE ] ; then
   sudo chown -R ec2-user $BASE
 fi
 KC=$BASE/kc
+TOMCAT_VERSION=8.5.38
+TOMCAT_HOME=/usr/share/apache-tomcat-$TOMCAT_VERSION
 
 install() {
 
@@ -51,6 +53,8 @@ build() {
 
   configureContextXml
 
+  configureLog4j
+
   configureKcConfig
 }
 
@@ -70,6 +74,8 @@ revert() {
 
   configureContextXml
 
+  configureLog4j
+
   configureKcConfig
 
   [ "${1,,i}" == "run" ] && run
@@ -80,8 +86,37 @@ run() {
   runKuali
 }
 
+
 installJava() {
-  NOTE: Install Oracle JDK, NOT Open JDK
+  if isAmazonLinux ; then
+    installCorretto
+  elif yummable ; then
+    installOpenJDK
+  else
+    installOracleJDK
+  fi
+}
+
+
+installCorretto() {
+  curl --location https://d2jnoze5tfhthg.cloudfront.net/java-11-amazon-corretto-devel-11.0.2.9-2.x86_64.rpm > /tmp/java-11-corretto.rpm
+  yum install -y /tmp/java-11-corretto.rpm
+  idx=$(echo "$(echo "" | alternatives --config java)" | grep -i 'corretto' | grep -i 'java-11' | grep -oP '\s\d\s' | xargs)
+  echo $idx | alternatives --config java <&0
+  setNewJavaHome
+}
+
+
+installOpenJDK() {
+  cd /usr/local
+  curl --location https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz | tar -xvzf -
+  idx=$(echo "$(echo "" | alternatives --config java)" | grep -iP '((java)|(jdk))\-?11' | grep -oP '\s\d\s' | xargs)
+  echo $idx | alternatives --config java <&0
+  setNewJavaHome
+}
+
+
+installOracleJDK() {
   wget \
     -O /tmp/jdk-8u141-linux-x64.tar.gz \
     --no-cookies \
@@ -94,17 +129,46 @@ installJava() {
   # Existing java was 1.7, so new install should be 2nd, thus...
   update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.8.0_141/bin/java" 1
   echo "2" | update-alternatives --config java <&0
-  # Make path and java home get set at startup
+  setNewJavaHome
+}
+
+
+# Create a script that executes on startup to configure JAVA_HOME and PATH
+# Remove all existing java bin directory paths from PATH, replacing with the specified JAVA_HOME parameter as JAVA_HOME/bin.
+# Then export both JAVA_HOME and PATH.
+# This effectively removes all prior "knowledge" of java executables and resets against the specified JAVA_HOME
+setNewJavaHome() {
+  local JHOME=$1
+  [ -z "$JHOME" ] && local JHOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
+  if [ -z "$JHOME" ] ; then
+    echo "ERROR! JAVA_HOME and PATH not set!!!"
+    return 1
+  fi
+  
   cat <<-EOF > /etc/profile.d/set-java-home.sh
-    export JAVA_HOME=/usr/lib/jvm/jdk1.8.0_141/
-    if [ -z "\$(echo \$PATH | grep /usr/lib/jvm/jdk1.8.0_141/)" ] ; then
-      export PATH=\$PATH:/usr/lib/jvm/jdk1.8.0_141/bin
-    fi
+  export JAVA_HOME=$JHOME
+  export PATH=\$(echo \$PATH | awk '
+    BEGIN {
+      RS = ":" ; ORS = ""
+    }
+    {
+      # Reprint out all PATH elements EXCEPT for those that indicate a jvm/jdk bin directory
+      if (\$1 !~ /^.*((\/jvm\/)|(\/jdk)).*$/) {   
+        print \$1":"
+      }
+    }
+    END {
+      # Having skipped reprinting all java bin directories, print the desired bin directory at the end of PATH
+      print "$JHOME/bin" 
+    }'
+  )
 EOF
   source /etc/profile.d/set-java-home.sh
-  # The version should now read as "1.8.0_141"
   java -version
+  echo "JAVA_HOME = $JAVA_HOME"
+  echo "PATH = $PATH"
 }
+
 
 installMaven() {
   local mvndir='/usr/share/maven'
@@ -113,9 +177,9 @@ installMaven() {
     rm -rf $mvndir
   fi
   mkdir -p $mvndir
-  curl -fsSL http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz | tar -xzC $mvndir --strip-components=1
+  curl -fsSL http://apache.osuosl.org/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.tar.gz | tar -xzC $mvndir --strip-components=1
   # The following symlink should make mvn available as a command because /usr/bin is already part of the PATH env variable.
-  ln -s $mvndir/bin/mvn /usr/bin/mvn
+  ln -f -s $mvndir/bin/mvn /usr/bin/mvn
   mvn --version
 }
 
@@ -129,13 +193,26 @@ installTools() {
   # yum install -y nodejs 
 }
 
+yummable() {
+  yum --help > /dev/null 2>&1
+  [ $? -eq 0 ]
+}
+
+isAmazonLinux() {
+  local rls=$(cat /etc/*-release 2> /dev/null)
+  local isAmznLnx="true" # Assume false to start
+  [ -z "$(echo $rls | grep -i amazon)" ] && isAmznLnx="false"
+  [ -z "$(echo $rls | grep -i linux)" ] && isAmznLnx="false"
+  [ $isAmznLnx == "true" ] && true || false
+}
+
 installTomcat8() {
-  if [ -d /usr/share/apache-tomcat-8.5.20 ] ; then
-    rm -rf /usr/share/apache-tomcat-8.5.20
+  if [ -d ${TOMCAT_HOME} ] ; then
+    rm -rf ${TOMCAT_HOME}
   fi
-  curl -fsSL http://ftp.itu.edu.tr/Mirror/Apache/tomcat/tomcat-8/v8.5.20/bin/apache-tomcat-8.5.20.tar.gz | tar -xzC /usr/share
-  sudo chown -R ec2-user /usr/share/apache-tomcat-8.5.20
-  sudo chmod -R 777 /usr/share/apache-tomcat-8.5.20
+  curl -fsSL http://ftp.itu.edu.tr/Mirror/Apache/tomcat/tomcat-8/v8.5.38/bin/apache-tomcat-8.5.38.tar.gz | tar -xzC /usr/share
+  sudo chown -R ec2-user ${TOMCAT_HOME}
+  sudo chmod -R 777 ${TOMCAT_HOME}
 }
 
 getKuali() {
@@ -392,20 +469,18 @@ checkAwardNotice() {
 }
 
 copyJarsToLibDir() {
-  local base=/usr/share/apache-tomcat-8.5.20
-  local lib=$base/lib
-  local conf=$base/conf/Catalina/localhost
+  local lib=$TOMCAT_HOME/lib
+  local conf=$TOMCAT_HOME/conf/Catalina/localhost
 
   # Add to the tomcat lib directory the extra jars needed.
-  #/usr/share/apache-tomcat-8.5.20 cp spring-instrument-tomcat-3.2.13.RELEASE.jar $lib
+  #${TOMCAT_HOME} cp spring-instrument-tomcat-3.2.13.RELEASE.jar $lib
   cp ojdbc7.jar $lib
-  cp org.eclipse.persistence.oracle-2.4.2.jar $lib
+  cp org.eclipse.persistence.oracle-2.7.2.jar $lib
 }
 
 configureContextXml() {
-  local base=/usr/share/apache-tomcat-8.5.20
-  local lib=$base/lib
-  local conf=$base/conf/Catalina/localhost
+  local lib=$TOMCAT_HOME/lib
+  local conf=$TOMCAT_HOME/conf/Catalina/localhost
 
   # Put the context xml for kuali where tomcat will look for it.
   [ ! -d $conf ] && mkdir -p $conf
@@ -416,7 +491,9 @@ configureContextXml() {
     return 1
   fi
   local DOCBASE=$TARGETDIR/$(ls -1 $TARGETDIR/ | grep -iP '^coeus-webapp.*?(?!\.war)$' | sed 's/.war//' | head -n1)
-  local IMPL_CLASSES=$KC/coeus-impl/target/classes
+  local DOCLIB=$DOCBASE/WEB-INF/lib
+  local IMPL_TARGET=$KC/coeus-impl/target
+  local IMPL_CLASSES=$IMPL_TARGET/classes
   local WORKDIR=$TARGETDIR/workdir
 
   [ ! -d $WORKDIR ] && mkdir -p $WORKDIR
@@ -425,8 +502,74 @@ configureContextXml() {
     | sed "s|DOCBASE|$DOCBASE|" \
     | sed "s|IMPL_CLASSES|$IMPL_CLASSES|" \
     | sed "s|WORKDIR|$WORKDIR|" \
+    | sed "s|COEUS_IMPL_JAR|$(ls -1 $DOCLIB | grep -i 'coeus\-impl\-.*\.jar')|g" \
     > $conf/kc.xml
 }
+
+# catalina.sh unsets CLASSPATH, then rebuilds in part using instructions in setenv.sh. So, you cannot simply set CLASSPATH before you start tomcat.
+# Extract the log4j jars from the war file and put them into the tomcat lib directory so they can appear in the bootstrap classpath.
+# Need to also supply jackson libraries as log4j2-tomcat.xml configuration has a <JsonLayout for one of its appenders.
+# woodstox-core if for xml-based appenders in case those are used.
+configureLog4j() {
+  local lib=${TOMCAT_HOME}/log4j2/lib
+  local TARGETDIR=$KC/coeus-webapp/target
+  local DOCBASE=$TARGETDIR/$(ls -1 $TARGETDIR/ | grep -iP '^coeus-webapp.*?(?!\.war)$' | sed 's/.war//' | head -n1)
+  local DOCLIB=$DOCBASE/WEB-INF/lib
+
+  [ ! -d $TOMCAT_HOME/log4j2/lib ] && mkdir -p $TOMCAT_HOME/log4j2/lib
+  [ ! -d $TOMCAT_HOME/log4j2/conf ] && mkdir -p $TOMCAT_HOME/log4j2/conf
+  \cp -f log4j2-tomcat.xml $TOMCAT_HOME/conf
+  \cp -f log4j2-tomcat.xml $TOMCAT_HOME/log4j2/conf
+ 
+  copyMavenDependency "log4j-core" "$DOCLIB" "$lib"
+  copyMavenDependency "log4j-api" "$DOCLIB" "$lib"
+  copyMavenDependency "log4j-jul" "$DOCLIB" "$lib"
+  copyMavenDependency "log4j-appserver" "$DOCLIB" "$lib"
+  copyMavenDependency "woodstox-core" "$DOCLIB" "$lib"
+  copyMavenDependency "stax" "$DOCLIB" "$lib"
+  copyMavenDependency "jackson-core" "$DOCLIB" "$lib"
+  copyMavenDependency "jackson-databind" "$DOCLIB" "$lib"
+  copyMavenDependency "jackson-annotations" "$DOCLIB" "$lib"
+}
+
+# Search a specified directory for a maven dependency artifact and copy it to the specified target directory if found.
+# If not found, analyze the pom.xml file for enough artifact info to download the artifact from maven central to the target directory.
+copyMavenDependency() {
+  local artifactId="$1"
+  local sourcedir="$2"
+  local targetdir="$3"
+
+  if [ -n "$(ls -1 $sourcedir | grep $artifactId)" ] ; then
+    # The artifact was built and can be found in the target directory
+    echo "At least 1 $sourcedir/${artifactId}* found. Copying to $targetdir"
+    \cp "$sourcedir/${artifactId}"* $targetdir
+  else
+    # Query the pom for artifact details and download the artifact from maven central repository
+    echo "No artifacts found in $sourcedir matching $artifactId. Downloading from maven central"
+    local property="maven-dependency-plugin.version"
+    local pluginver=$(cat $KC/pom.xml | grep -oP "(?<=<${property}>).*(?=</${property}>)")
+    local groupId="$(getMavenDependencyAttribute $artifactId 'groupId')"
+    local version="$(getMavenDependencyAttribute $artifactId 'version')"
+    property="$(echo "$version" | grep -oP '(?<=\$\{).*?(?=\})')"
+    # If the version holds a property, get the property value set the version with it.
+    [ -n "$property" ] && version=$(cat $KC/pom.xml | grep -oP "(?<=<${property}>).*(?=</${property}>)")
+    
+    mvn -f $KC/pom.xml \
+      org.apache.maven.plugins:maven-dependency-plugin:${pluginver}:copy \
+      -Dartifact=${groupId}:${artifactId}:${version} \
+      -DoutputDirectory=$targetdir
+  fi
+}
+
+getMavenDependencyAttribute() {
+  local artifactId="$1"
+  local attribute="$2"
+  tr -d '\n\t ' < $KC/pom.xml \
+    | sed -e 's/<\/dependency>/\n/g' \
+    | grep '<artifactId>log4j-appserver</artifactId>' \
+    | grep -oP '(?<=<'$attribute'>).*?(?=</'$attribute'>)'
+}
+
 
 # Put the missing values into kc-config.xml
 configureKcConfig() {
@@ -446,14 +589,25 @@ configureKcConfig() {
     > $BASE/kc-config.xml
 }
 
+java8orLess() {
+  java --version > /dev/null 2>&1
+  [ $? -gt 0 ]
+}
+
 runKuali() {
-  local TOMCAT=/usr/share/apache-tomcat-8.5.20
-  local JAVA=/usr/lib/jvm/java-1.8.0-openjdk
 
-
+  local classpath="$TOMCAT_HOME/bin/tomcat-juli.jar"
+  classpath="$classpath:$TOMCAT_HOME/bin/bootstrap.jar"
+  classpath="$classpath:$TOMCAT_HOME/lib/*"
+  classpath="$classpath:$TOMCAT_HOME/log4j2/lib/*"
+  classpath="$classpath:$TOMCAT_HOME/log4j2/conf"
+  if java8orLess ; then
+    classpath="$classpath:$JAVA_HOME/lib/tools.jar"
+    local endorsed="-Djava.endorsed.dirs=$TOMCAT_HOME/endorsed"
+  fi
   local CMD=$(cat <<EOF
     java
-      -cp $JAVA/lib/tools.jar:$TOMCAT/bin/tomcat-juli.jar:$TOMCAT/bin/bootstrap.jar:$TOMCAT/lib/*
+      -cp $classpath
       -Xdebug
       -Xrunjdwp:transport=dt_socket,address=1043,server=y,suspend=n
       -Xms1024m
@@ -463,13 +617,15 @@ runKuali() {
       -XX:MaxPermSize=512m
       -noverify
       -Dalt.config.location=/opt/kuali/kc-config.xml
-      -Dcatalina.home=$TOMCAT
-      -Dcatalina.base=$TOMCAT
-      -Djava.endorsed.dirs=$TOMCAT/endorsed
-      -Djava.io.tmpdir=$TOMCAT/temp
+      -Dcatalina.home=$TOMCAT_HOME
+      -Dcatalina.base=$TOMCAT_HOME
+      -Djava.io.tmpdir=$TOMCAT_HOME/temp
       -Dfile.encoding=UTF8
+      -Dlog4j.configurationFile=$TOMCAT_HOME/log4j2/conf/log4j2-tomcat.xml
+      -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager
+      $endorsed
       org.apache.catalina.startup.Bootstrap
-      -config $TOMCAT/conf/server.xml start
+      -config $TOMCAT_HOME/conf/server.xml start
 EOF
   )
 
@@ -485,7 +641,7 @@ EOF
   # opts="$opts -Xrunjdwp:transport=dt_socket,address=1043,server=y,suspend=n"
   # opts="$opts -Dalt.config.location=/opt/kuali/kc-config.xml"
   # export JAVA_OPTS="$opts"
-  # /usr/share/apache-tomcat-8.5.20/bin/catalina.sh run
+  # ${TOMCAT_HOME}/bin/catalina.sh run
 }
 
 propertyFileLookup() {

@@ -3,7 +3,8 @@
         cachingAllowed="false"
         antiResourceLocking="false"
         docBase="DOCBASE"
-        workDir="WORKDIR" >
+        workDir="WORKDIR" 
+        swallowOutput="true" >
 	
         <!--
         <Loader loaderClass="org.springframework.instrument.classloading.tomcat.TomcatInstrumentableClassLoader" cachingAllowed="false"
@@ -28,6 +29,8 @@
                         webAppMount="/WEB-INF/classes" />
         </Resources>
         -->
-<!-- 
--->
+        <Resources>
+                <!-- Trick to force this JAR to be searched for classes before all others. (NOTE: For some reason all attributes must be on the same line. Don't know why) -->
+                <PreResources className="org.apache.catalina.webresources.FileResourceSet" base="DOCBASE/WEB-INF/lib/COEUS_IMPL_JAR" webAppMount="/WEB-INF/lib/COEUS_IMPL_JAR" />
+        </Resources>
 </Context>
