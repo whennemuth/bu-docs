@@ -71,6 +71,11 @@ git log --no-merges --committer=wrh --committer=mukadder --name-only --pretty=fo
 ENCODED_PASSWORD="$(echo -ne $GIT_PASSWORD | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')"
 git pull https://$GIT_USER:$ENCODED_PASSWORD@myrepo master
 
+# Delete a branch from a remote repository
+git push origin :the_remote_branch
+or...
+git push origin --delete the_remote_branch
+
 # Put the content of a file into a variable as base64
 base64var="$(base64 -w 0 myfile.txt)"
 echo ${base64var} | base64 --decode > myfile.copy.txt
