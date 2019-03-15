@@ -32,6 +32,9 @@ grep -P '(Mem)|(Cache)|(Swap)' /proc/meminfo
 tcpdump -XX -n port 8080 | grep -i -P '(forwarded-for)|(REMOTE_USER)' -A 10 -B 10
 tcpdump -XX -n port not 22 | grep -i -P '(forwarded-for)|(REMOTE_USER)' -A 10 -B 10
 tcpdump k /opt/kuali/tls/private/kuali-research.bu.edu-2048bit-sha256-2016.key -i eth0 -dXXn port 8080 or 443
+# See what http(s) traffic is getting into the host bound for coi:
+tcpdump -vvAls0 | grep 'GET' | grep -i '/coi/'
+tcpdump -vvvs 1024 -l -A host kuali-research-qa.bu.edu | grep -i 'kuali-research-qa.bu.edu'
 
 # Find out what the latest release of a major version of tomcat is (tomcat 8 in this case)
 curl "https://archive.apache.org/dist/tomcat/tomcat-8/?C=M;O=A" | grep 'v8' | tail -n 1 | grep -Po '(?<=>)[^<>]+(?=</a>)' | sed 's/\///'
@@ -124,3 +127,28 @@ The b.txt file contains bar and baz lines. The same output is printed to stdout
 Upgrade the version of aws cli to the latest version:
 $ pip install awscli --upgrade --user
 NOTE: This will apply only to the current user.
+
+# Remove all docker containers
+for c in $(docker ps -a --format "{{.ID}}") ; do docker rm -f $c; done
+
+# Remove all docker containers from a certain image "java:6"
+for c in $(docker ps -a --filter ancestor=java:6 --format "{{.ID}}") ; do docker rm -f $c; done
+
+# Remove all docker containers that are exited (no longer running)
+for c in $(docker ps -a --filter status=exited --format "{{.ID}}") ; do docker rm -f $c; done
+
+# Pretty print out all docker mounts for a container.
+docker inspect -f "{{json .Mounts}}" kuali-research | jq
+
+# Pretty print out all docker port bindings for a container.
+docker inspect -f "{{json .HostConfig.PortBindings}}" kuali-research | jq
+
+# Iterate over lines with spaces (below example lists only subdirectories without separating directories with spaces in the name on separate lines)
+find . -type f -iname '*.template' | \
+  while read line; do \
+    echo $line; \
+  done
+
+# Execute a function against file found
+# Example: this use of find searches a diretorie(s) of jar files for any contained file that matches a pattern
+find *.jar -exec jar -tf '{}' \; | grep EncodingDetector

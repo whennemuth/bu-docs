@@ -48,3 +48,9 @@ mongo \
   --eval 'db.getCollection("institutions").find({"name":"Kuali"})'
 #  --eval 'db.runCommand( { listCollections: 1 } )'
 
+
+# Query for a single user by _id
+db.getCollection('users').find({"_id" : ObjectId("59ba91983762d000a5aba716")})
+
+# Query for a token created after a September 18th
+db.getCollection('tokens').find({"createdAt" : { $gte : new ISODate("2018-09-18T00:00:00Z") }});

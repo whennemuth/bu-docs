@@ -1,3 +1,6 @@
+# SEE DOCUMENTATION AT:
+# https://nodejs.org/en/docs/guides/debugging-getting-started/#enabling-remote-debugging-scenarios
+
 
 1) Make sure port 9229 on the application server is accessible.
    If running the app in a docker container, make sure the same port is open.
@@ -25,17 +28,62 @@
    
    Paste this url to the clipboard.
 
-5) Open chrome and paste the url from the clipboard into the navigation window and hit enter.
+   NOTE the url above is what node 6.x would return. Node 8.x works differently - the function below shows how:
+
+   debugurl() {
+   
+     local nodeversion="$1"
+   
+     if [ $nodeversion == "6.x" ] ; then
+       docker logs core | grep "chrome-devtools" | tail -n1
+       return
+     fi
+   
+     # nodeversion must be 8.x
+     docker exec core curl 127.0.0.1:9229/json/list  > /tmp/core.debug.link.temp
+   
+     if [ -n "(cat /tmp/core.debug.link.temp 2>/dev/null | grep -i debuglink)" ] ; then
+       local refresh="true"
+     elif [ ! -f /tmp/core.debug.link ] ; then
+       local refresh="true"
+     elif [ -z "(cat /tmp/core.debug.link 2>/dev/null | grep -i debuglink)" ] ; then
+       local errmsg="Cannot find a debug link!"
+       local refresh="true"
+     fi
+   
+     if [ $refresh ] ; then
+       [ -f /tmp/core.debug.link ] && rm -f /tmp/core.debug.link
+       mv /tmp/core.debug.link.temp /tmp/core.debug.link
+     fi
+   
+     rm -f /tmp/core.debug.link.temp
+   
+     [ $errmsg ] && echo $errmsg && return
+   
+     cat /tmp/core.debug.link \
+       | grep devtools \
+       | sed 's/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*/127.0.0.1/g' \
+       | sed 's/[",]//g' \
+       | sed 's/devtools[a-zA-Z]*//' \
+       | sed 's/://'
+   }   
+
+5) Tunnel into the server running node. Example:
+      
+      ssh -i ~/.ssh/buaws-kuali-rsa -N -v -L 9229:10.57.236.244:9229 -L 3000:10.57.236.244:3000 wrh@10.57.236.244
+
+6) Open chrome and paste the url from the clipboard into the navigation window and hit enter.
    A debugging screen should appear with a navigation frame displaying server content to the left.
 
-6) Using the navigation frame, select a js file and place a breakpoint somewhere on the page where you expect execution to reach.
+7) Using the navigation frame, select a js file and place a breakpoint somewhere on the page where you expect execution to reach.
    Open up a new tab in chrome and navigate to a website location that should trigger the code with the breakpoint.
    You should see execution break at the breakpoint and you can step through the code from there.
 
 SHORTCUT: Make an alias that cherry-picks the chrome debug link out of console output.
+   Make sure the debugurl function above is in your ~/.bashrc file.
    The following example picks the url out of node console ouput running in a docker container:
 
-     alias debuglink='docker logs core | grep "chrome-devtools" | tail -n1'
+     alias debuglink='debugurl 8.x'
 
 
 NOTE: You cannot do this for coi as the server javascript is transpiled.

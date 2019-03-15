@@ -1,0 +1,18 @@
+{
+    "lowerUsername" : "rest.svc.user",
+    "name" : "REST_SERVICE_USER",
+    "firstName" : "",
+    "lastName" : "",
+    "username" : "rest.svc.user",
+    "updatedBy" : {
+        "id" : "5c081045ee360d039f80b57e"
+    },
+    "active" : true,
+    "approved" : true,
+    "role" : "service",
+    "groupId" : null,
+    "phone" : null,
+    "schoolId" : null,
+    "scopesCm" : null,
+    "ssoProps" : null
+}

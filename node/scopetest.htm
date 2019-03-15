@@ -1,0 +1,49 @@
+<script>
+
+  function MyObj(p) {
+    var param = p;
+    this.parm = p;
+    
+    this.get = {
+      VAR: function() {
+        return param;
+      },
+      THIS: () => {
+        // this object of the arrow function itself isn't bound, so this of parent object is still in scope.
+        return this.parm;
+      }
+    }
+  }
+
+  function getClosureObj(parm) {
+    var o = new MyObj(parm);
+    // once o.get is returned, o will be out of scope, but the returned object will still have access to its variables (one feature of closures).
+    return o.get;
+  }
+
+  function MyProxy(c) {
+    var closure = c;
+    
+    this.get = {
+      VAR: function() {
+        return closure.VAR();
+      },
+      THIS: function() {
+        return closure.THIS();
+      }
+    }
+  }
+
+  // 
+  var o = new MyObj('apples');
+  alert(o.get.VAR());
+  alert(o.get.THIS());
+
+  // Now test closure approach
+  var c = getClosureObj('apples');
+  var p = new MyProxy(c);
+  alert(p.get.VAR());
+  alert(p.get.THIS());
+
+
+</script>

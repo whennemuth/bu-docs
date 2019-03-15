@@ -1,0 +1,20 @@
+{
+    "lowerUsername" : "infopwc",
+    "name" : "infopwc",
+    "email" : null,
+    "username" : "infopwc",
+    "updatedBy" : {
+        "id" : "5b7b252895ca650375fb18d2"
+    },
+    "password" : "password",
+    "active" : true,
+    "approved" : true,
+    "role" : "admin",
+    "firstName" : null,
+    "groupId" : null,
+    "lastName" : null,
+    "phone" : null,
+    "schoolId" : null,
+    "scopesCm" : null,
+    "ssoProps" : null
+}
