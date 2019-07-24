@@ -1,4 +1,2 @@
-/ssh.sh
-/gitflow/kc.*
-/gitflow/GitflowPractice.pdf
-/**/*#
+private.sh
+updateUsers.log
