@@ -143,6 +143,20 @@ docker inspect -f "{{json .Mounts}}" kuali-research | jq
 # Pretty print out all docker port bindings for a container.
 docker inspect -f "{{json .HostConfig.PortBindings}}" kuali-research | jq
 
+# Remove all docker images 6 months or older
+docker rmi $(docker images | awk '($4 >= 6 && $5 == "months") || ($5 == "years") {print $3}')) 2> /dev/null && \
+docker rmi $(docker images -a --filter dangling=true -q)
+
+# Iterate over lines in a file
+while read line; do
+  echo $line
+done < myfile.txt
+
+# Iterate over lines in a file that match certain criterion
+cat myfile.txt | grep 'some filter expression' | while read line; do
+  echo $line
+done
+
 # Iterate over lines with spaces (below example lists only subdirectories without separating directories with spaces in the name on separate lines)
 find . -type f -iname '*.template' | \
   while read line; do \
@@ -152,3 +166,22 @@ find . -type f -iname '*.template' | \
 # Execute a function against file found
 # Example: this use of find searches a diretorie(s) of jar files for any contained file that matches a pattern
 find *.jar -exec jar -tf '{}' \; | grep EncodingDetector
+
+
+# Export a docker container and send it to someone.
+docker export NAME | gzip > NAME.gz
+
+# Receive an exported docker container and import it.
+zcat NAME.gz | docker import - NAME
+docker run -i -t NAME /bin/bash
+
+# To start an interactive shell into a docker container on windows, you must use winpty:
+winpty docker run -ti --name=mycontainer myimage
+
+# To prevent Git Bash Shell doing window path conversion, set the MSYS_NO_PATHCONV environment variable.
+# For example, if you wanted to see what the default configuration file for the nginx image looked like, you would use:
+winpty docker run -ti --name=mycontainer myimage cat nginx /etc/nginx/nginx.conf
+# However, this results in:
+cat: 'C:/Program Files/Git/etc/nginx/nginx.conf': No such file or directory
+# To avoid this:
+export MSYS_NO_PATHCONV=1 && winpty docker run -ti --name=mycontainer myimage cat nginx /etc/nginx/nginx.conf

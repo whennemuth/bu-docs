@@ -1,0 +1,8 @@
+aws ec2 stop-instances --instance-ids i-0f0f920848adfa906
+aws ec2 detach-volume --volume-id vol-0de1b76e3662237f5
+aws ec2 create-snapshot --volume-id vol-0de1b76e3662237f5 --description "Backup for buaws-kuali-rsa-warren"
+aws ec2 create-volume --size 128 --snapshot-id [???] --region us-east-1 --availability-zone us-east-1c --volume-type gp2
+aws ec2 attach-volume --volume-id [???] --instance-id i-0f0f920848adfa906 --device /dev/xvda
+aws ec2 start-instances --instance-ids i-0f0f920848adfa906
+
+NOTE attach-volume command complains about bad device name when run from windows.

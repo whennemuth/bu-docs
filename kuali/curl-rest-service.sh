@@ -31,6 +31,61 @@ initialize() {
     | sed "s/[[:space:]]//g")
 }
 
+getMonolithParameter() {
+  initialize
+  local url=$(cat <<EOF 
+  curl \
+    -i \
+    -X GET \
+    "$HOST/kc/research-sys/api/v1/parameters/?namespace=KC-PD&name=Workload_Balancing_Priority_Stop" \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $TOKEN"
+EOF
+)
+
+echo "$url"
+eval "$url"
+return 0
+  
+  initialize && \
+  curl \
+    -i \
+    -X GET \
+    "$HOST/kc/research-sys/api/v1/parameters/?namespace=KC-PD&name=Workload_Balancing_Priority_Stop" \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $TOKEN"
+}
+
+getMonolithParameterLinks() {
+  initialize && \
+  curl \
+    -i \
+    -X GET \
+    "$HOST/kc/research-sys/api/v1/endpoints" \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $TOKEN"
+}
+
+testInst() {
+echo "HELLO";
+  initialize && \
+  curl \
+    -i \
+    -X GET \
+    $HOST/api/v1/users?sort=uid \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $TOKEN"
+
+return 0; 
+  initialize && \
+  curl \
+    -i \
+    -X GET \
+    $HOST/api/v1/institution \
+    --header "Content-Type: application/json" \
+    --header "Authorization: Bearer $TOKEN"
+}
+
 # Get all status info from coi for a specific project (project id = 23)
 test1() {
   initialize && \
