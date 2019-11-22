@@ -1,0 +1,38 @@
+docker rm -f core && \
+docker run \
+-d \
+-p 3000:3000 \
+-p 27017:27017 \
+-p 9229:9229 \
+--restart unless-stopped \
+--name=core \
+-v /opt/kuali-research-docker/core/build.context/config:/var/core-config \
+-e "START_CMD=node --inspect=0.0.0.0:9229 /var/core/index.js" \
+--env-file /opt/kuali-research-docker/core/build.context/environment.variables.final \
+730096353738.dkr.ecr.us-east-1.amazonaws.com/core:1909.0036
+
+docker rm -f research-portal && \
+docker run \
+-d \
+-p 3005:3005 \
+--restart unless-stopped \
+--name=research-portal \
+-v /opt/kuali-research-docker/research-portal/build.context/config:/var/portal-config \
+-e "START_CMD=node --inspect=0.0.0.0:9228 /var/portal/server/index.js" \
+--env-file /opt/kuali-research-docker/research-portal/build.context/environment.variables.final \
+730096353738.dkr.ecr.us-east-1.amazonaws.com/portal:1909.0036
+
+docker rm -f kuali-research && \
+docker run \
+-d \
+-p 8080:8080 \
+-p 8009:8009 \
+--restart unless-stopped \
+--name kuali-research \
+-v /opt/kuali/main/config:/opt/kuali/main/config \
+-v /var/log/tomcat:/opt/tomcat/logs \
+-v /var/log/kuali/printing:/opt/kuali/logs/printing \
+-v /var/log/kuali/javamelody:/var/log/javamelody \
+-v /var/log/kuali/attachments:/opt/tomcat/temp/dev/attachments \
+730096353738.dkr.ecr.us-east-1.amazonaws.com/coeus-sandbox:1906.0021
+

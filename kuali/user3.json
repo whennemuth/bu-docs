@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "mukadder",
+    "uid" : "mukadder",
+    "email" : "mukadder@bu.edu",
+    "username" : "mukadder",
+    "firstName" : "Hitesh",
+    "lastName" : "Tara",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "approved" : true,
+    "role" : "user",
+    "schoolId" : "U17116978"
+}

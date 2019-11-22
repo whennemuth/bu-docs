@@ -185,3 +185,9 @@ winpty docker run -ti --name=mycontainer myimage cat nginx /etc/nginx/nginx.conf
 cat: 'C:/Program Files/Git/etc/nginx/nginx.conf': No such file or directory
 # To avoid this:
 export MSYS_NO_PATHCONV=1 && winpty docker run -ti --name=mycontainer myimage cat nginx /etc/nginx/nginx.conf
+
+# Archive a dir or file with gzip compression
+tar -czvf name-of-archive.tar.gz /path/to/directory-or-file
+
+# Extract an archive created with gzip compression
+tar -xzvf archive.tar.gz -C /tmp

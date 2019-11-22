@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "cgagnon",
+    "uid" : "cgagnon",
+    "email" : "cgagnon@bu.edu",
+    "username" : "cgagnon",
+    "firstName" : "Christine",
+    "lastName" : "Gagnon",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "approved" : true,
+    "role" : "user",
+    "schoolId" : "U10212518"
+}

@@ -1,0 +1,16 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "mereilly",
+    "name" : "Meghan Reilly",
+    "firstName" : "Meghan",
+    "lastName" : "Reilly",
+    "email" : "mereilly@bu.edu",
+    "username" : "mereilly",
+    "updatedBy" : {
+        "id" : "59b9b7653762d000a5aba710"
+    },
+    "approved" : true,
+    "role" : "admin",
+    "schoolId" : "U92365726"
+}

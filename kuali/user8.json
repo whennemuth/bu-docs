@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "emauro",
+    "uid" : "emauro",
+    "email" : "emauro@bu.edu",
+    "username" : "emauro",
+    "firstName" : "Elizabeth",
+    "lastName" : "Mauro",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "schoolId" : "U54840748",
+    "approved" : true,
+    "role" : "user"
+}

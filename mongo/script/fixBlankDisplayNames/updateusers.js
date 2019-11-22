@@ -1,10 +1,12 @@
 var userlist = {
-  username:{
-    $in:[
-      "dhaywood","wrh","mahichy","mukadder","mkousheh","emauro","smorse","cgagnon"
-    ]
-  },
   $or: [
+    {
+      username: {
+        $in:[
+          "dhaywood","wrh","mahichy","mukadder","mkousheh","emauro","smorse","cgagnon"
+        ]
+      }
+    },
     {
       name: { $eq:null }
     },
@@ -21,6 +23,9 @@ var allNamelessUsers = {
     },
     {
       name: { $exists:false }
+    },
+    {
+      name: { $eq:"" }
     }
   ]
 }

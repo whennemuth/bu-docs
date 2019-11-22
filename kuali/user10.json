@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "jlking",
+    "uid" : "jlking",
+    "email" : "jlking@bu.edu",
+    "username" : "jlking",
+    "firstName" : "Jennifer L",
+    "lastName" : "King",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "schoolId" : "U18916230",
+    "approved" : true,
+    "role" : "user"
+}

@@ -86,7 +86,7 @@ return 0;
     --header "Authorization: Bearer $TOKEN"
 }
 
-# Get all status info from coi for a specific project (project id = 23)
+# # Get all status info from coi for a specific project (project id = 23)
 test1() {
   initialize && \
   curl \
@@ -107,25 +107,23 @@ test2() {
     --data '{}' \
     --header "Content-Type: application/json" \
     --header "Authorization: Bearer $TOKEN"
-
-
-    [
-    	{
-    		"userId":"U15364542",
-    		"disposition":"None",
-    		"annualDisclosureStatus":"Submitted for Approval",
-    		"status":"Up To Date"
-    	},
-    	{
-    		"userId":"U21967744",
-    		"disposition":"None",
-    		"annualDisclosureStatus":"Submitted for Approval",
-    		"status":"Up To Date"
-    	}
-    ]
+    # [
+    # 	{
+    # 		"userId":"U15364542",
+    # 		"disposition":"None",
+    # 		"annualDisclosureStatus":"Submitted for Approval",
+    # 		"status":"Up To Date"
+    # 	},
+    # 	{
+    # 		"userId":"U21967744",
+    # 		"disposition":"None",
+    # 		"annualDisclosureStatus":"Submitted for Approval",
+    # 		"status":"Up To Date"
+    # 	}
+    # ]
 }
 
-# Add a new user
+# # Add a new user
 test3() {
   initialize && \
   curl \
@@ -136,7 +134,7 @@ test3() {
     $HOST/api/v1/users
 }
 
-# Add a new user from a file
+# # Add a new user from a file
 test4() {
   initialize && \
   curl \
@@ -147,7 +145,7 @@ test4() {
     $HOST/api/v1/users
 }
 
-# Add multiple users. You are in a directory that has multiple user#.json files (where # is an integer)
+# # Add multiple users. You are in a directory that has multiple user#.json files (where # is an integer)
 test5() {
   initialize
   for f in user*.json ; do \
@@ -197,17 +195,18 @@ test8() {
 
 # Get a user by object ID
 test9() {
+  read -p 'Enter the user object ID: ' objId
   initialize && \
   curl \
     -i \
     -X GET \
-    $HOST/api/v1/users/5b43b0dea68db20250b3f737 \
+    $HOST/api/v1/users/$objId \
     --header "Content-Type: application/json" \
     --header "Authorization: Bearer $TOKEN"
 }
 
 # Edit a user identified by object ID from data supplied in a file
-test10 {
+test10() {
   initialize && \
   curl \
     -X PUT \

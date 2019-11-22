@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "kkabbara",
+    "uid" : "kkabbara",
+    "email" : "kkabbara@bu.edu",
+    "username" : "kkabbara",
+    "firstName" : "Karim",
+    "lastName" : "Kabbara",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "schoolId" : "U11742203",
+    "approved" : true,
+    "role" : "user"
+}

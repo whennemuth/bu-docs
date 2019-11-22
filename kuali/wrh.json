@@ -1,0 +1,20 @@
+{
+    "lowerUsername" : "wrh",
+    "name" : null,
+    "firstName" : "Warren",
+    "lastName" : "Hennemuth",
+    "email" : "wrh@bu.edu",
+    "phone" : null,
+    "username" : "wrh",
+    "groupId" : null,
+    "schoolId" : "U21967744",
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "active" : true,
+    "approved" : true,
+    "role" : "admin",
+    "scopesCm" : null,
+    "ssoProps" : {},
+    "uid" : "wrh"
+}

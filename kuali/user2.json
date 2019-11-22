@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "mahichy",
+    "uid" : "mahichy",
+    "email" : "mahichy@bu.edu",
+    "username" : "mahichy",
+    "firstName" : "Majda",
+    "lastName" : "Hichy",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "approved" : true,
+    "role" : "user",
+    "schoolId" : "U83224001"
+}

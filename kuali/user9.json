@@ -1,0 +1,22 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "smorse",
+    "uid" : "smorse",
+    "email" : "smorse@bu.edu",
+    "username" : "smorse",
+    "firstName" : "Sarah Elizabeth",
+    "lastName" : "Morse",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "approved" : true,
+    "role" : "user",
+    "active" : true,
+    "groupId" : null,
+    "phone" : null,
+    "schoolId" : "U47462854",
+    "scopesCm" : null,
+    "ssoProps" : {}
+}

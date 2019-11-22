@@ -1,0 +1,17 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "bfitzgib",
+    "uid" : "bfitzgib",
+    "email" : "bfitzgib@bu.edu",
+    "username" : "bfitzgib",
+    "firstName" : "Barry",
+    "lastName" : "Fitzgibbon",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "schoolId" : "U23216736",
+    "approved" : true,
+    "role" : "user"
+}

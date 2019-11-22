@@ -1,0 +1,22 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "dhaywood",
+    "uid" : "dhaywood",
+    "email" : "dhaywood@bu.edu",
+    "username" : "dhaywood",
+    "firstName" : "Dean P",
+    "lastName" : "Haywood",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "approved" : true,
+    "role" : "admin",
+    "schoolId" : "U15364542",
+    "groupId" : null,
+    "phone" : null,
+    "scopesCm" : null,
+    "active" : true,
+    "ssoProps" : {}
+}

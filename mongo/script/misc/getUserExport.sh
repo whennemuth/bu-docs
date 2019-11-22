@@ -3,10 +3,10 @@
 environment=$1
 
 # Set the mongo URI/HOST and any other connection details (except password)
-source initialize.sh $environment
+source $(pwd)/initialize.sh $environment
 
 # Set the username and password for the database
-source private.sh $environment
+source $(pwd)/private.sh $environment
 
 getUserExport() {
   mongoexport \

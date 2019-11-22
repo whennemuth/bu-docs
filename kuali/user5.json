@@ -1,0 +1,22 @@
+{
+    "password":"password",
+    "passwordConfirm":"password",
+    "lowerUsername" : "mkousheh",
+    "uid" : "mkousheh",
+    "email" : "mkousheh@bu.edu",
+    "username" : "mkousheh",
+    "firstName" : "Mohammed A",
+    "lastName" : "Kousheh",
+    "name" : null,
+    "updatedBy" : {
+        "id" : "kuali-system"
+    },
+    "approved" : true,
+    "role" : "user",
+    "schoolId" : "U89971385",
+    "active" : true,
+    "groupId" : null,
+    "phone" : null,
+    "scopesCm" : null,
+    "ssoProps" : {}
+}

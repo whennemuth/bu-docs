@@ -54,3 +54,19 @@ db.getCollection('users').find({"_id" : ObjectId("59ba91983762d000a5aba716")})
 
 # Query for a token created after a September 18th
 db.getCollection('tokens').find({"createdAt" : { $gte : new ISODate("2018-09-18T00:00:00Z") }});
+
+# Query for anyone without a name field or name field value:
+db.getCollection('users').find(
+{
+  $or: [
+    {
+      name: { $eq:null }
+    },
+    {
+      name: { $exists:false }
+    },
+    {
+      name: { $eq:"" }
+    }
+  ]
+});
