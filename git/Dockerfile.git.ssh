@@ -1,0 +1,54 @@
+# This Dockerfile creates a local ssh based git server
+FROM centos:7
+
+RUN \
+  yum -y update && \
+  yum install -y git-all
+
+RUN \
+  yum -y install openssh-server openssh-clients && \
+  chkconfig sshd on && \
+  yum install -y net-tools && \
+  # Install sshd host keys
+  ssh-keygen -A && \
+  ls -la /usr/sbin/ | grep 'sshd'
+
+RUN \
+  adduser git && \
+  mkdir /home/git/common && \
+  mkdir /home/git/.ssh && \
+  cd /home/git/common && \
+  git --bare init && \
+  cd ../.ssh && \
+  ssh-keygen -b 2048 -t rsa -f id_rsa -q -N "" && \
+  cat id_rsa.pub >> /home/git/.ssh/authorized_keys && \
+  mkdir /root/.ssh && \
+  mv id_rsa /root/.ssh/ && \
+  touch /root/.ssh/known_hosts && \
+  chown -R git:git /home/git && \
+  chmod 700 /home/git/.ssh && \
+  chmod 600 /home/git/.ssh/* && \
+  chmod 600 /root/.ssh/* && \
+  git config --global user.email "wrh@bu.edu" && \
+  git config --global user.name "wrh" && \
+  mkdir /tmp/gittest && \
+  cd /tmp/gittest && \
+  git init && \
+  printf "testing1 \ntesting2 \ntesting3 \n" > testing.txt && \
+  git add --all && \
+  git commit -m "First commit" && \
+  git remote add origin git@localhost:common &&\
+  ls -la /usr/sbin/ | grep 'sshd'
+
+RUN \
+  cd /tmp/gittest && \
+  nohup bash -c "/usr/sbin/sshd &" && \
+  sleep 2 && \
+  ps -aux && \
+  eval $(ssh-agent -s) && \
+  ssh-keyscan -t rsa localhost >> /root/.ssh/known_hosts && \
+  ssh-keyscan -t rsa 127.0.0.1 >> /root/.ssh/known_hosts && \
+  ssh-add /root/.ssh/id_rsa && \
+  git push origin master && \
+  git ls-remote -h origin
+

@@ -33,7 +33,7 @@ var allInactiveUsers = { $and: [
       }
     ]
   },
-  { username: { $not: /^deleted\-.*/ }}
+  { lowerUsername: { $not: /^deleted\-.*/ }}
 ]}
 
 var counter=0;
@@ -49,23 +49,28 @@ db.users.find(allInactiveUsers).forEach(function(user) {
   }
 
   function isUpdatable(user) {
-    return isValue(user.username) && isValue(user.email)
+    return isValue(user.lowerUsername)
+    // return isValue(user.username) && isValue(user.email)
   }
 
   function getDeactivatedValue(user) {
     var prefix = "deleted-" + new Date().toJSON().slice(0,10) + "-";
     return {
       username: prefix + user.username,
+      lowerUsername: prefix + user.lowerUsername.toLowerCase(),
       email: prefix + user.email
     }
   }
 
   if(isUpdatable(user)) {
     var updates = getDeactivatedValue(user);
-    print(updates.username + ', ' + updates.email);
+    print(updates.lowerUsername);
+  //   db.users.update( {_id: user._id }, { $set: {
+  //     "username": updates.username,
+  //     "email": updates.email
+  //  }});
     db.users.update( {_id: user._id }, { $set: {
-       "username": updates.username,
-       "email": updates.email
+      "lowerUsername": updates.lowerUsername
     }});
     counter++
   }

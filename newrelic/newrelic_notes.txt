@@ -1,0 +1,118 @@
+echo "license_key: 680b7b67bfc9cdd8ee64cfa771a9b5effd1949b8" | sudo tee -a /etc/newrelic-infra.yml
+
+sudo curl -x https://ist-wp-bld-pr01.bu.edu:8900 -o /etc/yum.repos.d/newrelic-infra.repo https://download.newrelic.com/infrastructure_agent/linux/yum/el/5/x86_64/newrelic-infra.repo
+
+sudo yum -q makecache -y --disablerepo='*' --enablerepo='newrelic-infra'
+
+sudo yum install newrelic-infra -y
+
+
+
+curl -v -I -L --trace trace.log -x https://ist-wp-bld-pr01.bu.edu:8900 -L https://infra-api.newrelic.com
+
+curl -v -I -L -x https://ist-wp-bld-pr01.bu.edu:8900 -L http://download.newrelic.com/nrdiag/version.txt
+
+curl -v -I -L -x https://ist-wp-bld-pr01.bu.edu:8900 -L https://infrastructure-command-api.newrelic.com/agent_commands/v1/commands
+
+curl -v -I -L -x 172.17.0.2:8900 -L https://infra-api.newrelic.com
+
+curl -v -I -L -x http://proxy_server:proxy_port --proxy-user username:password -L https://infra-api.newrelic.com
+
+/systemd/system/docker.service.d/http-proxy.conf:Environment="HTTP_PROXY=http://webproxy.bu.edu:8900/
+
+
+/etc/nrdiag/linux/nrdiag \
+  -config-file /etc/newrelic-infra.yml \
+  -proxy http://ist-wproxy-pr01.bu.edu:8900/ \
+  -verbose \
+  -yes
+
+
+/etc/nrdiag/linux/nrdiag \
+  -config-file /etc/newrelic-infra.yml \
+  -proxy https://ist-wp-bld-pr01.bu.edu:8900/ \
+  -verbose \
+  -yes > verbose.txt
+
+    access_log /var/log/nginx_access.log;
+    error_log /var/log/nginx_errors.log;
+
+
+curl -vvv -k \
+  -H "Content-Type: application/json" \
+  -H "Api-Key: NRII-yysO3mP_rR56TDbifYjcwyyeZUWvsaP2" \
+  -x https://ist-wp-bld-pr01.bu.edu:8900 \
+  -X POST https://metric-api.newrelic.com/metric/v1 \
+  --data '[{ "metrics":[{
+             "name":"memory.heap",
+             "type":"gauge",
+             "value":2.3,
+             "timestamp":1579127177000,
+             "attributes":{"host.name":"ist-wp-cmd-te1.bu.edu"}
+           }]
+   	}]'
+
+curl -vvv -k \
+  -H "Content-Type: application/json" \
+  -H "Api-Key: NRII-yysO3mP_rR56TDbifYjcwyyeZUWvsaP2" \
+  -X POST https://metric-api.newrelic.com/metric/v1 \
+  --data '[{ "metrics":[{
+             "name":"memory.heap",
+             "type":"gauge",
+             "value":2.3,
+             "timestamp":1579127176000,
+             "attributes":{"host.name":"ist-wp-cmd-te1.bu.edu"}
+           }]
+   	}]'
+
+
+
+systemctl status newrelic-infra -l
+* newrelic-infra.service - New Relic Infrastructure Agent
+   Loaded: loaded (/etc/systemd/system/newrelic-infra.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2020-01-15 11:02:26 EST; 55s ago
+ Main PID: 22126 (newrelic-infra-)
+    Tasks: 11
+   Memory: 4.8M (limit: 1.0G)
+   CGroup: /system.slice/newrelic-infra.service
+           |-22126 /usr/bin/newrelic-infra-service
+           `-22131 /usr/bin/newrelic-infra
+
+Jan 15 11:02:26 ist-wp-cmd-te1.bu.edu systemd[1]: Started New Relic Infrastructure Agent.
+Jan 15 11:02:26 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:02:26-05:00" level=info msg="Starting agent process: /usr/bin/newrelic-infra"
+Jan 15 11:02:26 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:02:26-05:00" level=info msg="Creating Service"
+Jan 15 11:02:26 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:02:26-05:00" level=info msg="runtime configuration" agentUser=root component="New Relic Infrastructure Agent" executablePath= maxProcs=1 pluginDir="[/etc/newrelic-infra/integrations.d /var/db/newrelic-infra/integrations.d]"
+Jan 15 11:02:56 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:02:56-05:00" level=warning msg="commands initial fetch failed" component=AgentService error="command request submission failed: Get https://infrastructure-command-api.newrelic.com/agent_commands/v1/commands: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" service=newrelic-infra
+Jan 15 11:02:56 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:02:56-05:00" level=info msg="Checking network connectivity..." component=AgentService service=newrelic-infra
+Jan 15 11:03:06 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:03:06-05:00" level=warning msg="collector endpoint not reachable, retrying" collector_url="https://infra-api.newrelic.com" component=AgentService error="Head https://infra-api.newrelic.com: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" service=newrelic-infra
+Jan 15 11:03:17 ist-wp-cmd-te1.bu.edu newrelic-infra-service[22126]: time="2020-01-15T11:03:17-05:00" level=warning msg="collector endpoint not reachable, retrying" collector_url="https://infra-api.newrelic.com" component=AgentService error="Head https://infra-api.newrelic.com: net/http: request canceled while waiting for connection (Client.Timeout exceeded while awaiting headers)" service=newrelic-infra
+
+
+
+
+/etc/systemd/system/newrelic-infra.service
+
+[Unit]
+Description=New Relic Infrastructure Agent
+After=dbus.service syslog.target network.target
+
+[Service]
+RuntimeDirectory=newrelic-infra
+Type=simple
+ExecStart=/usr/bin/newrelic-infra-service
+MemoryLimit=1G
+# MemoryMax is only supported in systemd > 230 and replaces MemoryLimit. Some cloud dists do not have that version
+# MemoryMax=1G
+Restart=always
+RestartSec=20
+StartLimitInterval=0
+StartLimitBurst=5
+PIDFile=/var/run/newrelic-infra/newrelic-infra.pid
+Environment=http_proxy=http://ist-wproxy-pr01.bu.edu:8900/
+Environment=https_proxy=https://ist-wproxy-pr01.bu.edu:8900/
+
+[Install]
+WantedBy=multi-user.target
+:
+systemctl daemon-reload
+systemctl restart newrelic-infra
